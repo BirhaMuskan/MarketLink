@@ -1,0 +1,135 @@
+@model MarketLink.ViewModels.AdminCategoryFormViewModel
+
+@{
+    ViewData["Title"] = "Edit Category";
+    Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
+}
+
+<section class="category-form-header">
+
+    <div>
+        <span class="category-page-label">
+            <i class="bi bi-tags"></i>
+            MASTER DATA
+        </span>
+
+        <h2>Edit Category</h2>
+
+        <p>
+            Update the category name, description or active status.
+        </p>
+    </div>
+
+    <a asp-controller="AdminCategories"
+       asp-action="Index"
+       class="category-back-link">
+
+        <i class="bi bi-arrow-left"></i>
+        Back to Categories
+
+    </a>
+
+</section>
+
+<section class="category-form-card">
+
+    <form asp-controller="AdminCategories"
+          asp-action="Edit"
+          method="post">
+
+        @Html.AntiForgeryToken()
+
+        <input asp-for="CategoryId" type="hidden" />
+
+        <div asp-validation-summary="ModelOnly"
+             class="text-danger mb-3">
+        </div>
+
+        <div class="category-form-field">
+
+            <label asp-for="CategoryName"></label>
+
+            <input asp-for="CategoryName"
+                   class="form-control"
+                   placeholder="e.g. Vegetables" />
+
+            <span asp-validation-for="CategoryName"
+                  class="text-danger">
+            </span>
+
+        </div>
+
+        <div class="category-form-field">
+
+            <label asp-for="Description"></label>
+
+            <textarea asp-for="Description"
+                      rows="4"
+                      class="form-control"
+                      placeholder="Describe this category...">
+            </textarea>
+
+        </div>
+
+        <div class="category-active-box">
+
+            <label>
+
+                <input asp-for="IsActive" />
+
+                <span>
+                    Category is active
+                </span>
+
+            </label>
+
+            <small>
+                Only active categories are shown to farmers
+                when they create products.
+            </small>
+
+        </div>
+
+        <div class="category-form-actions">
+
+            <a asp-controller="AdminCategories"
+               asp-action="Index"
+               class="btn btn-light">
+
+                Cancel
+
+            </a>
+
+            <button type="submit"
+                    class="category-primary-button border-0">
+
+                <i class="bi bi-check-lg"></i>
+                Save Changes
+
+            </button>
+
+        </div>
+
+    </form>
+
+</section>
+
+@section Styles {
+<style>
+.category-form-header{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:22px}
+.category-page-label{color:#14836f;font-size:12px;font-weight:800;letter-spacing:.08em}
+.category-form-header h2{margin:7px 0 5px;font-size:28px;font-weight:800}
+.category-form-header p{margin:0;color:#667085}
+.category-back-link{text-decoration:none;color:#475467;font-weight:700;font-size:13px}
+.category-form-card{background:#fff;border:1px solid #e7ebef;border-radius:18px;padding:24px;box-shadow:0 10px 30px rgba(16,24,40,.06);max-width:850px}
+.category-form-field{margin-bottom:18px}
+.category-form-field label{display:block;margin-bottom:7px;color:#344054;font-size:12px;font-weight:800}
+.category-active-box{padding:13px 14px;background:#f8fafc;border:1px solid #e7ebef;border-radius:11px}
+.category-active-box label{display:flex;align-items:center;gap:9px;font-weight:700;margin:0}
+.category-active-box small{display:block;margin-top:5px;color:#667085}
+.category-primary-button{display:inline-flex;align-items:center;gap:8px;background:#13836e;color:white;text-decoration:none;padding:10px 15px;border-radius:10px;font-weight:700}
+.category-primary-button:hover{background:#0e715e;color:white}
+.category-form-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:22px;padding-top:18px;border-top:1px solid #edf0f3}
+@@media(max-width:700px){.category-form-header{align-items:flex-start;flex-direction:column}}
+</style>
+}

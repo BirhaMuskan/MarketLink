@@ -1,0 +1,23 @@
+@model MarketLink.ViewModels.FarmerTopbarViewModel
+
+<div class="farmer-top-user">
+
+    @if (!string.IsNullOrWhiteSpace(Model.ProfileImageUrl))
+    {
+        <img src="@Model.ProfileImageUrl"
+             alt="@Model.FullName"
+             class="farmer-top-avatar farmer-top-avatar-image" />
+    }
+    else
+    {
+        <div class="farmer-top-avatar">
+            @Model.Initial
+        </div>
+    }
+
+    <div>
+        <strong>@Model.FullName</strong>
+        <small>@Model.BusinessName</small>
+    </div>
+
+</div>

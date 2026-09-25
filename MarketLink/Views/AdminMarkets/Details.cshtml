@@ -1,0 +1,172 @@
+@model MarketLink.Models.Market
+
+@{
+    ViewData["Title"] = "Market Details";
+    Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
+}
+
+@section Styles {
+<link rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIINfQ3yn7P8c0NfP55FzYQmwwyY5n3u3xU="
+      crossorigin="" />
+
+<style>
+.market-details-header{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:22px}
+.market-page-label{color:#14836f;font-size:12px;font-weight:800;letter-spacing:.08em}
+.market-details-header h2{margin:7px 0 5px;font-size:28px;font-weight:800}
+.market-details-header p{margin:0;color:#667085}
+.header-actions{display:flex;gap:8px}
+.details-secondary-button{display:inline-flex;align-items:center;gap:7px;border:1px solid #d0d5dd;background:#fff;color:#344054;padding:9px 12px;border-radius:9px;text-decoration:none;font-size:12px;font-weight:700}
+.market-details-grid{display:grid;grid-template-columns:1.5fr .7fr;gap:18px}
+.market-map-card,.market-info-card{background:#fff;border:1px solid #e7ebef;border-radius:18px;overflow:hidden;box-shadow:0 10px 30px rgba(16,24,40,.06)}
+.card-heading{padding:16px 18px;border-bottom:1px solid #edf0f4}
+.card-heading span{color:#13836e;font-size:10px;font-weight:800;letter-spacing:.08em}
+.card-heading h3{margin:3px 0 0;font-size:17px;font-weight:800}
+#marketDetailsMap{height:520px;width:100%}
+.map-missing{height:400px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#667085;text-align:center;padding:30px}
+.details-list{padding:8px 18px}
+.details-list>div{padding:12px 0;border-bottom:1px solid #edf0f4}
+.details-list span{display:block;color:#98a2b3;font-size:10px;text-transform:uppercase;font-weight:800}
+.details-list strong{display:block;margin-top:3px;color:#344054;font-size:13px}
+.market-description{margin:12px 18px 18px;padding:12px;background:#f8fafc;border-radius:10px;color:#667085;font-size:12px}
+@@media(max-width:900px){.market-details-grid{grid-template-columns:1fr}}
+@@media(max-width:600px){.market-details-header{align-items:flex-start;flex-direction:column}.header-actions{width:100%;flex-direction:column}}
+</style>
+}
+
+<section class="market-details-header">
+    <div>
+        <span class="market-page-label">
+            <i class="bi bi-geo-alt"></i>
+            MARKET DETAILS
+        </span>
+
+        <h2>@Model.MarketName</h2>
+        <p>@Model.Address</p>
+    </div>
+
+    <div class="header-actions">
+        <a asp-controller="AdminMarkets"
+           asp-action="Edit"
+           asp-route-id="@Model.MarketId"
+           class="details-secondary-button">
+            <i class="bi bi-pencil"></i>
+            Edit
+        </a>
+
+        <a asp-controller="AdminMarkets"
+           asp-action="Index"
+           class="details-secondary-button">
+            <i class="bi bi-arrow-left"></i>
+            Back
+        </a>
+    </div>
+</section>
+
+<div class="market-details-grid">
+
+    <section class="market-map-card">
+        <div class="card-heading">
+            <span>OPENSTREETMAP LOCATION</span>
+            <h3>Market Location</h3>
+        </div>
+
+        @if (Model.Latitude.HasValue && Model.Longitude.HasValue)
+        {
+            <div id="marketDetailsMap"></div>
+        }
+        else
+        {
+            <div class="map-missing">
+                <i class="bi bi-geo-alt"></i>
+                <strong>No location saved</strong>
+                <span>Edit this market and click a location on the map.</span>
+            </div>
+        }
+    </section>
+
+    <section class="market-info-card">
+        <div class="card-heading">
+            <span>MARKET INFORMATION</span>
+            <h3>Details</h3>
+        </div>
+
+        <div class="details-list">
+            <div>
+                <span>Market Name</span>
+                <strong>@Model.MarketName</strong>
+            </div>
+
+            <div>
+                <span>Address</span>
+                <strong>@Model.Address</strong>
+            </div>
+
+            <div>
+                <span>Latitude</span>
+                <strong>@(Model.Latitude?.ToString() ?? "Not set")</strong>
+            </div>
+
+            <div>
+                <span>Longitude</span>
+                <strong>@(Model.Longitude?.ToString() ?? "Not set")</strong>
+            </div>
+
+            <div>
+                <span>Map Provider</span>
+                <strong>OpenStreetMap</strong>
+            </div>
+
+            <div>
+                <span>Status</span>
+                <strong>@(Model.IsActive ? "Active" : "Inactive")</strong>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(Model.Description))
+        {
+            <div class="market-description">
+                @Model.Description
+            </div>
+        }
+    </section>
+
+</div>
+
+@if (Model.Latitude.HasValue && Model.Longitude.HasValue)
+{
+    @section Scripts {
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const lat = @Model.Latitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        const lng = @Model.Longitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+        const map = L.map("marketDetailsMap")
+            .setView([lat, lng], 16);
+
+        L.tileLayer(
+            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            {
+                maxZoom: 19,
+                attribution: "&copy; OpenStreetMap contributors"
+            }
+        ).addTo(map);
+
+        L.marker([lat, lng])
+            .addTo(map)
+            .bindPopup(@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.MarketName)))
+            .openPopup();
+
+        setTimeout(function () {
+            map.invalidateSize();
+        }, 150);
+    });
+    </script>
+    }
+}

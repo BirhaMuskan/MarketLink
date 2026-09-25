@@ -1,0 +1,274 @@
+@model MarketLink.ViewModels.AdminMarketDaysPageViewModel
+
+@{
+    ViewData["Title"] = "Market Operating Days";
+    Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
+}
+
+<section class="days-header">
+
+    <div>
+        <span class="days-page-label">
+            <i class="bi bi-calendar-week"></i>
+            MARKET SCHEDULE
+        </span>
+
+        <h2>@Model.MarketName</h2>
+
+        <p>
+            Configure the days and opening/closing times for this market.
+        </p>
+    </div>
+
+    <a asp-controller="AdminMarkets"
+       asp-action="Index"
+       class="days-back-link">
+        <i class="bi bi-arrow-left"></i>
+        Back to Markets
+    </a>
+
+</section>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success days-alert">
+        <i class="bi bi-check-circle-fill"></i>
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-warning days-alert">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+<div class="days-grid">
+
+    <section class="days-card">
+
+        <div class="days-card-header">
+            <span>OPERATING DAYS</span>
+            <h3>Current Schedule</h3>
+        </div>
+
+        @if (!Model.Days.Any())
+        {
+            <div class="days-empty">
+                <i class="bi bi-calendar-x"></i>
+                <strong>No operating days yet</strong>
+                <span>Add the first operating day using the form.</span>
+            </div>
+        }
+        else
+        {
+            <div class="days-list">
+
+                @foreach (var day in Model.Days)
+                {
+                    var openingText =
+                        DateTime.Today.Add(day.OpeningTime)
+                            .ToString("hh:mm tt");
+
+                    var closingText =
+                        DateTime.Today.Add(day.ClosingTime)
+                            .ToString("hh:mm tt");
+
+                    <div class="day-row">
+
+                        <div class="day-name">
+
+                            <div class="day-icon">
+                                <i class="bi bi-calendar3"></i>
+                            </div>
+
+                            <div>
+                                <strong>@day.DayName</strong>
+
+                                <span>
+                                    @openingText - @closingText
+                                </span>
+                            </div>
+
+                        </div>
+
+                        <div class="day-actions">
+
+                            @if (day.IsActive)
+                            {
+                                <span class="day-status active">
+                                    Active
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="day-status inactive">
+                                    Inactive
+                                </span>
+                            }
+
+                            <form asp-controller="AdminMarkets"
+                                  asp-action="ToggleDay"
+                                  method="post">
+
+                                @Html.AntiForgeryToken()
+
+                                <input type="hidden"
+                                       name="marketDayId"
+                                       value="@day.MarketDayId" />
+
+                                <button type="submit"
+                                        class="day-action-btn">
+                                    @(day.IsActive
+                                        ? "Deactivate"
+                                        : "Activate")
+                                </button>
+                            </form>
+
+                            <form asp-controller="AdminMarkets"
+                                  asp-action="DeleteDay"
+                                  method="post"
+                                  onsubmit="return confirm('Remove this operating day?');">
+
+                                @Html.AntiForgeryToken()
+
+                                <input type="hidden"
+                                       name="marketDayId"
+                                       value="@day.MarketDayId" />
+
+                                <button type="submit"
+                                        class="day-action-btn danger">
+                                    Remove
+                                </button>
+                            </form>
+
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+        }
+
+    </section>
+
+    <section class="days-card">
+
+        <div class="days-card-header">
+            <span>ADD SCHEDULE</span>
+            <h3>Add Operating Day</h3>
+        </div>
+
+        <form asp-controller="AdminMarkets"
+              asp-action="AddDay"
+              method="post"
+              class="day-form">
+
+            @Html.AntiForgeryToken()
+
+            <input type="hidden"
+                   name="MarketId"
+                   value="@Model.MarketId" />
+
+            <div class="day-field">
+                <label>Day</label>
+
+                <select name="DayName"
+                        class="form-select"
+                        required>
+                    <option value="">Select day</option>
+                    <option>Monday</option>
+                    <option>Tuesday</option>
+                    <option>Wednesday</option>
+                    <option>Thursday</option>
+                    <option>Friday</option>
+                    <option>Saturday</option>
+                    <option>Sunday</option>
+                </select>
+            </div>
+
+            <div class="day-time-grid">
+
+                <div class="day-field">
+                    <label>Opening Time</label>
+
+                    <input type="time"
+                           name="OpeningTime"
+                           value="08:00"
+                           class="form-control"
+                           required />
+                </div>
+
+                <div class="day-field">
+                    <label>Closing Time</label>
+
+                    <input type="time"
+                           name="ClosingTime"
+                           value="14:00"
+                           class="form-control"
+                           required />
+                </div>
+
+            </div>
+
+            <label class="day-active-check">
+                <input type="checkbox"
+                       name="IsActive"
+                       value="true"
+                       checked />
+
+                <span>Active operating day</span>
+            </label>
+
+            <button type="submit"
+                    class="market-primary-button border-0 w-100">
+                <i class="bi bi-plus-lg"></i>
+                Add Operating Day
+            </button>
+
+        </form>
+
+    </section>
+
+</div>
+
+@section Styles {
+<style>
+.days-header{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:22px}
+.days-page-label{color:#14836f;font-size:12px;font-weight:800;letter-spacing:.08em}
+.days-header h2{margin:7px 0 5px;font-size:28px;font-weight:800}
+.days-header p{margin:0;color:#667085}
+.days-back-link{text-decoration:none;color:#475467;font-size:13px;font-weight:700}
+.days-grid{display:grid;grid-template-columns:1.4fr .8fr;gap:18px}
+.days-card{background:#fff;border:1px solid #e7ebef;border-radius:18px;overflow:hidden;box-shadow:0 10px 30px rgba(16,24,40,.06)}
+.days-card-header{padding:17px 18px;border-bottom:1px solid #edf0f4}
+.days-card-header span{font-size:10px;letter-spacing:.08em;color:#13836e;font-weight:800}
+.days-card-header h3{margin:3px 0 0;font-size:17px;font-weight:800}
+.days-list{padding:12px}
+.day-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:13px;border:1px solid #e8ebef;border-radius:12px;margin-bottom:9px}
+.day-name{display:flex;align-items:center;gap:10px}
+.day-icon{width:38px;height:38px;border-radius:10px;background:#e8f5ef;color:#13836e;display:grid;place-items:center}
+.day-name strong{display:block;font-size:13px}
+.day-name span{display:block;margin-top:2px;color:#667085;font-size:12px}
+.day-actions{display:flex;align-items:center;gap:6px}
+.day-status{padding:5px 8px;border-radius:999px;font-size:10px;font-weight:800}
+.day-status.active{background:#dcfae6;color:#067647}
+.day-status.inactive{background:#f2f4f7;color:#475467}
+.day-action-btn{border:1px solid #d9dfe5;background:#fff;color:#344054;padding:6px 8px;border-radius:7px;font-size:10px;font-weight:700}
+.day-action-btn.danger{color:#b42318;border-color:#f3c8c5}
+.days-empty{padding:50px 20px;text-align:center;color:#667085;display:flex;flex-direction:column;align-items:center;gap:5px}
+.days-empty i{font-size:30px;color:#13836e}
+.days-empty strong{color:#344054}
+.day-form{padding:18px}
+.day-field{margin-bottom:15px}
+.day-field label{display:block;margin-bottom:6px;color:#344054;font-size:11px;font-weight:800}
+.day-time-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.day-active-check{display:flex;align-items:center;gap:8px;margin:4px 0 18px;font-size:12px;font-weight:700}
+.market-primary-button{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:#13836e;color:#fff;padding:10px 15px;border-radius:10px;font-weight:700}
+.days-alert{display:flex;align-items:center;gap:8px}
+@@media(max-width:900px){.days-grid{grid-template-columns:1fr}}
+@@media(max-width:600px){.days-header{align-items:flex-start;flex-direction:column}.day-row{align-items:flex-start;flex-direction:column}.day-actions{width:100%;flex-wrap:wrap}.day-time-grid{grid-template-columns:1fr}}
+</style>
+}

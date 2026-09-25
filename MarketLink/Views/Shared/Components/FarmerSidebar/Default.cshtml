@@ -1,0 +1,123 @@
+@model MarketLink.ViewModels.FarmerSidebarViewModel
+
+<div class="farmer-mini-profile">
+
+    @if (!string.IsNullOrWhiteSpace(Model.ProfileImageUrl))
+    {
+        <img src="@Model.ProfileImageUrl"
+             alt="@Model.BusinessName"
+             class="farmer-avatar farmer-avatar-image" />
+    }
+    else
+    {
+        <div class="farmer-avatar">
+            @Model.Initial
+        </div>
+    }
+
+    <div>
+        <strong>@Model.BusinessName</strong>
+        <span>Farmer Account</span>
+    </div>
+
+</div>
+
+<nav class="farmer-menu">
+
+    <div class="farmer-menu-heading">FARMER CENTER</div>
+
+    <a asp-controller="Farmer"
+       asp-action="Index"
+       class="farmer-menu-link">
+        <i class="bi bi-grid-1x2-fill"></i>
+        <span>Dashboard</span>
+    </a>
+
+    <a asp-controller="FarmerProfile"
+   asp-action="Index"
+   class="farmer-menu-link">
+    <i class="bi bi-person-circle"></i>
+    <span>Profile</span>
+</a>
+
+    <a asp-controller="FarmerMarkets"
+   asp-action="Index"
+   class="farmer-menu-link">
+    <i class="bi bi-shop"></i>
+    <span>My Markets</span>
+</a>
+
+    <div class="farmer-menu-heading farmer-second-heading">
+        PRODUCTS & STOCK
+    </div>
+
+    <a asp-controller="FarmerProducts"
+       asp-action="Index"
+       class="farmer-menu-link">
+        <i class="bi bi-basket"></i>
+        <span>My Products</span>
+
+        @if (Model.ProductCount > 0)
+        {
+            <span class="farmer-count">@Model.ProductCount</span>
+        }
+    </a>
+
+    <a asp-controller="FarmerInventory"
+       asp-action="Index"
+       class="farmer-menu-link">
+        <i class="bi bi-box-seam"></i>
+        <span>Inventory</span>
+    </a>
+
+    <a asp-controller="FarmerWeeklyStock"
+       asp-action="Index"
+       class="farmer-menu-link">
+        <i class="bi bi-calendar3"></i>
+        <span>Weekly Stock</span>
+    </a>
+
+    <div class="farmer-menu-heading farmer-second-heading">
+        ORDERS & SALES
+    </div>
+
+    <a asp-controller="FarmerOrders"
+   asp-action="Index"
+   class="farmer-menu-link">
+    <i class="bi bi-receipt"></i>
+    <span>Orders</span>
+</a>
+
+    <a asp-controller="FarmerPickupSlots"
+   asp-action="Index"
+   class="farmer-menu-link">
+    <i class="bi bi-clock"></i>
+    <span>Pickup Slots</span>
+</a>
+
+    <a asp-controller="FarmerSales"
+   asp-action="Index"
+   class="farmer-menu-link">
+    <i class="bi bi-graph-up"></i>
+    <span>Sales</span>
+</a>
+
+    <div class="farmer-menu-heading farmer-second-heading">
+        CUSTOMER FEEDBACK
+    </div>
+
+    <a asp-controller="FarmerReviews"
+   asp-action="Index"
+   class="farmer-menu-link">
+    <i class="bi bi-star"></i>
+    <span>Reviews</span>
+</a>
+
+   <a asp-controller="FarmerNotifications"
+   asp-action="Index"
+   class="farmer-menu-link">
+    <i class="bi bi-bell"></i>
+    <span>Notifications</span>
+</a>
+
+</nav>

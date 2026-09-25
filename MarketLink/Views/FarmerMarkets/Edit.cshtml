@@ -1,0 +1,103 @@
+@model MarketLink.ViewModels.EditFarmerMarketViewModel
+
+@{
+    ViewData["Title"] = "Edit Market";
+    Layout = "~/Views/Shared/_FarmerDashboardLayout.cshtml";
+}
+
+<section class="page-header">
+    <div>
+        <span class="page-label">MY MARKETS</span>
+        <h2>@Model.MarketName</h2>
+        <p>@Model.Address</p>
+    </div>
+
+    <a asp-controller="FarmerMarkets"
+       asp-action="Index"
+       class="back-link">
+        <i class="bi bi-arrow-left"></i>
+        Back
+    </a>
+</section>
+
+<section class="form-card">
+
+    <form asp-controller="FarmerMarkets"
+          asp-action="Edit"
+          method="post">
+
+        @Html.AntiForgeryToken()
+
+        <input asp-for="FarmerMarketId"
+               type="hidden" />
+
+        <div asp-validation-summary="ModelOnly"
+             class="text-danger mb-3"></div>
+
+        <div class="form-field">
+            <label asp-for="StallNumber"></label>
+
+            <input asp-for="StallNumber"
+                   class="form-control"
+                   placeholder="e.g. A-12" />
+
+            <span asp-validation-for="StallNumber"
+                  class="text-danger"></span>
+        </div>
+
+        <div class="form-field">
+            <label asp-for="PickupInstructions"></label>
+
+            <textarea asp-for="PickupInstructions"
+                      rows="4"
+                      class="form-control"
+                      placeholder="Explain where customers should collect their orders."></textarea>
+        </div>
+
+        <div class="active-box">
+            <label>
+                <input asp-for="IsActive" />
+                <span>Active at this market</span>
+            </label>
+
+            <small>
+                If disabled, your pickup schedules at this market will
+                also be deactivated.
+            </small>
+        </div>
+
+        <div class="form-actions">
+            <a asp-controller="FarmerMarkets"
+               asp-action="Index"
+               class="btn btn-light">
+                Cancel
+            </a>
+
+            <button type="submit"
+                    class="primary-btn border-0">
+                Save Changes
+            </button>
+        </div>
+
+    </form>
+
+</section>
+
+@section Styles {
+<style>
+.page-header{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:22px}
+.page-label{color:#14836f;font-size:12px;font-weight:800;letter-spacing:.08em}
+.page-header h2{margin:7px 0 5px;font-size:28px;font-weight:800}
+.page-header p{margin:0;color:#667085}
+.back-link{text-decoration:none;color:#475467;font-weight:700;font-size:13px}
+.form-card{background:#fff;border:1px solid #e7ebef;border-radius:18px;padding:24px;max-width:850px}
+.form-field{margin-bottom:18px}
+.form-field label{display:block;margin-bottom:7px;font-size:12px;font-weight:800;color:#344054}
+.active-box{padding:13px 14px;background:#f8fafc;border:1px solid #e7ebef;border-radius:11px}
+.active-box label{display:flex;align-items:center;gap:9px;font-weight:700;margin:0}
+.active-box small{display:block;margin-top:5px;color:#667085}
+.form-actions{display:flex;justify-content:flex-end;gap:10px;border-top:1px solid #edf0f3;margin-top:22px;padding-top:18px}
+.primary-btn{background:#13836e;color:#fff;padding:10px 15px;border-radius:10px;font-weight:700}
+@@media(max-width:700px){.page-header{align-items:flex-start;flex-direction:column}}
+</style>
+}

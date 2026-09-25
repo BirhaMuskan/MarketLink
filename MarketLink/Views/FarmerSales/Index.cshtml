@@ -1,0 +1,174 @@
+@model MarketLink.ViewModels.FarmerSalesPageViewModel
+
+@{
+    ViewData["Title"] = "Sales";
+    Layout = "~/Views/Shared/_FarmerDashboardLayout.cshtml";
+}
+
+<section class="sales-header">
+    <div>
+        <span class="sales-label">
+            <i class="bi bi-graph-up"></i>
+            SALES & HISTORY
+        </span>
+
+        <h2>Sales</h2>
+
+        <p>
+            Review completed orders, revenue and your best-selling products.
+        </p>
+    </div>
+</section>
+
+<section class="sales-stats">
+
+    <div>
+        <span>Completed Revenue</span>
+        <strong>
+            Rs. @Model.CompletedRevenue.ToString("N2")
+        </strong>
+    </div>
+
+    <div>
+        <span>Completed Orders</span>
+        <strong>@Model.CompletedOrders</strong>
+    </div>
+
+    <div>
+        <span>Average Order Value</span>
+        <strong>
+            Rs. @Model.AverageOrderValue.ToString("N2")
+        </strong>
+    </div>
+
+</section>
+
+<div class="sales-grid">
+
+    <section class="sales-card">
+
+        <div class="card-heading">
+            <span>TOP PRODUCTS</span>
+            <h3>Best-Selling Products</h3>
+        </div>
+
+        @if (!Model.BestSellingProducts.Any())
+        {
+            <div class="empty-state">
+                No completed sales yet.
+            </div>
+        }
+        else
+        {
+            <div class="product-list">
+
+                @foreach (var item in Model.BestSellingProducts)
+                {
+                    <div class="product-row">
+
+                        <div>
+                            <strong>@item.ProductName</strong>
+                            <span>@item.UnitName</span>
+                        </div>
+
+                        <div>
+                            <span>Qty Sold</span>
+                            <strong>
+                                @item.QuantitySold.ToString("N3")
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>Revenue</span>
+                            <strong>
+                                Rs. @item.Revenue.ToString("N2")
+                            </strong>
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+        }
+
+    </section>
+
+    <section class="sales-card">
+
+        <div class="card-heading">
+            <span>ORDER HISTORY</span>
+            <h3>Recent Completed Orders</h3>
+        </div>
+
+        @if (!Model.RecentCompletedOrders.Any())
+        {
+            <div class="empty-state">
+                No completed orders yet.
+            </div>
+        }
+        else
+        {
+            <div class="history-list">
+
+                @foreach (var order in Model.RecentCompletedOrders)
+                {
+                    <a asp-controller="FarmerOrders"
+                       asp-action="Details"
+                       asp-route-id="@order.OrderId"
+                       class="history-row">
+
+                        <div>
+                            <strong>@order.OrderNo</strong>
+                            <span>
+                                @order.CustomerName · @order.MarketName
+                            </span>
+                        </div>
+
+                        <div>
+                            <span>
+                                @(order.CompletedAt?.ToString("dd MMM yyyy")
+                                    ?? order.OrderDate.ToString("dd MMM yyyy"))
+                            </span>
+
+                            <strong>
+                                Rs. @order.TotalAmount.ToString("N2")
+                            </strong>
+                        </div>
+
+                    </a>
+                }
+
+            </div>
+        }
+
+    </section>
+
+</div>
+
+@section Styles {
+<style>
+.sales-header{margin-bottom:22px}
+.sales-label{color:#14836f;font-size:12px;font-weight:800;letter-spacing:.08em}
+.sales-header h2{margin:7px 0 5px;font-size:28px;font-weight:800}
+.sales-header p{margin:0;color:#667085}
+.sales-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px}
+.sales-stats>div{background:#fff;border:1px solid #e7ebef;border-radius:16px;padding:17px}
+.sales-stats span{display:block;color:#667085;font-size:12px}
+.sales-stats strong{display:block;margin-top:4px;font-size:24px}
+.sales-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.sales-card{background:#fff;border:1px solid #e7ebef;border-radius:18px;overflow:hidden}
+.card-heading{padding:15px 17px;border-bottom:1px solid #edf0f4}
+.card-heading span{color:#13836e;font-size:10px;font-weight:800;letter-spacing:.08em}
+.card-heading h3{margin:3px 0 0;font-size:16px;font-weight:800}
+.product-list,.history-list{padding:10px}
+.product-row,.history-row{display:grid;grid-template-columns:1fr auto auto;gap:18px;align-items:center;padding:13px;border-bottom:1px solid #edf0f4}
+.product-row:last-child,.history-row:last-child{border-bottom:0}
+.product-row span,.history-row span{display:block;color:#98a2b3;font-size:10px}
+.product-row strong,.history-row strong{display:block;color:#344054;font-size:12px}
+.history-row{grid-template-columns:1fr auto;text-decoration:none}
+.history-row:hover{background:#f8fafc}
+.empty-state{padding:40px;text-align:center;color:#667085}
+@@media(max-width:900px){.sales-grid{grid-template-columns:1fr}}
+@@media(max-width:650px){.sales-stats{grid-template-columns:1fr}.product-row{grid-template-columns:1fr}}
+</style>
+}

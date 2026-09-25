@@ -1,0 +1,306 @@
+@model MarketLink.ViewModels.CustomerMarketsPageViewModel
+
+@{
+    ViewData["Title"] = "Markets";
+    Layout = "~/Views/Shared/_CustomerDashboardLayout.cshtml";
+}
+
+@section Styles {
+<link rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+<style>
+.market-page-header{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin-bottom:20px}
+.market-page-label{color:#14836f;font-size:12px;font-weight:800;letter-spacing:.08em}
+.market-page-header h2{margin:7px 0 5px;font-size:28px;font-weight:800}
+.market-page-header p{margin:0;color:#667085}
+.market-summary{display:flex;gap:10px}
+.market-summary span{background:#fff;border:1px solid #e7ebef;border-radius:12px;padding:9px 12px;color:#667085;font-size:11px}
+.market-summary strong{color:#172033;margin-left:5px}
+.market-search-card{background:#fff;border:1px solid #e7ebef;border-radius:16px;padding:14px;margin-bottom:16px}
+.market-search{display:flex;gap:10px}
+.market-search input{flex:1;border:1px solid #d8dee6;border-radius:10px;padding:10px 12px}
+.market-search button{border:0;background:#13836e;color:#fff;padding:10px 16px;border-radius:10px;font-weight:700}
+.market-layout{display:grid;grid-template-columns:1.05fr .95fr;gap:18px}
+.market-list-card,.market-map-card{background:#fff;border:1px solid #e7ebef;border-radius:18px;overflow:hidden}
+.market-list{padding:12px;max-height:700px;overflow:auto}
+.market-item{padding:15px;border:1px solid #e8ebef;border-radius:14px;margin-bottom:10px}
+.market-item-top{display:flex;justify-content:space-between;gap:12px}
+.market-item h3{margin:0;font-size:16px}
+.market-item .address{display:block;color:#667085;font-size:11px;margin-top:3px}
+.market-meta{display:flex;gap:24px;flex-wrap:wrap;margin-top:12px}
+.market-meta span{display:block;color:#98a2b3;font-size:9px;text-transform:uppercase;font-weight:800}
+.market-meta strong{display:block;color:#344054;font-size:11px;margin-top:2px}
+.market-item-actions{display:flex;gap:8px;margin-top:13px}
+.market-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;text-decoration:none;border:1px solid #d0d5dd;background:#fff;color:#344054;padding:8px 10px;border-radius:8px;font-size:10px;font-weight:700}
+.market-btn.primary{background:#13836e;color:#fff;border-color:#13836e}
+.favorite-form{margin-left:auto}
+.favorite-btn{border:1px solid #f0caca;background:#fff;color:#c73b3b;width:36px;height:36px;border-radius:9px}
+.favorite-btn.saved{background:#fff1f0}
+#customerMarketsMap{height:700px;width:100%}
+.map-heading{padding:15px 17px;border-bottom:1px solid #edf0f4}
+.map-heading span{color:#13836e;font-size:10px;font-weight:800;letter-spacing:.08em}
+.map-heading h3{margin:3px 0 0;font-size:16px}
+.empty-markets{padding:50px;text-align:center;color:#667085}
+@@media(max-width:950px){.market-layout{grid-template-columns:1fr}#customerMarketsMap{height:450px}.market-list{max-height:none}}
+@@media(max-width:600px){.market-page-header{align-items:flex-start;flex-direction:column}.market-summary{flex-wrap:wrap}.market-search{flex-direction:column}.market-item-actions{flex-wrap:wrap}.favorite-form{margin-left:0}}
+</style>
+}
+
+<section class="market-page-header">
+
+    <div>
+        <span class="market-page-label">
+            <i class="bi bi-shop"></i>
+            DISCOVER MARKETS
+        </span>
+
+        <h2>Find a Market</h2>
+
+        <p>
+            Explore active local markets, operating days and participating farmers.
+        </p>
+    </div>
+
+    <div class="market-summary">
+        <span>
+            Markets
+            <strong>@Model.TotalMarkets</strong>
+        </span>
+
+        <span>
+            Saved
+            <strong>@Model.SavedMarkets</strong>
+        </span>
+    </div>
+
+</section>
+
+<section class="market-search-card">
+
+    <form asp-controller="CustomerMarkets"
+          asp-action="Index"
+          method="get"
+          class="market-search">
+
+        <input type="text"
+               name="search"
+               value="@Context.Request.Query["search"]"
+               placeholder="Search by market name or address..." />
+
+        <button type="submit">
+            <i class="bi bi-search"></i>
+            Search
+        </button>
+
+    </form>
+
+</section>
+
+<div class="market-layout">
+
+    <section class="market-list-card">
+
+        <div class="market-list">
+
+            @if (!Model.Markets.Any())
+            {
+                <div class="empty-markets">
+                    No active markets found.
+                </div>
+            }
+            else
+            {
+                @foreach (var market in Model.Markets)
+                {
+                    <article class="market-item">
+
+                        <div class="market-item-top">
+
+                            <div>
+                                <h3>@market.MarketName</h3>
+
+                                <span class="address">
+                                    <i class="bi bi-geo-alt"></i>
+                                    @market.Address
+                                </span>
+                            </div>
+
+                            @if (market.IsFavorite)
+                            {
+                                <span title="Saved">
+                                    <i class="bi bi-heart-fill text-danger"></i>
+                                </span>
+                            }
+
+                        </div>
+
+                        <div class="market-meta">
+
+                            <div>
+                                <span>Operating Days</span>
+                                <strong>@market.OperatingDaysText</strong>
+                            </div>
+
+                            <div>
+                                <span>Farmers</span>
+                                <strong>@market.FarmerCount</strong>
+                            </div>
+
+                        </div>
+
+                        <div class="market-item-actions">
+
+                            <a asp-controller="CustomerMarkets"
+                               asp-action="Details"
+                               asp-route-id="@market.MarketId"
+                               class="market-btn primary">
+                                View Market
+                            </a>
+
+                            @if (market.Latitude.HasValue &&
+                                 market.Longitude.HasValue)
+                            {
+                                <button type="button"
+                                        class="market-btn focus-market"
+                                        data-lat="@market.Latitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture)"
+                                        data-lng="@market.Longitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture)"
+                                        data-name="@market.MarketName">
+                                    <i class="bi bi-map"></i>
+                                    Show on Map
+                                </button>
+                            }
+
+                            <form asp-controller="CustomerMarkets"
+                                  asp-action="ToggleFavorite"
+                                  method="post"
+                                  class="favorite-form">
+
+                                @Html.AntiForgeryToken()
+
+                                <input type="hidden"
+                                       name="marketId"
+                                       value="@market.MarketId" />
+
+                                <input type="hidden"
+                                       name="returnUrl"
+                                       value="@($"{Context.Request.Path}{Context.Request.QueryString}")" />
+
+                                <button type="submit"
+                                        class="favorite-btn @(market.IsFavorite ? "saved" : "")"
+                                        title="@(market.IsFavorite ? "Remove from saved markets" : "Save market")">
+
+                                    <i class="bi @(market.IsFavorite ? "bi-heart-fill" : "bi-heart")"></i>
+
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </article>
+                }
+            }
+
+        </div>
+
+    </section>
+
+    <section class="market-map-card">
+
+        <div class="map-heading">
+            <span>OPENSTREETMAP</span>
+            <h3>Market Locations</h3>
+        </div>
+
+        <div id="customerMarketsMap"></div>
+
+    </section>
+
+</div>
+
+@section Scripts {
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const map = L.map("customerMarketsMap")
+        .setView([24.8607, 67.0011], 10);
+
+    L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+            maxZoom: 19,
+            attribution: "&copy; OpenStreetMap contributors"
+        }
+    ).addTo(map);
+
+    const markers = [];
+    const markerLookup = {};
+
+    @foreach (var market in Model.Markets.Where(m => m.Latitude.HasValue && m.Longitude.HasValue))
+    {
+        <text>
+        {
+            const marker = L.marker([
+                @market.Latitude!.Value.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                @market.Longitude!.Value.ToString(System.Globalization.CultureInfo.InvariantCulture)
+            ]).addTo(map);
+
+            marker.bindPopup(
+                @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+                    market.MarketName + " — " + market.Address))
+            );
+
+            markers.push(marker);
+
+            markerLookup[
+                "@market.MarketId"
+            ] = marker;
+        }
+        </text>
+    }
+
+    if (markers.length > 0) {
+        const group = L.featureGroup(markers);
+        map.fitBounds(group.getBounds().pad(0.20));
+    }
+
+    document
+        .querySelectorAll(".focus-market")
+        .forEach(button => {
+
+            button.addEventListener("click", function () {
+
+                const lat =
+                    parseFloat(button.dataset.lat);
+
+                const lng =
+                    parseFloat(button.dataset.lng);
+
+                if (Number.isNaN(lat) ||
+                    Number.isNaN(lng))
+                    return;
+
+                map.setView(
+                    [lat, lng],
+                    16
+                );
+
+                const name =
+                    button.dataset.name || "Market";
+
+                L.popup()
+                    .setLatLng([lat, lng])
+                    .setContent(name)
+                    .openOn(map);
+            });
+        });
+
+    setTimeout(function () {
+        map.invalidateSize();
+    }, 150);
+});
+</script>
+}

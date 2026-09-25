@@ -1,0 +1,19 @@
+@model MarketLink.ViewModels.FarmerNotificationBellViewModel
+
+<a asp-controller="FarmerNotifications"
+   asp-action="Index"
+   class="farmer-top-icon farmer-notification-bell"
+   title="Notifications">
+
+    <i class="bi bi-bell"></i>
+
+    @if (Model.UnreadCount > 0)
+    {
+        <span class="farmer-notification-badge">
+            @(Model.UnreadCount > 99
+                ? "99+"
+                : Model.UnreadCount.ToString())
+        </span>
+    }
+
+</a>

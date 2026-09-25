@@ -1,0 +1,373 @@
+﻿@{
+    var title = ViewData["Title"] ?? "Customer Dashboard";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8" />
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>@title - MarketLink</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+    <!-- MarketLink Dashboard CSS -->
+    <link rel="stylesheet"
+          href="~/css/customerdashboard.css"
+          asp-append-version="true" />
+
+    @await RenderSectionAsync("Styles", required: false)
+
+</head>
+
+<body class="dashboard-body">
+
+    <!-- MOBILE OVERLAY -->
+    <div class="dashboard-overlay"
+         id="dashboardOverlay"></div>
+
+    <!-- SIDEBAR -->
+    <aside class="dashboard-sidebar"
+           id="dashboardSidebar">
+
+        <!-- LOGO -->
+        <div class="dashboard-brand">
+
+            <a asp-controller="Home"
+               asp-action="Index"
+               class="dashboard-logo">
+
+                <span class="dashboard-logo-icon">
+                    <i class="bi bi-basket-fill"></i>
+                </span>
+
+                <span>
+                    Market<span>Link</span>
+                </span>
+
+            </a>
+
+            <button type="button"
+                    class="sidebar-close"
+                    id="sidebarClose">
+
+                <i class="bi bi-x-lg"></i>
+
+            </button>
+
+        </div>
+
+        <!-- USER MINI PROFILE -->
+        <div class="sidebar-profile">
+
+            <div class="profile-avatar">
+                H
+            </div>
+
+            <div class="profile-info">
+
+                <strong>Welcome Back</strong>
+
+                <span>Customer</span>
+
+            </div>
+
+        </div>
+
+        <!-- SIDEBAR MENU -->
+        <nav class="dashboard-menu">
+
+            <div class="menu-heading">
+                MAIN MENU
+            </div>
+
+            <a asp-controller="CustomerDashboard"
+               asp-action="Index"
+               class="dashboard-menu-link">
+
+                <i class="bi bi-grid"></i>
+
+                <span>Dashboard</span>
+
+            </a>
+
+            <a asp-controller="CustomerMarkets"
+               asp-action="Index"
+               class="dashboard-menu-link">
+
+                <i class="bi bi-shop"></i>
+
+                <span>Markets</span>
+
+            </a>
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               class="dashboard-menu-link">
+
+                <i class="bi bi-basket"></i>
+
+                <span>Products</span>
+
+            </a>
+
+            <a href="#"
+               class="dashboard-menu-link">
+
+                <i class="bi bi-heart"></i>
+
+                <span>Favorites</span>
+
+                <span class="menu-count">4</span>
+
+            </a>
+
+            <a href="#"
+               class="dashboard-menu-link">
+
+                <i class="bi bi-cart3"></i>
+
+                <span>My Cart</span>
+
+                <span class="menu-count">2</span>
+
+            </a>
+
+            <div class="menu-heading second-heading">
+                MY ACTIVITY
+            </div>
+
+            <a href="#"
+               class="dashboard-menu-link">
+
+                <i class="bi bi-receipt"></i>
+
+                <span>My Orders</span>
+
+            </a>
+
+            <a href="#"
+               class="dashboard-menu-link">
+
+                <i class="bi bi-bookmark"></i>
+
+                <span>Saved Markets</span>
+
+            </a>
+
+            <a href="#"
+               class="dashboard-menu-link">
+
+                <i class="bi bi-bell"></i>
+
+                <span>Notifications</span>
+
+                <span class="notification-dot"></span>
+
+            </a>
+
+            <div class="menu-heading second-heading">
+                ACCOUNT
+            </div>
+
+            <a href="#"
+               class="dashboard-menu-link">
+
+                <i class="bi bi-person"></i>
+
+                <span>My Profile</span>
+
+            </a>
+
+        </nav>
+
+        <!-- SIDEBAR BOTTOM -->
+        <div class="sidebar-bottom">
+
+            <a href="#"
+               class="dashboard-menu-link help-link">
+
+                <i class="bi bi-question-circle"></i>
+
+                <span>Help & Support</span>
+
+            </a>
+
+            <a asp-controller="Home"
+               asp-action="Index"
+               class="dashboard-menu-link logout-link">
+
+                <i class="bi bi-box-arrow-left"></i>
+
+                <span>Back to Website</span>
+
+            </a>
+
+        </div>
+
+    </aside>
+
+    <!-- MAIN AREA -->
+    <div class="dashboard-main">
+
+        <!-- TOPBAR -->
+        <header class="dashboard-topbar">
+
+            <div class="topbar-left">
+
+                <button type="button"
+                        class="sidebar-toggle"
+                        id="sidebarToggle">
+
+                    <i class="bi bi-list"></i>
+
+                </button>
+
+                <div class="topbar-title">
+
+                    <span>Customer Area</span>
+
+                    <h1>@title</h1>
+
+                </div>
+
+            </div>
+
+            <div class="topbar-actions">
+
+                <!-- Search -->
+                <button class="topbar-icon"
+                        type="button"
+                        title="Search">
+
+                    <i class="bi bi-search"></i>
+
+                </button>
+
+                <!-- Notification -->
+                <button class="topbar-icon notification-button"
+                        type="button"
+                        title="Notifications">
+
+                    <i class="bi bi-bell"></i>
+
+                    <span></span>
+
+                </button>
+
+                <!-- User -->
+                <div class="topbar-user">
+
+                    <div class="topbar-avatar">
+                        H
+                    </div>
+
+                    <div class="topbar-user-info">
+
+                        <strong>Customer</strong>
+
+                        <span>My Account</span>
+
+                    </div>
+
+                    <i class="bi bi-chevron-down"></i>
+
+                </div>
+
+            </div>
+
+        </header>
+
+        <!-- PAGE CONTENT -->
+        <main class="dashboard-content">
+
+            @RenderBody()
+
+        </main>
+
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Dashboard JS -->
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const sidebar =
+                document.getElementById("dashboardSidebar");
+
+            const toggle =
+                document.getElementById("sidebarToggle");
+
+            const close =
+                document.getElementById("sidebarClose");
+
+            const overlay =
+                document.getElementById("dashboardOverlay");
+
+            if (toggle) {
+
+                toggle.addEventListener("click", function () {
+
+                    sidebar.classList.add("show");
+                    overlay.classList.add("show");
+
+                });
+
+            }
+
+            if (close) {
+
+                close.addEventListener("click", function () {
+
+                    sidebar.classList.remove("show");
+                    overlay.classList.remove("show");
+
+                });
+
+            }
+
+            if (overlay) {
+
+                overlay.addEventListener("click", function () {
+
+                    sidebar.classList.remove("show");
+                    overlay.classList.remove("show");
+
+                });
+
+            }
+
+        });
+
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+
+</html>

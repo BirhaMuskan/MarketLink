@@ -1,0 +1,267 @@
+@model MarketLink.ViewModels.FarmerNotificationsPageViewModel
+
+@{
+    ViewData["Title"] = "Notifications";
+    Layout = "~/Views/Shared/_FarmerDashboardLayout.cshtml";
+
+    string currentFilter =
+        Context.Request.Query["filter"].ToString();
+
+    if (string.IsNullOrWhiteSpace(currentFilter))
+    {
+        currentFilter = "All";
+    }
+}
+
+<section class="notif-header">
+
+    <div>
+        <span class="notif-label">
+            <i class="bi bi-bell"></i>
+            NOTIFICATIONS
+        </span>
+
+        <h2>Notifications</h2>
+
+        <p>
+            Stay updated on orders, pickup activity and customer interactions.
+        </p>
+    </div>
+
+    @if (Model.UnreadNotifications > 0)
+    {
+        <form asp-controller="FarmerNotifications"
+              asp-action="MarkAllRead"
+              method="post">
+
+            @Html.AntiForgeryToken()
+
+            <button type="submit"
+                    class="mark-all-btn">
+                <i class="bi bi-check2-all"></i>
+                Mark All Read
+            </button>
+
+        </form>
+    }
+
+</section>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+<section class="notif-stats">
+
+    <div>
+        <span>Total</span>
+        <strong>@Model.TotalNotifications</strong>
+    </div>
+
+    <div>
+        <span>Unread</span>
+        <strong>@Model.UnreadNotifications</strong>
+    </div>
+
+    <div>
+        <span>Read</span>
+        <strong>@Model.ReadNotifications</strong>
+    </div>
+
+</section>
+
+<section class="notif-card">
+
+    <div class="notif-toolbar">
+
+        <div class="notif-tabs">
+
+            @foreach (var tab in new[] { "All", "Unread", "Read" })
+            {
+                <a asp-controller="FarmerNotifications"
+                   asp-action="Index"
+                   asp-route-filter="@(tab == "All" ? null : tab)"
+                   class="notif-tab @(currentFilter == tab ? "active" : "")">
+                    @tab
+                </a>
+            }
+
+        </div>
+
+    </div>
+
+    @if (!Model.Notifications.Any())
+    {
+        <div class="notif-empty">
+            <i class="bi bi-bell"></i>
+
+            <h3>No notifications</h3>
+
+            <p>
+                New order and customer activity will appear here.
+            </p>
+        </div>
+    }
+    else
+    {
+        <div class="notif-list">
+
+            @foreach (var item in Model.Notifications)
+            {
+                <article class="notif-row @(item.IsRead ? "read" : "unread")">
+
+                    <div class="notif-icon @item.NotificationType.ToLowerInvariant()">
+                        @switch (item.NotificationType)
+                        {
+                            case "OrderUpdate":
+                                <i class="bi bi-receipt"></i>
+                                break;
+
+                            case "ReviewResponse":
+                                <i class="bi bi-star"></i>
+                                break;
+
+                            case "PickupReminder":
+                                <i class="bi bi-clock"></i>
+                                break;
+
+                            default:
+                                <i class="bi bi-bell"></i>
+                                break;
+                        }
+                    </div>
+
+                    <div class="notif-main">
+
+                        <div class="notif-title-row">
+
+                            <div>
+                                <h3>@item.Title</h3>
+
+                                <span>
+                                    @item.CreatedAt.ToString("dd MMM yyyy, hh:mm tt")
+                                </span>
+                            </div>
+
+                            @if (!item.IsRead)
+                            {
+                                <span class="unread-badge">
+                                    New
+                                </span>
+                            }
+
+                        </div>
+
+                        <p>@item.Message</p>
+
+                        <div class="notif-type">
+                            @item.NotificationType
+                        </div>
+
+                    </div>
+
+                    <div class="notif-actions">
+
+                        @if (!string.IsNullOrWhiteSpace(item.ActionUrl))
+                        {
+                            <a asp-controller="FarmerNotifications"
+                               asp-action="Open"
+                               asp-route-id="@item.NotificationId"
+                               class="notif-action-btn primary">
+                                Open
+                            </a>
+                        }
+
+                        @if (!item.IsRead)
+                        {
+                            <form asp-controller="FarmerNotifications"
+                                  asp-action="MarkRead"
+                                  method="post">
+
+                                @Html.AntiForgeryToken()
+
+                                <input type="hidden"
+                                       name="id"
+                                       value="@item.NotificationId" />
+
+                                <button type="submit"
+                                        class="notif-action-btn">
+                                    Mark Read
+                                </button>
+
+                            </form>
+                        }
+
+                        <form asp-controller="FarmerNotifications"
+                              asp-action="Delete"
+                              method="post"
+                              onsubmit="return confirm('Remove this notification?');">
+
+                            @Html.AntiForgeryToken()
+
+                            <input type="hidden"
+                                   name="id"
+                                   value="@item.NotificationId" />
+
+                            <button type="submit"
+                                    class="notif-action-btn danger">
+                                Delete
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </article>
+            }
+
+        </div>
+    }
+
+</section>
+
+@section Styles {
+<style>
+.notif-header{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:22px}
+.notif-label{color:#14836f;font-size:12px;font-weight:800;letter-spacing:.08em}
+.notif-header h2{margin:7px 0 5px;font-size:28px;font-weight:800}
+.notif-header p{margin:0;color:#667085}
+.mark-all-btn{border:1px solid #b7e4cd;background:#ecfdf3;color:#067647;padding:9px 12px;border-radius:9px;font-size:12px;font-weight:700}
+.notif-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px}
+.notif-stats>div{background:#fff;border:1px solid #e7ebef;border-radius:16px;padding:17px}
+.notif-stats span{display:block;color:#667085;font-size:12px}
+.notif-stats strong{display:block;margin-top:4px;font-size:24px}
+.notif-card{background:#fff;border:1px solid #e7ebef;border-radius:18px;overflow:hidden}
+.notif-toolbar{padding:14px 17px;border-bottom:1px solid #edf0f4}
+.notif-tabs{display:flex;gap:7px}
+.notif-tab{padding:7px 10px;border-radius:8px;text-decoration:none;color:#667085;font-size:11px;font-weight:700}
+.notif-tab.active{background:#e8f5ef;color:#067647}
+.notif-list{padding:12px}
+.notif-row{display:grid;grid-template-columns:50px 1fr 120px;gap:14px;align-items:center;padding:15px;border:1px solid #e8ebef;border-radius:14px;margin-bottom:10px}
+.notif-row.unread{background:#fbfffd;border-color:#cdebdc}
+.notif-row.read{opacity:.82}
+.notif-icon{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:#f2f4f7;color:#475467}
+.notif-icon.orderupdate{background:#eff8ff;color:#175cd3}
+.notif-icon.reviewresponse{background:#fff7e6;color:#b54708}
+.notif-icon.pickupreminder{background:#ecfdf3;color:#067647}
+.notif-title-row{display:flex;justify-content:space-between;gap:12px}
+.notif-title-row h3{margin:0;font-size:15px;font-weight:800}
+.notif-title-row span{display:block;color:#98a2b3;font-size:10px;margin-top:2px}
+.notif-main p{margin:8px 0 6px;color:#475467;font-size:12px}
+.notif-type{display:inline-block;color:#667085;background:#f8fafc;padding:4px 7px;border-radius:6px;font-size:9px;font-weight:700}
+.unread-badge{background:#dcfae6!important;color:#067647!important;padding:5px 8px;border-radius:999px;font-weight:800!important}
+.notif-actions{display:flex;flex-direction:column;gap:6px}
+.notif-action-btn{width:100%;border:1px solid #d9dfe5;background:#fff;color:#344054;padding:7px 9px;border-radius:8px;text-decoration:none;font-size:10px;font-weight:700;text-align:center}
+.notif-action-btn.primary{background:#13836e;color:#fff;border-color:#13836e}
+.notif-action-btn.danger{color:#b42318;border-color:#f3c8c5}
+.notif-empty{text-align:center;padding:65px 20px;color:#667085}
+.notif-empty>i{font-size:34px;color:#13836e}
+.farmer-notification-bell{position:relative}
+.farmer-notification-badge{position:absolute;top:-5px;right:-6px;min-width:17px;height:17px;padding:0 4px;border-radius:999px;background:#d92d20;color:#fff;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center;border:2px solid #fff}
+@@media(max-width:750px){.notif-header{align-items:flex-start;flex-direction:column}.notif-row{grid-template-columns:44px 1fr}.notif-actions{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,1fr)}}
+@@media(max-width:550px){.notif-stats{grid-template-columns:1fr}.notif-actions{display:flex;flex-direction:column}.notif-title-row{flex-direction:column}}
+</style>
+}

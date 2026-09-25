@@ -1,0 +1,390 @@
+@model MarketLink.ViewModels.CustomerDashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_CustomerDashboardLayout.cshtml";
+}
+
+<section class="dashboard-welcome">
+
+    <div class="welcome-content">
+        <span class="welcome-label">
+            <i class="bi bi-sun"></i>
+            Good to see you
+        </span>
+
+        <h2>
+            Welcome back, @Model.CustomerName! 👋
+        </h2>
+
+        <p>
+            Discover fresh products, explore local markets
+            and manage your orders all in one place.
+        </p>
+    </div>
+
+    <div class="welcome-action">
+        <a asp-controller="CustomerMarkets"
+           asp-action="Index"
+           class="dashboard-primary-btn">
+
+            <i class="bi bi-search"></i>
+            Explore Markets
+        </a>
+    </div>
+
+</section>
+
+<section class="dashboard-stats">
+
+    <div class="stat-card">
+        <div class="stat-icon orders-icon">
+            <i class="bi bi-receipt"></i>
+        </div>
+
+        <div class="stat-content">
+            <span>Total Orders</span>
+            <strong>@Model.TotalOrders</strong>
+            <small>
+                <i class="bi bi-calendar3"></i>
+                @Model.OrdersThisMonth this month
+            </small>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon active-icon">
+            <i class="bi bi-box-seam"></i>
+        </div>
+
+        <div class="stat-content">
+            <span>Active Orders</span>
+            <strong>@Model.ActiveOrders</strong>
+            <small>
+                <i class="bi bi-clock"></i>
+                In progress
+            </small>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon favorite-icon">
+            <i class="bi bi-heart-fill"></i>
+        </div>
+
+        <div class="stat-content">
+            <span>Favorites</span>
+            <strong>@Model.FavoriteProducts</strong>
+            <small>
+                <i class="bi bi-heart"></i>
+                Saved products
+            </small>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon market-icon">
+            <i class="bi bi-shop"></i>
+        </div>
+
+        <div class="stat-content">
+            <span>Saved Markets</span>
+            <strong>@Model.SavedMarkets</strong>
+            <small>
+                <i class="bi bi-geo-alt"></i>
+                Favorite markets
+            </small>
+        </div>
+    </div>
+
+</section>
+
+<div class="dashboard-grid">
+
+    <section class="dashboard-card orders-card">
+
+        <div class="card-header-custom">
+            <div>
+                <span class="section-eyebrow">
+                    SHOPPING ACTIVITY
+                </span>
+
+                <h3>Recent Orders</h3>
+            </div>
+
+            <a href="#"
+               class="view-all-link">
+                View All
+                <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+
+        <div class="orders-list">
+
+            @if (!Model.RecentOrders.Any())
+            {
+                <div class="dashboard-empty">
+                    No orders yet.
+                </div>
+            }
+            else
+            {
+                @foreach (var order in Model.RecentOrders)
+                {
+                    <div class="order-item">
+
+                        <div class="order-product-icon">
+                            <i class="bi bi-basket-fill"></i>
+                        </div>
+
+                        <div class="order-info">
+                            <strong>@order.FarmerName</strong>
+
+                            <span>
+                                @order.OrderNo · @order.OrderDate.ToString("dd MMM yyyy")
+                            </span>
+                        </div>
+
+                        <div class="order-price">
+                            <strong>
+                                Rs. @order.TotalAmount.ToString("N2")
+                            </strong>
+
+                            <span class="status-badge">
+                                @order.OrderStatus
+                            </span>
+                        </div>
+                    </div>
+                }
+            }
+
+        </div>
+
+    </section>
+
+    <section class="dashboard-card quick-card">
+
+        <div class="card-header-custom">
+            <div>
+                <span class="section-eyebrow">
+                    QUICK ACCESS
+                </span>
+
+                <h3>What would you like to do?</h3>
+            </div>
+        </div>
+
+        <div class="quick-actions">
+
+            <a asp-controller="CustomerMarkets"
+               asp-action="Index"
+               class="quick-action">
+
+                <span class="quick-icon market-quick">
+                    <i class="bi bi-shop"></i>
+                </span>
+
+                <span>
+                    <strong>Find a Market</strong>
+                    <small>Explore local markets</small>
+                </span>
+
+                <i class="bi bi-arrow-up-right"></i>
+            </a>
+
+            <a href="#"
+               class="quick-action">
+
+                <span class="quick-icon product-quick">
+                    <i class="bi bi-basket"></i>
+                </span>
+
+                <span>
+                    <strong>Browse Products</strong>
+                    <small>Coming next</small>
+                </span>
+
+                <i class="bi bi-arrow-up-right"></i>
+            </a>
+
+            <a href="#"
+               class="quick-action">
+
+                <span class="quick-icon favorite-quick">
+                    <i class="bi bi-heart"></i>
+                </span>
+
+                <span>
+                    <strong>View Favorites</strong>
+                    <small>Saved products & markets</small>
+                </span>
+
+                <i class="bi bi-arrow-up-right"></i>
+            </a>
+
+        </div>
+
+    </section>
+
+</div>
+
+<div class="dashboard-grid lower-grid">
+
+    <section class="dashboard-card">
+
+        <div class="card-header-custom">
+            <div>
+                <span class="section-eyebrow">
+                    YOUR PICKS
+                </span>
+
+                <h3>Favorite Products</h3>
+            </div>
+        </div>
+
+        <div class="favorite-products">
+
+            @if (!Model.FavoriteProductRows.Any())
+            {
+                <div class="dashboard-empty">
+                    No favorite products yet.
+                </div>
+            }
+            else
+            {
+                @foreach (var item in Model.FavoriteProductRows)
+                {
+                    <div class="favorite-product">
+
+                        <div class="product-thumb">
+                            @if (!string.IsNullOrWhiteSpace(item.ImageUrl))
+                            {
+                                <img src="@item.ImageUrl"
+                                     alt="@item.ProductName"
+                                     style="width:100%;height:100%;object-fit:cover;border-radius:inherit;" />
+                            }
+                            else
+                            {
+                                <i class="bi bi-basket"></i>
+                            }
+                        </div>
+
+                        <div class="favorite-product-info">
+                            <strong>@item.ProductName</strong>
+
+                            <span>
+                                @item.FarmerName
+                            </span>
+
+                            <b>
+                                Rs. @item.Price.ToString("N2")
+                                / @item.UnitName
+                            </b>
+                        </div>
+
+                        <span class="heart-button">
+                            <i class="bi bi-heart-fill"></i>
+                        </span>
+                    </div>
+                }
+            }
+
+        </div>
+
+    </section>
+
+    <section class="dashboard-card">
+
+        <div class="card-header-custom">
+            <div>
+                <span class="section-eyebrow">
+                    YOUR MARKETS
+                </span>
+
+                <h3>Saved Markets</h3>
+            </div>
+
+            <a asp-controller="CustomerMarkets"
+               asp-action="Index"
+               class="view-all-link">
+
+                Explore
+
+                <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+
+        <div class="saved-markets">
+
+            @if (!Model.SavedMarketRows.Any())
+            {
+                <div class="dashboard-empty">
+                    No saved markets yet.
+                </div>
+            }
+            else
+            {
+                @foreach (var market in Model.SavedMarketRows)
+                {
+                    <a asp-controller="CustomerMarkets"
+                       asp-action="Details"
+                       asp-route-id="@market.MarketId"
+                       class="saved-market-item"
+                       style="text-decoration:none;color:inherit;">
+
+                        <div class="market-mini-icon">
+                            <i class="bi bi-shop"></i>
+                        </div>
+
+                        <div>
+                            <strong>@market.MarketName</strong>
+
+                            <span>
+                                <i class="bi bi-geo-alt"></i>
+                                @market.Address
+                            </span>
+                        </div>
+
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                }
+            }
+
+        </div>
+
+    </section>
+
+</div>
+
+<section class="marketmate-banner">
+
+    <div class="marketmate-icon">
+        <i class="bi bi-robot"></i>
+    </div>
+
+    <div class="marketmate-content">
+        <span>MEET MARKETMATE</span>
+
+        <h3>
+            Need help finding something fresh?
+        </h3>
+
+        <p>
+            Ask MarketMate about products, markets,
+            farmers or pickup options.
+        </p>
+    </div>
+
+    <a href="#"
+       class="marketmate-button">
+        Ask MarketMate
+        <i class="bi bi-arrow-right"></i>
+    </a>
+
+</section>
+
+@section Styles {
+<style>
+.dashboard-empty{padding:28px;color:#667085;text-align:center}
+</style>
+}

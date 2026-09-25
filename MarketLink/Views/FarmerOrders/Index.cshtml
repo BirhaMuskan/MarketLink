@@ -1,0 +1,269 @@
+@model MarketLink.ViewModels.FarmerOrdersPageViewModel
+
+@{
+    ViewData["Title"] = "Orders";
+    Layout = "~/Views/Shared/_FarmerDashboardLayout.cshtml";
+
+    string currentStatus =
+        Context.Request.Query["status"].ToString();
+
+    if (string.IsNullOrWhiteSpace(currentStatus))
+    {
+        currentStatus = "All";
+    }
+}
+
+<section class="orders-header">
+
+    <div>
+        <span class="orders-label">
+            <i class="bi bi-receipt"></i>
+            ORDERS
+        </span>
+
+        <h2>Orders</h2>
+
+        <p>
+            Review incoming pre-orders, prepare them and manage pickup status.
+        </p>
+    </div>
+
+</section>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-warning">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+<section class="orders-stats">
+
+    <div>
+        <span>Total Orders</span>
+        <strong>@Model.TotalOrders</strong>
+    </div>
+
+    <div>
+        <span>Pending</span>
+        <strong>@Model.PlacedOrders</strong>
+    </div>
+
+    <div>
+        <span>Ready</span>
+        <strong>@Model.ReadyOrders</strong>
+    </div>
+
+    <div>
+        <span>Completed Revenue</span>
+        <strong>Rs. @Model.TotalRevenue.ToString("N2")</strong>
+    </div>
+
+</section>
+
+<section class="orders-card">
+
+    <div class="orders-toolbar">
+
+        <div class="status-tabs">
+
+            @foreach (var tab in new[]
+            {
+                "All",
+                "Placed",
+                "Accepted",
+                "Ready for Pickup",
+                "Completed",
+                "Declined"
+            })
+            {
+                <a asp-controller="FarmerOrders"
+                   asp-action="Index"
+                   asp-route-status="@(tab == "All" ? null : tab)"
+                   class="status-tab @(currentStatus == tab ? "active" : "")">
+                    @tab
+                </a>
+            }
+
+        </div>
+
+        <div class="orders-search">
+            <i class="bi bi-search"></i>
+
+            <input type="text"
+                   id="orderSearch"
+                   placeholder="Search order or customer..." />
+        </div>
+
+    </div>
+
+    @if (!Model.Orders.Any())
+    {
+        <div class="orders-empty">
+            <i class="bi bi-receipt"></i>
+
+            <h3>No orders found</h3>
+
+            <p>
+                Orders matching the selected status will appear here.
+            </p>
+        </div>
+    }
+    else
+    {
+        <div class="orders-list">
+
+            @foreach (var order in Model.Orders)
+            {
+                var pickupTime =
+                    order.PickupStartTime.HasValue
+                        ? DateTime.Today
+                            .Add(order.PickupStartTime.Value)
+                            .ToString("hh:mm tt")
+                        : "";
+
+                <article class="order-row"
+                         data-search="@($"{order.OrderNo} {order.CustomerName} {order.MarketName}".ToLowerInvariant())">
+
+                    <div class="order-main">
+
+                        <div class="order-title">
+
+                            <div>
+                                <h3>@order.OrderNo</h3>
+
+                                <span>
+                                    @order.CustomerName
+                                    · @order.ItemCount item(s)
+                                    · @order.TotalQuantity.ToString("N3") qty
+                                </span>
+                            </div>
+
+                            <span class="order-status @order.OrderStatus.ToLowerInvariant().Replace(" ", "-")">
+                                @order.OrderStatus
+                            </span>
+
+                        </div>
+
+                        <div class="order-meta">
+
+                            <div>
+                                <span>Market</span>
+                                <strong>@order.MarketName</strong>
+                            </div>
+
+                            <div>
+                                <span>Pickup</span>
+
+                                <strong>
+                                    @order.PickupDate.ToString("dd MMM yyyy")
+                                    @if (!string.IsNullOrWhiteSpace(pickupTime))
+                                    {
+                                        @: · @pickupTime
+                                    }
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>Total</span>
+                                <strong>
+                                    Rs. @order.TotalAmount.ToString("N2")
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>Placed</span>
+                                <strong>
+                                    @order.OrderDate.ToString("dd MMM, hh:mm tt")
+                                </strong>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="order-actions">
+
+                        <a asp-controller="FarmerOrders"
+                           asp-action="Details"
+                           asp-route-id="@order.OrderId"
+                           class="order-action-btn">
+                            View Order
+                        </a>
+
+                    </div>
+
+                </article>
+            }
+
+        </div>
+    }
+
+</section>
+
+@section Styles {
+<style>
+.orders-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
+.orders-label{color:#14836f;font-size:12px;font-weight:800;letter-spacing:.08em}
+.orders-header h2{margin:7px 0 5px;font-size:28px;font-weight:800}
+.orders-header p{margin:0;color:#667085}
+.orders-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+.orders-stats>div{background:#fff;border:1px solid #e7ebef;border-radius:16px;padding:17px}
+.orders-stats span{display:block;color:#667085;font-size:12px}
+.orders-stats strong{display:block;margin-top:4px;font-size:24px}
+.orders-card{background:#fff;border:1px solid #e7ebef;border-radius:18px;overflow:hidden}
+.orders-toolbar{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:15px 17px;border-bottom:1px solid #edf0f4}
+.status-tabs{display:flex;gap:6px;flex-wrap:wrap}
+.status-tab{padding:7px 10px;border-radius:8px;color:#667085;text-decoration:none;font-size:11px;font-weight:700}
+.status-tab.active{background:#e8f5ef;color:#067647}
+.orders-search{position:relative;width:280px}
+.orders-search i{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#98a2b3}
+.orders-search input{width:100%;padding:9px 10px 9px 36px;border:1px solid #d8dee6;border-radius:9px}
+.orders-list{padding:12px}
+.order-row{display:grid;grid-template-columns:1fr 130px;gap:15px;align-items:center;padding:16px;border:1px solid #e8ebef;border-radius:14px;margin-bottom:10px}
+.order-title{display:flex;justify-content:space-between;gap:12px}
+.order-title h3{margin:0;font-size:16px;font-weight:800}
+.order-title>div>span{color:#667085;font-size:11px}
+.order-status{padding:5px 9px;border-radius:999px;font-size:10px;font-weight:800;height:max-content}
+.order-status.placed{background:#fff4e5;color:#b54708}
+.order-status.accepted{background:#eff8ff;color:#175cd3}
+.order-status.ready-for-pickup{background:#ecfdf3;color:#067647}
+.order-status.completed{background:#dcfae6;color:#067647}
+.order-status.declined{background:#fee4e2;color:#b42318}
+.order-meta{display:flex;gap:30px;flex-wrap:wrap;margin-top:14px}
+.order-meta span{display:block;color:#98a2b3;font-size:9px;text-transform:uppercase;font-weight:800}
+.order-meta strong{display:block;margin-top:2px;color:#344054;font-size:12px}
+.order-action-btn{display:block;border:1px solid #d9dfe5;background:#fff;color:#344054;padding:8px 10px;border-radius:9px;text-decoration:none;font-size:11px;font-weight:700;text-align:center}
+.orders-empty{text-align:center;padding:65px 20px;color:#667085}
+.orders-empty>i{font-size:34px;color:#13836e}
+@@media(max-width:850px){.orders-toolbar{align-items:stretch;flex-direction:column}.orders-search{width:100%}.order-row{grid-template-columns:1fr}.orders-stats{grid-template-columns:repeat(2,1fr)}}
+@@media(max-width:550px){.orders-stats{grid-template-columns:1fr}.order-title{flex-direction:column}}
+</style>
+}
+
+@section Scripts {
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const search = document.getElementById("orderSearch");
+    const rows = document.querySelectorAll(".order-row");
+
+    search?.addEventListener("input", function () {
+        const value = search.value.trim().toLowerCase();
+
+        rows.forEach(row => {
+            row.style.display =
+                (row.dataset.search || "").includes(value)
+                    ? ""
+                    : "none";
+        });
+    });
+});
+</script>
+}

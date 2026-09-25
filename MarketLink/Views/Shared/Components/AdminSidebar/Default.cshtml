@@ -34,12 +34,14 @@
         <span class="admin-count">@Model.Customers</span>
     </a>
 
-    <a asp-controller="Markets"
-       asp-action="Index"
-       class="admin-menu-link">
-        <i class="bi bi-shop"></i>
-        <span>Markets</span>
-    </a>
+    <a asp-controller="AdminMarkets"
+   asp-action="Index"
+   class="admin-menu-link">
+
+    <i class="bi bi-shop"></i>
+    <span>Markets</span>
+
+</a>
 
     <a asp-controller="Products"
        asp-action="Index"
@@ -69,12 +71,14 @@
         <span class="admin-count">@Model.Reviews</span>
     </a>
 
-    <a asp-controller="Categories"
-       asp-action="Index"
-       class="admin-menu-link">
-        <i class="bi bi-tags"></i>
-        <span>Categories</span>
-    </a>
+    <a asp-controller="AdminCategories"
+   asp-action="Index"
+   class="admin-menu-link">
+
+    <i class="bi bi-tags"></i>
+    <span>Categories</span>
+
+</a>
 
     <a asp-controller="Notifications"
        asp-action="Index"

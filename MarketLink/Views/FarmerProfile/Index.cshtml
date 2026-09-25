@@ -1,0 +1,498 @@
+@model MarketLink.ViewModels.FarmerProfileMapViewModel
+
+@{
+    ViewData["Title"] = "Profile";
+    Layout = "~/Views/Shared/_FarmerDashboardLayout.cshtml";
+}
+
+@section Styles {
+<link rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+<style>
+.profile-header{margin-bottom:22px}
+.profile-label{color:#14836f;font-size:12px;font-weight:800;letter-spacing:.08em}
+.profile-header h2{margin:7px 0 5px;font-size:28px;font-weight:800}
+.profile-header p{margin:0;color:#667085}
+.profile-grid{display:grid;grid-template-columns:280px 1fr;gap:18px}
+.profile-card{background:#fff;border:1px solid #e7ebef;border-radius:18px;padding:22px}
+.profile-summary{text-align:center;height:max-content;position:sticky;top:20px}
+.profile-image-wrap{width:130px;height:130px;margin:0 auto 14px}
+.profile-image-wrap img,.profile-placeholder{width:100%;height:100%;border-radius:50%;object-fit:cover}
+.profile-placeholder{display:grid;place-items:center;background:#e8f5ef;color:#13836e;font-size:44px}
+.profile-summary h3{margin:0;font-size:18px}
+.profile-summary>p{color:#667085;margin:4px 0 10px}
+.profile-status{display:inline-block;padding:6px 9px;border-radius:999px;font-size:10px;font-weight:800}
+.profile-status.approved{background:#dcfae6;color:#067647}
+.profile-status.pending{background:#fff4e5;color:#b54708}
+.profile-help{margin-top:16px;padding:11px;background:#f8fafc;border-radius:10px;color:#667085;font-size:11px;text-align:left}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:17px}
+.form-field{margin-bottom:2px}
+.form-field.full{grid-column:1/-1}
+.form-field label{display:block;margin-bottom:7px;color:#344054;font-size:12px;font-weight:800}
+.form-field small{display:block;margin-top:5px;color:#98a2b3;font-size:10px}
+.location-card{grid-column:1/-1;border:1px solid #e7ebef;border-radius:14px;padding:15px}
+.location-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px}
+.location-heading strong{font-size:13px}
+.location-heading span{display:block;color:#667085;font-size:11px;margin-top:2px}
+#farmerLocationMap{width:100%;height:390px;border-radius:12px;overflow:hidden}
+.map-actions{display:flex;gap:8px;margin-top:10px}
+.map-btn{border:1px solid #d0d5dd;background:#fff;color:#344054;padding:8px 11px;border-radius:8px;font-size:11px;font-weight:700}
+.coordinates{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.image-preview{margin-top:9px;display:flex;align-items:center;gap:10px}
+.image-preview img{width:56px;height:56px;border-radius:50%;object-fit:cover;border:1px solid #e7ebef}
+.form-actions{display:flex;justify-content:flex-end;border-top:1px solid #edf0f3;margin-top:22px;padding-top:18px}
+.primary-btn{display:inline-flex;align-items:center;gap:7px;background:#13836e;color:#fff;padding:10px 15px;border-radius:10px;font-weight:700}
+.map-help{padding:9px 11px;margin-bottom:10px;background:#eff8ff;color:#175cd3;border-radius:9px;font-size:11px}
+@@media(max-width:850px){.profile-grid{grid-template-columns:1fr}.profile-summary{position:static;text-align:left}.profile-image-wrap{margin-left:0}}
+@@media(max-width:650px){.form-grid,.coordinates{grid-template-columns:1fr}.form-field.full,.location-card{grid-column:auto}#farmerLocationMap{height:320px}.map-actions{flex-direction:column}}
+</style>
+}
+
+<section class="profile-header">
+    <span class="profile-label">
+        <i class="bi bi-person-circle"></i>
+        FARMER PROFILE
+    </span>
+
+    <h2>My Profile</h2>
+
+    <p>
+        Manage your business details, profile picture and map location.
+    </p>
+</section>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+<div class="profile-grid">
+
+    <aside class="profile-card profile-summary">
+
+        <div class="profile-image-wrap">
+
+            @if (!string.IsNullOrWhiteSpace(Model.ProfileImageUrl))
+            {
+                <img src="@Model.ProfileImageUrl"
+                     id="currentProfileImage"
+                     alt="@Model.BusinessName" />
+            }
+            else
+            {
+                <div class="profile-placeholder"
+                     id="profilePlaceholder">
+                    <i class="bi bi-person"></i>
+                </div>
+            }
+
+        </div>
+
+        <h3>@Model.BusinessName</h3>
+        <p>@Model.FullName</p>
+
+        @if (Model.IsApproved)
+        {
+            <span class="profile-status approved">
+                Approved Farmer
+            </span>
+        }
+        else
+        {
+            <span class="profile-status pending">
+                Approval Pending
+            </span>
+        }
+
+        <div class="profile-help">
+            The saved profile image is also used in the farmer
+            dashboard sidebar and top-right account area.
+        </div>
+
+    </aside>
+
+    <section class="profile-card">
+
+        <form asp-controller="FarmerProfile"
+              asp-action="Index"
+              method="post"
+              enctype="multipart/form-data">
+
+            @Html.AntiForgeryToken()
+
+            <input asp-for="FarmerId"
+                   type="hidden" />
+
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger mb-3"></div>
+
+            <div class="form-grid">
+
+                <div class="form-field">
+                    <label asp-for="FullName"></label>
+
+                    <input asp-for="FullName"
+                           class="form-control" />
+
+                    <span asp-validation-for="FullName"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="form-field">
+                    <label asp-for="Email"></label>
+
+                    <input asp-for="Email"
+                           class="form-control"
+                           readonly />
+
+                    <small>
+                        Login email is managed separately.
+                    </small>
+                </div>
+
+                <div class="form-field">
+                    <label asp-for="Phone"></label>
+
+                    <input asp-for="Phone"
+                           class="form-control" />
+                </div>
+
+                <div class="form-field">
+                    <label asp-for="BusinessName"></label>
+
+                    <input asp-for="BusinessName"
+                           class="form-control" />
+
+                    <span asp-validation-for="BusinessName"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="form-field full">
+                    <label asp-for="Address"></label>
+
+                    <input asp-for="Address"
+                           id="farmerAddress"
+                           class="form-control"
+                           placeholder="Enter farm/business address" />
+                </div>
+
+                <div class="location-card">
+
+                    <div class="location-heading">
+                        <div>
+                            <strong>Farm / Business Location</strong>
+                            <span>
+                                Click the map or drag the marker.
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="map-help">
+                        <i class="bi bi-geo-alt"></i>
+                        Latitude and longitude are filled automatically.
+                        You do not need to type coordinates manually.
+                    </div>
+
+                    <div id="farmerLocationMap"></div>
+
+                    <div class="map-actions">
+
+                        <button type="button"
+                                id="findAddressButton"
+                                class="map-btn">
+                            <i class="bi bi-search"></i>
+                            Find Address
+                        </button>
+
+                        <button type="button"
+                                id="clearLocationButton"
+                                class="map-btn">
+                            <i class="bi bi-x-circle"></i>
+                            Clear Location
+                        </button>
+
+                    </div>
+
+                    <div class="coordinates">
+
+                        <div class="form-field">
+                            <label asp-for="Latitude"></label>
+
+                            <input asp-for="Latitude"
+                                   id="farmerLatitude"
+                                   type="number"
+                                   step="0.0000001"
+                                   class="form-control"
+                                   readonly />
+
+                            <span asp-validation-for="Latitude"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="form-field">
+                            <label asp-for="Longitude"></label>
+
+                            <input asp-for="Longitude"
+                                   id="farmerLongitude"
+                                   type="number"
+                                   step="0.0000001"
+                                   class="form-control"
+                                   readonly />
+
+                            <span asp-validation-for="Longitude"
+                                  class="text-danger"></span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="form-field full">
+                    <label asp-for="Description"></label>
+
+                    <textarea asp-for="Description"
+                              rows="5"
+                              class="form-control"
+                              placeholder="Tell customers about your farm, products and business."></textarea>
+                </div>
+
+                <div class="form-field full">
+                    <label asp-for="ProfileImageFile"></label>
+
+                    <input asp-for="ProfileImageFile"
+                           id="profileImageInput"
+                           type="file"
+                           accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+                           class="form-control" />
+
+                    <span asp-validation-for="ProfileImageFile"
+                          class="text-danger"></span>
+
+                    <small>
+                        JPG, JPEG, PNG or WEBP. Maximum 5 MB.
+                    </small>
+
+                    <div class="image-preview"
+                         id="newImagePreview"
+                         style="display:none">
+
+                        <img id="previewImage"
+                             alt="New profile preview" />
+
+                        <span>
+                            New image preview. Save Profile to apply it.
+                        </span>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="form-actions">
+                <button type="submit"
+                        class="primary-btn border-0">
+                    <i class="bi bi-check-lg"></i>
+                    Save Profile
+                </button>
+            </div>
+
+        </form>
+
+    </section>
+
+</div>
+
+@section Scripts {
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const latInput =
+        document.getElementById("farmerLatitude");
+
+    const lngInput =
+        document.getElementById("farmerLongitude");
+
+    const addressInput =
+        document.getElementById("farmerAddress");
+
+    const defaultLat = 24.8607;
+    const defaultLng = 67.0011;
+
+    const savedLat = parseFloat(latInput.value);
+    const savedLng = parseFloat(lngInput.value);
+
+    const hasSavedLocation =
+        !Number.isNaN(savedLat) &&
+        !Number.isNaN(savedLng);
+
+    const startLat =
+        hasSavedLocation ? savedLat : defaultLat;
+
+    const startLng =
+        hasSavedLocation ? savedLng : defaultLng;
+
+    const map = L.map("farmerLocationMap")
+        .setView(
+            [startLat, startLng],
+            hasSavedLocation ? 16 : 11
+        );
+
+    L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+            maxZoom: 19,
+            attribution: "&copy; OpenStreetMap contributors"
+        }
+    ).addTo(map);
+
+    let marker = null;
+
+    function setLocation(lat, lng) {
+
+        latInput.value =
+            Number(lat).toFixed(7);
+
+        lngInput.value =
+            Number(lng).toFixed(7);
+
+        if (!marker) {
+
+            marker = L.marker(
+                [lat, lng],
+                { draggable: true }
+            ).addTo(map);
+
+            marker.on("dragend", function () {
+                const point = marker.getLatLng();
+
+                setLocation(
+                    point.lat,
+                    point.lng
+                );
+            });
+
+        } else {
+            marker.setLatLng([lat, lng]);
+        }
+    }
+
+    if (hasSavedLocation) {
+        setLocation(savedLat, savedLng);
+    }
+
+    map.on("click", function (event) {
+        setLocation(
+            event.latlng.lat,
+            event.latlng.lng
+        );
+    });
+
+    document
+        .getElementById("clearLocationButton")
+        ?.addEventListener("click", function () {
+
+            latInput.value = "";
+            lngInput.value = "";
+
+            if (marker) {
+                map.removeLayer(marker);
+                marker = null;
+            }
+        });
+
+    document
+        .getElementById("findAddressButton")
+        ?.addEventListener("click", async function () {
+
+            const address =
+                addressInput.value.trim();
+
+            if (!address) {
+                alert("Enter the business address first.");
+                return;
+            }
+
+            const url =
+                "https://nominatim.openstreetmap.org/search" +
+                "?format=jsonv2&limit=1&q=" +
+                encodeURIComponent(address);
+
+            try {
+                const response =
+                    await fetch(url, {
+                        headers: {
+                            "Accept": "application/json"
+                        }
+                    });
+
+                const data =
+                    await response.json();
+
+                if (!data || data.length === 0) {
+                    alert(
+                        "Address not found. You can click the map manually."
+                    );
+                    return;
+                }
+
+                const lat =
+                    parseFloat(data[0].lat);
+
+                const lng =
+                    parseFloat(data[0].lon);
+
+                map.setView(
+                    [lat, lng],
+                    16
+                );
+
+                setLocation(lat, lng);
+
+            } catch {
+                alert(
+                    "Address search is unavailable. Click the map manually."
+                );
+            }
+        });
+
+    const imageInput =
+        document.getElementById("profileImageInput");
+
+    const previewBox =
+        document.getElementById("newImagePreview");
+
+    const previewImage =
+        document.getElementById("previewImage");
+
+    imageInput?.addEventListener(
+        "change",
+        function () {
+
+            const file =
+                imageInput.files &&
+                imageInput.files.length
+                    ? imageInput.files[0]
+                    : null;
+
+            if (!file) {
+                previewBox.style.display = "none";
+                return;
+            }
+
+            previewImage.src =
+                URL.createObjectURL(file);
+
+            previewBox.style.display = "flex";
+        });
+
+    setTimeout(function () {
+        map.invalidateSize();
+    }, 150);
+});
+</script>
+}

@@ -1,0 +1,336 @@
+@model MarketLink.ViewModels.AdminMarketFormViewModel
+
+@{
+    ViewData["Title"] = "Add Market";
+    Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
+}
+
+@section Styles {
+<link rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIINfQ3yn7P8c0NfP55FzYQmwwyY5n3u3xU="
+      crossorigin="" />
+
+<style>
+.market-form-header{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:22px}
+.market-page-label{color:#14836f;font-size:12px;font-weight:800;letter-spacing:.08em}
+.market-form-header h2{margin:7px 0 5px;font-size:28px;font-weight:800}
+.market-form-header p{margin:0;color:#667085}
+.market-back-link{text-decoration:none;color:#475467;font-weight:700;font-size:13px}
+.market-form-card{background:#fff;border:1px solid #e7ebef;border-radius:18px;padding:24px;box-shadow:0 10px 30px rgba(16,24,40,.06);max-width:1050px}
+.market-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.market-form-field{margin-bottom:18px}
+.market-form-field.full{grid-column:1/-1}
+.market-form-field label{display:block;margin-bottom:7px;color:#344054;font-size:12px;font-weight:800}
+#marketMap{width:100%;height:430px;border:1px solid #dbe2e8;border-radius:14px;overflow:hidden}
+.map-help{display:flex;align-items:center;gap:7px;padding:10px 12px;margin-bottom:10px;background:#eff8ff;color:#175cd3;border-radius:9px;font-size:12px}
+.map-actions{display:flex;gap:8px;margin-top:10px}
+.map-secondary-button{border:1px solid #d0d5dd;background:#fff;color:#344054;padding:8px 11px;border-radius:8px;font-size:11px;font-weight:700}
+.map-secondary-button.danger{color:#b42318;border-color:#f3c8c5}
+.market-active-box{padding:13px 14px;background:#f8fafc;border:1px solid #e7ebef;border-radius:11px}
+.market-active-box label{display:flex;align-items:center;gap:9px;font-weight:700;margin:0}
+.market-primary-button{display:inline-flex;align-items:center;gap:8px;background:#13836e;color:#fff;text-decoration:none;padding:10px 15px;border-radius:10px;font-weight:700}
+.market-form-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:22px;padding-top:18px;border-top:1px solid #edf0f3}
+.map-provider-note{font-size:11px;color:#667085;margin-top:5px}
+@@media(max-width:700px){.market-form-header{align-items:flex-start;flex-direction:column}.market-form-grid{grid-template-columns:1fr}.market-form-field.full{grid-column:auto}#marketMap{height:330px}.map-actions{flex-direction:column}}
+</style>
+}
+
+<section class="market-form-header">
+    <div>
+        <span class="market-page-label">
+            <i class="bi bi-geo-alt"></i>
+            MARKET MANAGEMENT
+        </span>
+
+        <h2>Add Market</h2>
+
+        <p>
+            Click the map to choose the exact market location.
+        </p>
+    </div>
+
+    <a asp-controller="AdminMarkets"
+       asp-action="Index"
+       class="market-back-link">
+        <i class="bi bi-arrow-left"></i>
+        Back to Markets
+    </a>
+</section>
+
+<section class="market-form-card">
+
+    <form asp-controller="AdminMarkets"
+          asp-action="Create"
+          method="post">
+
+        @Html.AntiForgeryToken()
+
+        
+
+        <input asp-for="MapProvider"
+               type="hidden"
+               value="OpenStreetMap" />
+
+        <div asp-validation-summary="ModelOnly"
+             class="text-danger mb-3"></div>
+
+        <div class="market-form-grid">
+
+            <div class="market-form-field">
+                <label asp-for="MarketName"></label>
+
+                <input asp-for="MarketName"
+                       class="form-control"
+                       placeholder="e.g. Central Farmers Market" />
+
+                <span asp-validation-for="MarketName"
+                      class="text-danger"></span>
+            </div>
+
+            <div class="market-form-field">
+                <label asp-for="Address"></label>
+
+                <input asp-for="Address"
+                       id="marketAddress"
+                       class="form-control"
+                       placeholder="Enter market address" />
+
+                <span asp-validation-for="Address"
+                      class="text-danger"></span>
+            </div>
+
+            <div class="market-form-field">
+                <label asp-for="Latitude"></label>
+
+                <input asp-for="Latitude"
+                       id="marketLatitude"
+                       type="number"
+                       step="0.0000001"
+                       class="form-control"
+                       readonly />
+            </div>
+
+            <div class="market-form-field">
+                <label asp-for="Longitude"></label>
+
+                <input asp-for="Longitude"
+                       id="marketLongitude"
+                       type="number"
+                       step="0.0000001"
+                       class="form-control"
+                       readonly />
+            </div>
+
+            <div class="market-form-field full">
+                <label>Choose Location</label>
+
+                <div class="map-help">
+                    <i class="bi bi-cursor"></i>
+                    Click anywhere on the map or drag the marker.
+                    Latitude and longitude are saved automatically.
+                </div>
+
+                <div id="marketMap"></div>
+
+                <div class="map-actions">
+                    <button type="button"
+                            id="findAddressButton"
+                            class="map-secondary-button">
+                        <i class="bi bi-search"></i>
+                        Find Address
+                    </button>
+
+                    <button type="button"
+                            id="clearLocationButton"
+                            class="map-secondary-button danger">
+                        <i class="bi bi-x-circle"></i>
+                        Clear Location
+                    </button>
+                </div>
+
+                <div class="map-provider-note">
+                    Map data © OpenStreetMap contributors.
+                </div>
+
+                <span asp-validation-for="Latitude"
+                      class="text-danger"></span>
+            </div>
+
+        </div>
+
+        <div class="market-form-field">
+            <label asp-for="Description"></label>
+
+            <textarea asp-for="Description"
+                      rows="4"
+                      class="form-control"
+                      placeholder="Describe the market, parking or pickup information..."></textarea>
+        </div>
+
+        <div class="market-active-box">
+            <label>
+                <input asp-for="IsActive" />
+                <span>Market is active</span>
+            </label>
+        </div>
+
+        <div class="market-form-actions">
+            <a asp-controller="AdminMarkets"
+               asp-action="Index"
+               class="btn btn-light">
+                Cancel
+            </a>
+
+            <button type="submit"
+                    class="market-primary-button border-0">
+                <i class="bi bi-check-lg"></i>
+                Create Market
+            </button>
+        </div>
+
+    </form>
+</section>
+
+@section Scripts {
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const latInput = document.getElementById("marketLatitude");
+    const lngInput = document.getElementById("marketLongitude");
+    const addressInput = document.getElementById("marketAddress");
+
+    const defaultLat = 24.8607;
+    const defaultLng = 67.0011;
+
+    const existingLat = parseFloat(latInput.value);
+    const existingLng = parseFloat(lngInput.value);
+
+    const hasExisting =
+        !Number.isNaN(existingLat) &&
+        !Number.isNaN(existingLng);
+
+    const startLat = hasExisting ? existingLat : defaultLat;
+    const startLng = hasExisting ? existingLng : defaultLng;
+
+    const map = L.map("marketMap").setView(
+        [startLat, startLng],
+        hasExisting ? 16 : 11
+    );
+
+    L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+            maxZoom: 19,
+            attribution: "&copy; OpenStreetMap contributors"
+        }
+    ).addTo(map);
+
+    let marker = null;
+
+    function setLocation(lat, lng) {
+
+        latInput.value = Number(lat).toFixed(7);
+        lngInput.value = Number(lng).toFixed(7);
+
+        if (marker) {
+            marker.setLatLng([lat, lng]);
+        } else {
+            marker = L.marker(
+                [lat, lng],
+                { draggable: true }
+            ).addTo(map);
+
+            marker.on("dragend", function () {
+                const point = marker.getLatLng();
+                setLocation(point.lat, point.lng);
+            });
+        }
+    }
+
+    if (hasExisting) {
+        setLocation(existingLat, existingLng);
+    }
+
+    map.on("click", function (event) {
+        setLocation(
+            event.latlng.lat,
+            event.latlng.lng
+        );
+    });
+
+    document.getElementById("clearLocationButton")
+        .addEventListener("click", function () {
+
+            latInput.value = "";
+            lngInput.value = "";
+
+            if (marker) {
+                map.removeLayer(marker);
+                marker = null;
+            }
+        });
+
+    document.getElementById("findAddressButton")
+        .addEventListener("click", async function () {
+
+            const address = addressInput.value.trim();
+
+            if (!address) {
+                alert("Enter the market address first.");
+                return;
+            }
+
+            const url =
+                "https://nominatim.openstreetmap.org/search" +
+                "?format=jsonv2&limit=1&q=" +
+                encodeURIComponent(address);
+
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        "Accept": "application/json"
+                    }
+                });
+
+                const result = await response.json();
+
+                if (!result || result.length === 0) {
+                    alert("Address not found. You can still click the map manually.");
+                    return;
+                }
+
+                const lat = parseFloat(result[0].lat);
+                const lng = parseFloat(result[0].lon);
+
+                map.setView([lat, lng], 16);
+                setLocation(lat, lng);
+
+                if (!addressInput.value.trim() && result[0].display_name) {
+                    addressInput.value = result[0].display_name;
+                }
+
+            } catch {
+                alert("Address search is unavailable. Please choose the location directly on the map.");
+            }
+        });
+
+    document.querySelector("form")
+        .addEventListener("submit", function (event) {
+
+            if (!latInput.value || !lngInput.value) {
+                event.preventDefault();
+                alert("Please choose the market location on the map.");
+            }
+        });
+
+    setTimeout(function () {
+        map.invalidateSize();
+    }, 150);
+});
+</script>
+}

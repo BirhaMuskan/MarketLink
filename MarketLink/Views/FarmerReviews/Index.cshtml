@@ -1,0 +1,163 @@
+@model MarketLink.ViewModels.FarmerReviewsPageViewModel
+
+@{
+    ViewData["Title"] = "Reviews";
+    Layout = "~/Views/Shared/_FarmerDashboardLayout.cshtml";
+}
+
+<section class="reviews-header">
+    <div>
+        <span class="reviews-label">
+            <i class="bi bi-star"></i>
+            CUSTOMER FEEDBACK
+        </span>
+
+        <h2>Reviews</h2>
+
+        <p>
+            Read customer feedback and respond to reviews.
+        </p>
+    </div>
+</section>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+<section class="review-stats">
+
+    <div>
+        <span>Total Reviews</span>
+        <strong>@Model.TotalReviews</strong>
+    </div>
+
+    <div>
+        <span>Average Rating</span>
+        <strong>
+            @Model.AverageRating.ToString("0.0") / 5
+        </strong>
+    </div>
+
+    <div>
+        <span>Need Response</span>
+        <strong>@Model.UnansweredReviews</strong>
+    </div>
+
+</section>
+
+<section class="reviews-card">
+
+    @if (!Model.Reviews.Any())
+    {
+        <div class="reviews-empty">
+            <i class="bi bi-star"></i>
+            <h3>No reviews yet</h3>
+            <p>Customer reviews will appear here after completed orders.</p>
+        </div>
+    }
+    else
+    {
+        <div class="review-list">
+
+            @foreach (var review in Model.Reviews)
+            {
+                <article class="review-row">
+
+                    <div class="review-heading">
+
+                        <div>
+                            <h3>@review.CustomerName</h3>
+
+                            <span>
+                                @review.OrderNo · @review.TargetName
+                            </span>
+                        </div>
+
+                        <div class="rating">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                <i class="bi @(i <= review.Rating ? "bi-star-fill" : "bi-star")"></i>
+                            }
+                        </div>
+
+                    </div>
+
+                    <p class="review-comment">
+                        @review.Comment
+                    </p>
+
+                    <div class="review-date">
+                        @review.ReviewDate.ToString("dd MMM yyyy, hh:mm tt")
+                    </div>
+
+                    @if (!string.IsNullOrWhiteSpace(review.ResponseText))
+                    {
+                        <div class="response-box">
+                            <span>Your Response</span>
+                            <p>@review.ResponseText</p>
+
+                            @if (review.RespondedAt.HasValue)
+                            {
+                                <small>
+                                    @review.RespondedAt.Value.ToString("dd MMM yyyy, hh:mm tt")
+                                </small>
+                            }
+                        </div>
+                    }
+
+                    <div class="review-actions">
+
+                        <a asp-controller="FarmerReviews"
+                           asp-action="Respond"
+                           asp-route-id="@review.ReviewId"
+                           class="respond-btn">
+
+                            @(string.IsNullOrWhiteSpace(review.ResponseText)
+                                ? "Respond"
+                                : "Edit Response")
+
+                        </a>
+
+                    </div>
+
+                </article>
+            }
+
+        </div>
+    }
+
+</section>
+
+@section Styles {
+<style>
+.reviews-header{margin-bottom:22px}
+.reviews-label{color:#14836f;font-size:12px;font-weight:800;letter-spacing:.08em}
+.reviews-header h2{margin:7px 0 5px;font-size:28px;font-weight:800}
+.reviews-header p{margin:0;color:#667085}
+.review-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px}
+.review-stats>div{background:#fff;border:1px solid #e7ebef;border-radius:16px;padding:17px}
+.review-stats span{display:block;color:#667085;font-size:12px}
+.review-stats strong{display:block;margin-top:4px;font-size:24px}
+.reviews-card{background:#fff;border:1px solid #e7ebef;border-radius:18px;padding:12px}
+.review-list{display:grid;gap:10px}
+.review-row{padding:17px;border:1px solid #e8ebef;border-radius:14px}
+.review-heading{display:flex;justify-content:space-between;gap:12px}
+.review-heading h3{margin:0;font-size:15px;font-weight:800}
+.review-heading span{color:#667085;font-size:11px}
+.rating{color:#f6b73c}
+.review-comment{margin:13px 0 5px;color:#475467}
+.review-date{color:#98a2b3;font-size:10px}
+.response-box{margin-top:14px;padding:12px;background:#f8fafc;border-left:3px solid #13836e;border-radius:8px}
+.response-box span{color:#13836e;font-size:10px;font-weight:800;text-transform:uppercase}
+.response-box p{margin:4px 0;color:#475467}
+.response-box small{color:#98a2b3}
+.review-actions{text-align:right;margin-top:12px}
+.respond-btn{display:inline-block;padding:8px 11px;border:1px solid #b7e4cd;border-radius:8px;color:#067647;text-decoration:none;font-size:11px;font-weight:700}
+.reviews-empty{text-align:center;padding:60px;color:#667085}
+.reviews-empty i{font-size:34px;color:#f6b73c}
+@@media(max-width:650px){.review-stats{grid-template-columns:1fr}.review-heading{flex-direction:column}}
+</style>
+}

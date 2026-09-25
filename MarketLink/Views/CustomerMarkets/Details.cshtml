@@ -1,0 +1,296 @@
+@model MarketLink.ViewModels.CustomerMarketDetailsViewModel
+
+@{
+    ViewData["Title"] = Model.MarketName;
+    Layout = "~/Views/Shared/_CustomerDashboardLayout.cshtml";
+}
+
+@section Styles {
+<link rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+<style>
+.details-header{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:20px}
+.details-label{color:#14836f;font-size:12px;font-weight:800;letter-spacing:.08em}
+.details-header h2{margin:7px 0 5px;font-size:28px;font-weight:800}
+.details-header p{margin:0;color:#667085}
+.details-actions{display:flex;gap:8px}
+.back-btn,.save-btn{display:inline-flex;align-items:center;gap:7px;padding:9px 12px;border-radius:9px;text-decoration:none;font-size:11px;font-weight:700}
+.back-btn{border:1px solid #d0d5dd;background:#fff;color:#344054}
+.save-btn{border:1px solid #f2c7c4;background:#fff;color:#b42318}
+.details-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:18px}
+.details-card{background:#fff;border:1px solid #e7ebef;border-radius:18px;overflow:hidden}
+.card-heading{padding:15px 17px;border-bottom:1px solid #edf0f4}
+.card-heading span{color:#13836e;font-size:10px;font-weight:800;letter-spacing:.08em}
+.card-heading h3{margin:3px 0 0;font-size:16px}
+#marketDetailsMap{height:480px}
+.market-about{padding:17px;color:#475467}
+.schedule-list,.farmer-list{padding:10px}
+.schedule-row,.farmer-row{display:flex;justify-content:space-between;gap:14px;align-items:center;padding:12px;border-bottom:1px solid #edf0f4}
+.schedule-row:last-child,.farmer-row:last-child{border-bottom:0}
+.schedule-row span{color:#667085;font-size:11px}
+.farmer-row{justify-content:flex-start}
+.farmer-avatar{width:48px;height:48px;border-radius:50%;overflow:hidden;background:#e8f5ef;color:#13836e;display:grid;place-items:center}
+.farmer-avatar img{width:100%;height:100%;object-fit:cover}
+.farmer-info{flex:1}
+.farmer-info strong{display:block}
+.farmer-info span{display:block;color:#667085;font-size:10px;margin-top:2px}
+.farmer-desc{margin-top:4px;color:#475467;font-size:11px}
+.farmer-view{padding:7px 9px;border:1px solid #d0d5dd;border-radius:8px;color:#344054;text-decoration:none;font-size:10px;font-weight:700}
+@@media(max-width:900px){.details-grid{grid-template-columns:1fr}}
+@@media(max-width:600px){.details-header{align-items:flex-start;flex-direction:column}.details-actions{width:100%;flex-wrap:wrap}}
+</style>
+}
+
+<section class="details-header">
+
+    <div>
+        <span class="details-label">
+            <i class="bi bi-shop"></i>
+            MARKET
+        </span>
+
+        <h2>@Model.MarketName</h2>
+
+        <p>
+            <i class="bi bi-geo-alt"></i>
+            @Model.Address
+        </p>
+    </div>
+
+    <div class="details-actions">
+
+        <a asp-controller="CustomerMarkets"
+           asp-action="Index"
+           class="back-btn">
+            <i class="bi bi-arrow-left"></i>
+            Back to Markets
+        </a>
+
+        <form asp-controller="CustomerMarkets"
+              asp-action="ToggleFavorite"
+              method="post">
+
+            @Html.AntiForgeryToken()
+
+            <input type="hidden"
+                   name="marketId"
+                   value="@Model.MarketId" />
+
+            <input type="hidden"
+                   name="returnUrl"
+                   value="@Context.Request.Path" />
+
+            <button type="submit"
+                    class="save-btn">
+
+                <i class="bi @(Model.IsFavorite ? "bi-heart-fill" : "bi-heart")"></i>
+
+                @(Model.IsFavorite
+                    ? "Saved"
+                    : "Save Market")
+            </button>
+
+        </form>
+
+    </div>
+
+</section>
+
+<div class="details-grid">
+
+    <div>
+
+        <section class="details-card">
+
+            <div class="card-heading">
+                <span>LOCATION</span>
+                <h3>Market Map</h3>
+            </div>
+
+            @if (Model.Latitude.HasValue &&
+                 Model.Longitude.HasValue)
+            {
+                <div id="marketDetailsMap"></div>
+            }
+            else
+            {
+                <div style="padding:60px;text-align:center;color:#667085;">
+                    Location coordinates are not available.
+                </div>
+            }
+
+        </section>
+
+        @if (!string.IsNullOrWhiteSpace(Model.Description))
+        {
+            <section class="details-card" style="margin-top:18px;">
+
+                <div class="card-heading">
+                    <span>ABOUT</span>
+                    <h3>About This Market</h3>
+                </div>
+
+                <div class="market-about">
+                    @Model.Description
+                </div>
+
+            </section>
+        }
+
+    </div>
+
+    <div>
+
+        <section class="details-card">
+
+            <div class="card-heading">
+                <span>SCHEDULE</span>
+                <h3>Operating Days</h3>
+            </div>
+
+            <div class="schedule-list">
+
+                @if (!Model.OperatingDays.Any())
+                {
+                    <div style="padding:20px;color:#667085;">
+                        Schedule not available.
+                    </div>
+                }
+                else
+                {
+                    @foreach (var day in Model.OperatingDays)
+                    {
+                        <div class="schedule-row">
+
+                            <strong>@day.DayName</strong>
+
+                            <span>
+                                @DateTime.Today.Add(day.OpeningTime).ToString("hh:mm tt")
+                                -
+                                @DateTime.Today.Add(day.ClosingTime).ToString("hh:mm tt")
+                            </span>
+
+                        </div>
+                    }
+                }
+
+            </div>
+
+        </section>
+
+        <section class="details-card"
+                 style="margin-top:18px;">
+
+            <div class="card-heading">
+                <span>FARMERS</span>
+                <h3>Farmers at This Market</h3>
+            </div>
+
+            <div class="farmer-list">
+
+                @if (!Model.Farmers.Any())
+                {
+                    <div style="padding:20px;color:#667085;">
+                        No active farmers are assigned yet.
+                    </div>
+                }
+                else
+                {
+                    @foreach (var farmer in Model.Farmers)
+                    {
+                        <div class="farmer-row">
+
+                            <div class="farmer-avatar">
+
+                                @if (!string.IsNullOrWhiteSpace(farmer.ProfileImageUrl))
+                                {
+                                    <img src="@farmer.ProfileImageUrl"
+                                         alt="@farmer.BusinessName" />
+                                }
+                                else
+                                {
+                                    <i class="bi bi-person"></i>
+                                }
+
+                            </div>
+
+                            <div class="farmer-info">
+
+                                <strong>@farmer.BusinessName</strong>
+
+                                <span>
+                                    @(string.IsNullOrWhiteSpace(farmer.StallNumber)
+                                        ? "Stall not specified"
+                                        : "Stall " + farmer.StallNumber)
+                                </span>
+
+                                @if (!string.IsNullOrWhiteSpace(farmer.Description))
+                                {
+                                    <div class="farmer-desc">
+                                        @farmer.Description
+                                    </div>
+                                }
+
+                            </div>
+
+                            <a href="#"
+                               class="farmer-view">
+                                View Farmer
+                            </a>
+
+                        </div>
+                    }
+                }
+
+            </div>
+
+        </section>
+
+    </div>
+
+</div>
+
+@if (Model.Latitude.HasValue && Model.Longitude.HasValue)
+{
+    @section Scripts {
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const lat =
+            @Model.Latitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+        const lng =
+            @Model.Longitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+        const map =
+            L.map("marketDetailsMap")
+                .setView(
+                    [lat, lng],
+                    16
+                );
+
+        L.tileLayer(
+            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            {
+                maxZoom: 19,
+                attribution: "&copy; OpenStreetMap contributors"
+            }
+        ).addTo(map);
+
+        L.marker([lat, lng])
+            .addTo(map)
+            .bindPopup(
+                @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.MarketName))
+            )
+            .openPopup();
+
+        setTimeout(function () {
+            map.invalidateSize();
+        }, 150);
+    });
+    </script>
+    }
+}

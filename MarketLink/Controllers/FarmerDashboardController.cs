@@ -1,4 +1,5 @@
-﻿using MarketLink.DTOs.Farmer;
+﻿using MarketLink.DTOs;
+
 using MarketLink.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,29 +15,26 @@ namespace MarketLink.Controllers
     {
         private readonly ApplicationDbContext _context;
 
+        // You can later move this to SystemSetting.
+        private const decimal LowStockThreshold = 10m;
+
         public FarmerDashboardController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-
-        // ============================================================
-        // GET FARMER DASHBOARD
-        // GET: /api/FarmerDashboard
-        // ============================================================
-
         [HttpGet]
-        public async Task<IActionResult> GetDashboard()
+        public async Task<IActionResult> GetDashboard(
+            CancellationToken cancellationToken)
         {
-            // --------------------------------------------------------
-            // 1. GET LOGGED-IN USER ID
-            // --------------------------------------------------------
+            // ---------------------------------------------------------
+            // 1. READ LOGGED-IN USER ID FROM JWT
+            // ---------------------------------------------------------
+            var userIdValue =
+                User.FindFirstValue(ClaimTypes.NameIdentifier)
+                ?? User.FindFirstValue("sub");
 
-            var userIdClaim = User.FindFirstValue(
-                ClaimTypes.NameIdentifier
-            );
-
-            if (!int.TryParse(userIdClaim, out int userId))
+            if (!int.TryParse(userIdValue, out var userId))
             {
                 return Unauthorized(new
                 {
@@ -44,392 +42,328 @@ namespace MarketLink.Controllers
                 });
             }
 
-
-            // --------------------------------------------------------
-            // 2. FIND FARMER
-            // --------------------------------------------------------
-
+            // ---------------------------------------------------------
+            // 2. GET APPROVED FARMER PROFILE
+            // ---------------------------------------------------------
             var farmer = await _context.farmers
+                .AsNoTracking()
                 .Include(f => f.User)
-                .FirstOrDefaultAsync(f =>
-                    f.UserId == userId &&
-                    f.IsApproved &&
-                    f.IsActive
-                );
+                .FirstOrDefaultAsync(
+                    f => f.UserId == userId,
+                    cancellationToken);
 
             if (farmer == null)
             {
                 return NotFound(new
                 {
-                    message = "Farmer profile not found or not approved."
+                    message = "Farmer profile was not found."
                 });
             }
 
-
-            // --------------------------------------------------------
-            // 3. CREATE DASHBOARD OBJECT
-            // --------------------------------------------------------
-
-            var dashboard = new FarmerDashboardDto
+            if (!farmer.IsApproved || !farmer.IsActive)
             {
-                FarmerId = farmer.FarmerId,
+                return StatusCode(StatusCodes.Status403Forbidden, new
+                {
+                    message = "Farmer account is not approved or active."
+                });
+            }
 
-                BusinessName = farmer.BusinessName,
-
-                FullName = farmer.User?.FullName ?? "",
-
-                ProfileImageUrl = farmer.ProfileImageUrl
-            };
-
-
-            // ========================================================
-            // 4. TOTAL PRODUCTS
-            // ========================================================
-
-            dashboard.TotalProducts = await _context.farmerproducts
-                .CountAsync(fp =>
-                    fp.FarmerId == farmer.FarmerId &&
-                    fp.IsActive
-                );
-
-
-            // ========================================================
-            // 5. PENDING ORDERS
-            // ========================================================
-
-            dashboard.PendingOrders = await _context.orders
-                .CountAsync(o =>
-                    o.FarmerId == farmer.FarmerId &&
-                    (
-                        o.OrderStatus == "Placed" ||
-                        o.OrderStatus == "Pending"
-                    )
-                );
-
-
-            // ========================================================
-            // 6. THIS MONTH SALES
-            // ========================================================
+            var farmerId = farmer.FarmerId;
 
             var now = DateTime.Now;
+            var monthStart = new DateTime(now.Year, now.Month, 1);
+            var nextMonth = monthStart.AddMonths(1);
 
-            dashboard.ThisMonthSales =
-                await _context.orders
-                    .Where(o =>
-                        o.FarmerId == farmer.FarmerId &&
+            // ---------------------------------------------------------
+            // 3. MAIN KPI VALUES
+            // ---------------------------------------------------------
+            var totalProducts = await _context.farmerproducts
+                .AsNoTracking()
+                .CountAsync(
+                    fp =>
+                        fp.FarmerId == farmerId &&
+                        fp.IsActive &&
+                        fp.IsApproved,
+                    cancellationToken);
 
-                        o.OrderDate.Year == now.Year &&
+            // "Pending" means a new order still waiting for the farmer
+            // to accept/decline it.
+            var pendingOrders = await _context.orders
+                .AsNoTracking()
+                .CountAsync(
+                    o =>
+                        o.FarmerId == farmerId &&
+                        o.OrderStatus == "Placed",
+                    cancellationToken);
 
-                        o.OrderDate.Month == now.Month &&
+            var thisMonthSales = await _context.orders
+                .AsNoTracking()
+                .Where(o =>
+                    o.FarmerId == farmerId &&
+                    o.OrderStatus == "Completed" &&
+                    o.OrderDate >= monthStart &&
+                    o.OrderDate < nextMonth)
+                .SumAsync(
+                    o => (decimal?)o.TotalAmount,
+                    cancellationToken) ?? 0m;
 
-                        o.OrderStatus != "Cancelled"
-                    )
-                    .SumAsync(o => (decimal?)o.TotalAmount)
-                    ?? 0;
-
-
-            // ========================================================
-            // 7. CUSTOMER REVIEWS / RATING
-            // ========================================================
-
-            var reviews = await _context.reviews
+            var ratingData = await _context.reviews
+                .AsNoTracking()
                 .Where(r =>
-                    r.FarmerId == farmer.FarmerId &&
-                    r.IsVisible
-                )
-                .ToListAsync();
+                    r.FarmerId == farmerId &&
+                    r.IsVisible)
+                .GroupBy(_ => 1)
+                .Select(g => new
+                {
+                    ReviewCount = g.Count(),
+                    AverageRating = g.Average(r => (decimal)r.Rating)
+                })
+                .FirstOrDefaultAsync(cancellationToken);
 
+            // ---------------------------------------------------------
+            // 4. INCOMING / ACTIVE ORDERS
+            // ---------------------------------------------------------
+            var incomingOrders = await _context.orders
+                .AsNoTracking()
+                .Where(o =>
+                    o.FarmerId == farmerId &&
+                    o.OrderStatus != "Completed" &&
+                    o.OrderStatus != "Cancelled" &&
+                    o.OrderStatus != "Declined")
+                .OrderBy(o => o.PickupDate)
+                .ThenByDescending(o => o.OrderDate)
+                .Take(5)
+                .Select(o => new FarmerDashboardOrderDto
+                {
+                    OrderId = o.OrderId,
+                    OrderNo = o.OrderNo,
 
-            dashboard.ReviewCount = reviews.Count;
+                    ItemCount = _context.orderitems
+                        .Count(oi => oi.OrderId == o.OrderId),
 
+                    PickupDate = o.PickupDate,
+                    TotalAmount = o.TotalAmount,
+                    OrderStatus = o.OrderStatus
+                })
+                .ToListAsync(cancellationToken);
 
-            dashboard.AverageRating = reviews.Count == 0
-                ? 0
-                : Math.Round(
-                    (decimal)reviews.Average(r => r.Rating),
-                    1
-                );
+            // ---------------------------------------------------------
+            // 5. BEST SELLING PRODUCTS
+            // Completed-order line snapshots are used so historical
+            // sales stay accurate even if listing data changes later.
+            // ---------------------------------------------------------
+            var bestSellingProducts = await _context.orderitems
+                .AsNoTracking()
+                .Where(oi =>
+                    oi.Order != null &&
+                    oi.Order.FarmerId == farmerId &&
+                    oi.Order.OrderStatus == "Completed")
+                .GroupBy(oi => oi.ProductName)
+                .Select(g => new FarmerTopProductDto
+                {
+                    ProductName = g.Key,
+                    QuantitySold = g.Sum(x => x.Quantity),
+                    Revenue = g.Sum(x => x.TotalPrice)
+                })
+                .OrderByDescending(x => x.QuantitySold)
+                .Take(5)
+                .ToListAsync(cancellationToken);
 
+            // ---------------------------------------------------------
+            // 6. LATEST INVENTORY PER FARMER PRODUCT
+            // Available quantity = Stock - Reserved - Sold
+            // ---------------------------------------------------------
+            var inventoryRows = await _context.inventories
+                .AsNoTracking()
+                .Where(i =>
+                    i.FarmerProduct != null &&
+                    i.FarmerProduct.FarmerId == farmerId &&
+                    i.FarmerProduct.IsActive)
+                .OrderByDescending(i => i.UpdatedAt)
+                .Select(i => new
+                {
+                    i.InventoryId,
+                    i.FarmerProductId,
 
-            // ========================================================
-            // 8. INCOMING ORDERS
-            // ========================================================
-
-            var today = DateTime.Today;
-
-            dashboard.IncomingOrders =
-                await _context.orders
-                    .Where(o =>
-                        o.FarmerId == farmer.FarmerId &&
-
-                        o.PickupDate >= today &&
-
-                        o.OrderStatus != "Completed" &&
-
-                        o.OrderStatus != "Cancelled"
-                    )
-                    .OrderBy(o => o.PickupDate)
-                    .ThenByDescending(o => o.OrderDate)
-                    .Take(10)
-                    .Select(o => new DashboardOrderDto
-                    {
-                        OrderId = o.OrderId,
-
-                        OrderNo = o.OrderNo,
-
-                        ItemCount = _context.orderitems
-                            .Count(oi =>
-                                oi.OrderId == o.OrderId
-                            ),
-
-                        PickupDate = o.PickupDate,
-
-                        TotalAmount = o.TotalAmount,
-
-                        OrderStatus = o.OrderStatus,
-
-                        CustomerName =
-                            o.Customer != null &&
-                            o.Customer.User != null
-                                ? o.Customer.User.FullName
-                                : "Customer"
-                    })
-                    .ToListAsync();
-
-
-            // ========================================================
-            // 9. BEST SELLING PRODUCTS
-            // ========================================================
-
-            dashboard.BestSellingProducts =
-                await _context.orderitems
-                    .Where(oi =>
-                        oi.FarmerProduct != null &&
-
-                        oi.FarmerProduct.FarmerId ==
-                            farmer.FarmerId &&
-
-                        oi.Order != null &&
-
-                        oi.Order.OrderStatus != "Cancelled"
-                    )
-                    .GroupBy(oi => new
-                    {
-                        oi.FarmerProductId,
-
-                        oi.ProductName
-                    })
-                    .Select(g => new BestSellingProductDto
-                    {
-                        FarmerProductId =
-                            g.Key.FarmerProductId,
-
-                        ProductName =
-                            g.Key.ProductName,
-
-                        QuantitySold =
-                            g.Sum(x => x.Quantity),
-
-                        Revenue =
-                            g.Sum(x => x.TotalPrice)
-                    })
-                    .OrderByDescending(x =>
-                        x.QuantitySold
-                    )
-                    .Take(5)
-                    .ToListAsync();
-
-
-            // ========================================================
-            // 10. STOCK OVERVIEW
-            // ========================================================
-
-            dashboard.StockOverview =
-                await _context.inventories
-                    .Where(i =>
+                    ProductName =
                         i.FarmerProduct != null &&
+                        i.FarmerProduct.Product != null
+                            ? i.FarmerProduct.Product.ProductName
+                            : "Product",
 
-                        i.FarmerProduct.FarmerId ==
-                            farmer.FarmerId &&
+                    UnitName =
+                        i.FarmerProduct != null &&
+                        i.FarmerProduct.UnitOfMeasure != null
+                            ? i.FarmerProduct.UnitOfMeasure.UnitCode
+                            : "",
 
-                        i.InventoryDate.Date == today &&
+                    AvailableQuantity =
+                        i.StockQuantity -
+                        i.ReservedQuantity -
+                        i.SoldQuantity,
 
-                        i.IsAvailable
-                    )
-                    .GroupBy(i => new
-                    {
-                        i.FarmerProductId,
+                    i.IsSoldOut,
+                    i.UpdatedAt
+                })
+                .ToListAsync(cancellationToken);
 
-                        ProductName =
-                            i.FarmerProduct!
-                                .Product!
-                                .ProductName,
+            var stockOverview = inventoryRows
+                .GroupBy(x => x.FarmerProductId)
+                .Select(g => g
+                    .OrderByDescending(x => x.UpdatedAt)
+                    .First())
+                .OrderBy(x => x.AvailableQuantity)
+                .Take(6)
+                .Select(x => new FarmerStockDto
+                {
+                    InventoryId = x.InventoryId,
+                    FarmerProductId = x.FarmerProductId,
+                    ProductName = x.ProductName,
+                    UnitName = x.UnitName,
+                    AvailableQuantity = x.AvailableQuantity,
+                    IsLowStock =
+                        x.AvailableQuantity <= LowStockThreshold,
+                    IsSoldOut =
+                        x.IsSoldOut ||
+                        x.AvailableQuantity <= 0
+                })
+                .ToList();
 
-                        UnitName =
-                            i.FarmerProduct!
-                                .UnitOfMeasure!
-                                .UnitName
-                    })
-                    .Select(g => new StockOverviewDto
-                    {
-                        FarmerProductId =
-                            g.Key.FarmerProductId,
+            // ---------------------------------------------------------
+            // 7. LATEST CUSTOMER REVIEW
+            // ---------------------------------------------------------
+            var latestReview = await _context.reviews
+                .AsNoTracking()
+                .Where(r =>
+                    r.FarmerId == farmerId &&
+                    r.IsVisible)
+                .OrderByDescending(r => r.ReviewDate)
+                .Select(r => new FarmerLatestReviewDto
+                {
+                    ReviewId = r.ReviewId,
 
-                        ProductName =
-                            g.Key.ProductName,
+                    CustomerName =
+                        r.Customer != null &&
+                        r.Customer.User != null
+                            ? r.Customer.User.FullName
+                            : "Customer",
 
-                        UnitName =
-                            g.Key.UnitName,
+                    Rating = r.Rating,
+                    Comment = r.Comment,
+                    ReviewDate = r.ReviewDate
+                })
+                .FirstOrDefaultAsync(cancellationToken);
 
-                        AvailableQuantity =
-                            g.Sum(x => x.AvailableQuantity)
-                    })
-                    .ToListAsync();
+            // ---------------------------------------------------------
+            // 8. TODAY'S MARKET STATUS
+            // ---------------------------------------------------------
+            var todayName = now.DayOfWeek.ToString();
 
+            var marketStatus = await _context.farmermarketdays
+                .AsNoTracking()
+                .Where(fmd =>
+                    fmd.IsActive &&
+                    fmd.FarmerMarket != null &&
+                    fmd.FarmerMarket.IsActive &&
+                    fmd.FarmerMarket.FarmerId == farmerId &&
+                    fmd.MarketDay != null &&
+                    fmd.MarketDay.IsActive &&
+                    fmd.MarketDay.DayName == todayName)
+                .Select(fmd => new FarmerMarketStatusDto
+                {
+                    FarmerMarketId = fmd.FarmerMarketId,
 
-            // --------------------------------------------------------
-            // LOW STOCK
-            // --------------------------------------------------------
+                    MarketName =
+                        fmd.FarmerMarket != null &&
+                        fmd.FarmerMarket.Market != null
+                            ? fmd.FarmerMarket.Market.MarketName
+                            : "Market",
 
-            foreach (var stock in dashboard.StockOverview)
+                    DayName =
+                        fmd.MarketDay != null
+                            ? fmd.MarketDay.DayName
+                            : todayName,
+
+                    OpeningTime =
+                        fmd.MarketDay != null
+                            ? fmd.MarketDay.OpeningTime
+                            : TimeSpan.Zero,
+
+                    ClosingTime =
+                        fmd.MarketDay != null
+                            ? fmd.MarketDay.ClosingTime
+                            : TimeSpan.Zero,
+
+                    Status = "Active"
+                })
+                .FirstOrDefaultAsync(cancellationToken);
+
+            // If the farmer has no market today, show the first active
+            // assigned market/day rather than leaving the dashboard blank.
+            if (marketStatus == null)
             {
-                stock.IsLowStock =
-                    stock.AvailableQuantity <= 10;
-            }
-
-
-            // ========================================================
-            // 11. LATEST REVIEW
-            // ========================================================
-
-            dashboard.LatestReview =
-                await _context.reviews
-                    .Where(r =>
-                        r.FarmerId == farmer.FarmerId &&
-                        r.IsVisible
-                    )
-                    .OrderByDescending(r =>
-                        r.ReviewDate
-                    )
-                    .Select(r => new LatestReviewDto
-                    {
-                        ReviewId = r.ReviewId,
-
-                        CustomerName =
-                            r.Customer != null &&
-                            r.Customer.User != null
-                                ? r.Customer.User.FullName
-                                : "Customer",
-
-                        Rating = r.Rating,
-
-                        Comment = r.Comment,
-
-                        ReviewDate = r.ReviewDate
-                    })
-                    .FirstOrDefaultAsync();
-
-
-            // ========================================================
-            // 12. MARKET STATUS
-            // ========================================================
-
-            var dayName = now.DayOfWeek.ToString();
-
-
-            var market =
-                await _context.farmermarketdays
+                marketStatus = await _context.farmermarketdays
+                    .AsNoTracking()
                     .Where(fmd =>
                         fmd.IsActive &&
-
                         fmd.FarmerMarket != null &&
-
-                        fmd.FarmerMarket.FarmerId ==
-                            farmer.FarmerId &&
-
                         fmd.FarmerMarket.IsActive &&
-
+                        fmd.FarmerMarket.FarmerId == farmerId &&
                         fmd.MarketDay != null &&
-
-                        fmd.MarketDay.IsActive &&
-
-                        fmd.MarketDay.DayName ==
-                            dayName
-                    )
-                    .Select(fmd => new
+                        fmd.MarketDay.IsActive)
+                    .OrderBy(fmd => fmd.MarketDayId)
+                    .Select(fmd => new FarmerMarketStatusDto
                     {
-                        FarmerMarketId =
-                            fmd.FarmerMarketId,
-
-                        StallNumber =
-                            fmd.FarmerMarket!.StallNumber,
+                        FarmerMarketId = fmd.FarmerMarketId,
 
                         MarketName =
+                            fmd.FarmerMarket != null &&
                             fmd.FarmerMarket.Market != null
                                 ? fmd.FarmerMarket.Market.MarketName
+                                : "Market",
+
+                        DayName =
+                            fmd.MarketDay != null
+                                ? fmd.MarketDay.DayName
                                 : "",
 
-                        DayName =
-                            fmd.MarketDay!.DayName,
-
                         OpeningTime =
-                            fmd.MarketDay.OpeningTime,
+                            fmd.MarketDay != null
+                                ? fmd.MarketDay.OpeningTime
+                                : TimeSpan.Zero,
 
                         ClosingTime =
-                            fmd.MarketDay.ClosingTime
+                            fmd.MarketDay != null
+                                ? fmd.MarketDay.ClosingTime
+                                : TimeSpan.Zero,
+
+                        Status = "Scheduled"
                     })
-                    .FirstOrDefaultAsync();
-
-
-            if (market != null)
-            {
-                string status;
-
-
-                if (now.TimeOfDay < market.OpeningTime)
-                {
-                    status = "Upcoming";
-                }
-                else if (now.TimeOfDay <= market.ClosingTime)
-                {
-                    status = "Active";
-                }
-                else
-                {
-                    status = "Closed";
-                }
-
-
-                dashboard.MarketStatus =
-                    new MarketStatusDto
-                    {
-                        FarmerMarketId =
-                            market.FarmerMarketId,
-
-                        MarketName =
-                            market.MarketName,
-
-                        DayName =
-                            market.DayName,
-
-                        OpeningTime =
-                            market.OpeningTime,
-
-                        ClosingTime =
-                            market.ClosingTime,
-
-                        Status =
-                            status,
-
-                        StallNumber =
-                            market.StallNumber
-                    };
+                    .FirstOrDefaultAsync(cancellationToken);
             }
 
+            // ---------------------------------------------------------
+            // 9. FINAL RESPONSE
+            // Property names match your current Dashboard.cshtml JS.
+            // ---------------------------------------------------------
+            var dashboard = new FarmerDashboardDto
+            {
+                FarmerId = farmerId,
+                BusinessName = farmer.BusinessName,
 
-            // ========================================================
-            // 13. RETURN DASHBOARD
-            // ========================================================
+                TotalProducts = totalProducts,
+                PendingOrders = pendingOrders,
+                ThisMonthSales = thisMonthSales,
+
+                AverageRating = ratingData?.AverageRating ?? 0m,
+                ReviewCount = ratingData?.ReviewCount ?? 0,
+
+                IncomingOrders = incomingOrders,
+                BestSellingProducts = bestSellingProducts,
+                StockOverview = stockOverview,
+                LatestReview = latestReview,
+                MarketStatus = marketStatus
+            };
 
             return Ok(dashboard);
         }

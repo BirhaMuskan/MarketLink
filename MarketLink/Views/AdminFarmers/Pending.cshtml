@@ -1,0 +1,832 @@
+﻿@model MarketLink.ViewModels.FarmerApprovalPageViewModel
+
+@{
+    ViewData["Title"] = "Farmer Approvals";
+    Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
+}
+
+<section class="farmer-approval-header">
+    <div>
+        <span class="farmer-page-label">
+            <i class="bi bi-person-check"></i>
+            FARMER MANAGEMENT
+        </span>
+
+        <h2>Farmer Approval Requests</h2>
+
+        <p>
+            Review newly registered farmer accounts before they can
+            access MarketLink as active sellers.
+        </p>
+    </div>
+
+    <div class="pending-counter">
+        <span>Pending Requests</span>
+        <strong>@Model.PendingCount</strong>
+    </div>
+</section>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success approval-alert">
+        <i class="bi bi-check-circle-fill"></i>
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger approval-alert">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+@if (TempData["InfoMessage"] != null)
+{
+    <div class="alert alert-info approval-alert">
+        <i class="bi bi-info-circle-fill"></i>
+        @TempData["InfoMessage"]
+    </div>
+}
+
+<section class="farmer-approval-card">
+
+    <div class="farmer-toolbar">
+        <div class="farmer-search-box">
+            <i class="bi bi-search"></i>
+
+            <input type="text"
+                   id="farmerSearch"
+                   placeholder="Search farmer, business, email or phone..." />
+        </div>
+
+        <span class="farmer-toolbar-count">
+            @Model.PendingCount pending
+        </span>
+    </div>
+
+    @if (!Model.PendingFarmers.Any())
+    {
+        <div class="farmer-empty-state">
+            <div class="farmer-empty-icon">
+                <i class="bi bi-person-check-fill"></i>
+            </div>
+
+            <h3>No pending farmer requests</h3>
+
+            <p>
+                New farmer registrations waiting for approval will appear here.
+            </p>
+        </div>
+    }
+    else
+    {
+        <div class="farmer-request-list" id="farmerRequestList">
+
+            @foreach (var farmer in Model.PendingFarmers)
+            {
+                <article class="farmer-request-card"
+                         data-search="@($"{farmer.FullName} {farmer.BusinessName} {farmer.Email} {farmer.Phone}".ToLowerInvariant())">
+
+                    <div class="farmer-request-main">
+
+                        <div class="farmer-request-avatar">
+                            @(string.IsNullOrWhiteSpace(farmer.BusinessName)
+                                ? "F"
+                                : farmer.BusinessName.Substring(0, 1).ToUpper())
+                        </div>
+
+                        <div class="farmer-request-info">
+
+                            <div class="farmer-request-title">
+
+                                <div>
+                                    <h3>@farmer.BusinessName</h3>
+
+                                    <span>
+                                        @farmer.FullName
+                                    </span>
+                                </div>
+
+                                <span class="farmer-pending-badge">
+                                    <i class="bi bi-clock"></i>
+                                    Pending
+                                </span>
+
+                            </div>
+
+                            <div class="farmer-detail-grid">
+
+                                <div class="farmer-detail">
+                                    <i class="bi bi-envelope"></i>
+                                    <div>
+                                        <span>Email</span>
+                                        <strong>@farmer.Email</strong>
+                                    </div>
+                                </div>
+
+                                <div class="farmer-detail">
+                                    <i class="bi bi-telephone"></i>
+                                    <div>
+                                        <span>Phone</span>
+                                        <strong>
+                                            @(string.IsNullOrWhiteSpace(farmer.Phone)
+                                                ? "Not provided"
+                                                : farmer.Phone)
+                                        </strong>
+                                    </div>
+                                </div>
+
+                                <div class="farmer-detail">
+                                    <i class="bi bi-geo-alt"></i>
+                                    <div>
+                                        <span>Address</span>
+                                        <strong>
+                                            @(string.IsNullOrWhiteSpace(farmer.Address)
+                                                ? "Not provided"
+                                                : farmer.Address)
+                                        </strong>
+                                    </div>
+                                </div>
+
+                                <div class="farmer-detail">
+                                    <i class="bi bi-calendar3"></i>
+                                    <div>
+                                        <span>Applied</span>
+                                        <strong>
+                                            @farmer.CreatedAt.ToString("dd MMM yyyy, hh:mm tt")
+                                        </strong>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            @if (!string.IsNullOrWhiteSpace(farmer.Description))
+                            {
+                                <div class="farmer-description">
+                                    <span>Business Description</span>
+                                    <p>@farmer.Description</p>
+                                </div>
+                            }
+
+                        </div>
+                    </div>
+
+                    <div class="farmer-request-actions">
+
+                        <button type="button"
+                                class="btn farmer-reject-btn"
+                                data-bs-toggle="modal"
+                                data-bs-target="#rejectFarmerModal"
+                                data-farmer-id="@farmer.FarmerId"
+                                data-business-name="@farmer.BusinessName">
+                            <i class="bi bi-x-circle"></i>
+                            Reject
+                        </button>
+
+                        <button type="button"
+                                class="btn farmer-approve-btn"
+                                data-bs-toggle="modal"
+                                data-bs-target="#approveFarmerModal"
+                                data-farmer-id="@farmer.FarmerId"
+                                data-business-name="@farmer.BusinessName">
+                            <i class="bi bi-check-circle"></i>
+                            Approve Farmer
+                        </button>
+
+                    </div>
+
+                </article>
+            }
+
+        </div>
+    }
+
+</section>
+
+
+<!-- =====================================================
+     APPROVE CONFIRMATION MODAL
+===================================================== -->
+
+<div class="modal fade"
+     id="approveFarmerModal"
+     tabindex="-1"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content approval-modal">
+
+            <div class="modal-body">
+
+                <div class="modal-action-icon approve">
+                    <i class="bi bi-check-lg"></i>
+                </div>
+
+                <h3>Approve Farmer?</h3>
+
+                <p>
+                    You are about to approve
+                    <strong id="approveFarmerName"></strong>.
+                    Their MarketLink user account will become active immediately.
+                </p>
+
+                <form asp-controller="AdminFarmers"
+                      asp-action="Approve"
+                      method="post">
+
+                    @Html.AntiForgeryToken()
+
+                    <input type="hidden"
+                           name="farmerId"
+                           id="approveFarmerId" />
+
+                    <div class="modal-action-buttons">
+
+                        <button type="button"
+                                class="btn cancel-action-btn"
+                                data-bs-dismiss="modal">
+                            Cancel
+                        </button>
+
+                        <button type="submit"
+                                class="btn farmer-approve-btn">
+                            <i class="bi bi-check-circle"></i>
+                            Yes, Approve
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     REJECT CONFIRMATION MODAL
+===================================================== -->
+
+<div class="modal fade"
+     id="rejectFarmerModal"
+     tabindex="-1"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content approval-modal">
+
+            <div class="modal-body">
+
+                <div class="modal-action-icon reject">
+                    <i class="bi bi-x-lg"></i>
+                </div>
+
+                <h3>Reject Farmer?</h3>
+
+                <p>
+                    <strong id="rejectFarmerName"></strong>
+                    will remain unable to log in as an active farmer.
+                </p>
+
+                <form asp-controller="AdminFarmers"
+                      asp-action="Reject"
+                      method="post">
+
+                    @Html.AntiForgeryToken()
+
+                    <input type="hidden"
+                           name="farmerId"
+                           id="rejectFarmerId" />
+
+                    <div class="modal-action-buttons">
+
+                        <button type="button"
+                                class="btn cancel-action-btn"
+                                data-bs-dismiss="modal">
+                            Cancel
+                        </button>
+
+                        <button type="submit"
+                                class="btn farmer-reject-btn">
+                            <i class="bi bi-x-circle"></i>
+                            Yes, Reject
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@section Styles
+{
+    <style>
+        .farmer-approval-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+            margin-bottom: 22px;
+        }
+
+        .farmer-page-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #14836f;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: .08em;
+        }
+
+        .farmer-approval-header h2 {
+            margin: 8px 0 5px;
+            font-family: "Manrope", sans-serif;
+            font-size: 28px;
+            font-weight: 800;
+            color: #172033;
+        }
+
+        .farmer-approval-header p {
+            margin: 0;
+            color: #667085;
+            max-width: 720px;
+        }
+
+        .pending-counter {
+            min-width: 160px;
+            padding: 15px 20px;
+            background: white;
+            border: 1px solid #e7eaf0;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(16,24,40,.06);
+        }
+
+        .pending-counter span {
+            display: block;
+            font-size: 12px;
+            color: #667085;
+        }
+
+        .pending-counter strong {
+            display: block;
+            margin-top: 2px;
+            font-size: 28px;
+            color: #172033;
+        }
+
+        .farmer-approval-card {
+            background: #fff;
+            border: 1px solid #e8ebf0;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(16,24,40,.06);
+        }
+
+        .farmer-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 16px 18px;
+            border-bottom: 1px solid #edf0f4;
+        }
+
+        .farmer-search-box {
+            flex: 1;
+            max-width: 520px;
+            position: relative;
+        }
+
+        .farmer-search-box i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #98a2b3;
+        }
+
+        .farmer-search-box input {
+            width: 100%;
+            border: 1px solid #dce1e8;
+            border-radius: 12px;
+            padding: 10px 14px 10px 40px;
+            outline: none;
+        }
+
+        .farmer-search-box input:focus {
+            border-color: #17836f;
+            box-shadow: 0 0 0 3px rgba(23,131,111,.10);
+        }
+
+        .farmer-toolbar-count {
+            color: #667085;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .farmer-request-list {
+            padding: 14px;
+        }
+
+        .farmer-request-card {
+            border: 1px solid #e8ebf0;
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 12px;
+            transition: .2s ease;
+        }
+
+        .farmer-request-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .farmer-request-card:hover {
+            border-color: #d5ddd9;
+            box-shadow: 0 10px 25px rgba(16,24,40,.05);
+        }
+
+        .farmer-request-main {
+            display: flex;
+            gap: 16px;
+        }
+
+        .farmer-request-avatar {
+            width: 54px;
+            height: 54px;
+            flex: 0 0 54px;
+            border-radius: 15px;
+            display: grid;
+            place-items: center;
+            background: #e7f5f0;
+            color: #08735f;
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .farmer-request-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .farmer-request-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .farmer-request-title h3 {
+            margin: 0;
+            color: #172033;
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .farmer-request-title span {
+            color: #667085;
+            font-size: 13px;
+        }
+
+        .farmer-pending-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: #fff7e6;
+            color: #b54708 !important;
+            font-size: 11px !important;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .farmer-detail-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0,1fr));
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .farmer-detail {
+            display: flex;
+            gap: 9px;
+            padding: 11px;
+            border-radius: 12px;
+            background: #f8fafc;
+            border: 1px solid #eef1f4;
+            min-width: 0;
+        }
+
+        .farmer-detail i {
+            color: #17836f;
+        }
+
+        .farmer-detail span {
+            display: block;
+            color: #98a2b3;
+            font-size: 10px;
+            text-transform: uppercase;
+            font-weight: 800;
+        }
+
+        .farmer-detail strong {
+            display: block;
+            margin-top: 2px;
+            color: #344054;
+            font-size: 12px;
+            overflow-wrap: anywhere;
+        }
+
+        .farmer-description {
+            margin-top: 12px;
+            padding: 12px 14px;
+            border-left: 3px solid #17836f;
+            background: #f9fbfa;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .farmer-description span {
+            font-size: 10px;
+            color: #667085;
+            text-transform: uppercase;
+            font-weight: 800;
+        }
+
+        .farmer-description p {
+            margin: 4px 0 0;
+            color: #475467;
+            font-size: 13px;
+        }
+
+        .farmer-request-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 16px;
+            padding-top: 14px;
+            border-top: 1px solid #eef1f4;
+        }
+
+        .farmer-approve-btn {
+            background: #13836e;
+            color: white;
+            border: 0;
+            border-radius: 10px;
+            font-weight: 700;
+            padding: 9px 14px;
+        }
+
+        .farmer-approve-btn:hover {
+            background: #0e715e;
+            color: white;
+        }
+
+        .farmer-reject-btn {
+            background: #fff1f0;
+            color: #b42318;
+            border: 1px solid #ffd3cf;
+            border-radius: 10px;
+            font-weight: 700;
+            padding: 9px 14px;
+        }
+
+        .farmer-reject-btn:hover {
+            background: #fee4e2;
+            color: #912018;
+        }
+
+        .farmer-empty-state {
+            padding: 70px 24px;
+            text-align: center;
+        }
+
+        .farmer-empty-icon {
+            width: 65px;
+            height: 65px;
+            border-radius: 18px;
+            display: grid;
+            place-items: center;
+            margin: 0 auto 14px;
+            background: #e7f5f0;
+            color: #13836e;
+            font-size: 27px;
+        }
+
+        .farmer-empty-state h3 {
+            font-size: 18px;
+            font-weight: 800;
+            color: #172033;
+        }
+
+        .farmer-empty-state p {
+            color: #667085;
+        }
+
+        .approval-alert {
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .approval-modal {
+            border: 0;
+            border-radius: 18px;
+        }
+
+        .approval-modal .modal-body {
+            padding: 28px;
+            text-align: center;
+        }
+
+        .modal-action-icon {
+            width: 58px;
+            height: 58px;
+            display: grid;
+            place-items: center;
+            margin: 0 auto 14px;
+            border-radius: 50%;
+            font-size: 25px;
+        }
+
+        .modal-action-icon.approve {
+            background: #e6f5ef;
+            color: #0f7c66;
+        }
+
+        .modal-action-icon.reject {
+            background: #fee4e2;
+            color: #b42318;
+        }
+
+        .approval-modal h3 {
+            color: #172033;
+            font-weight: 800;
+        }
+
+        .approval-modal p {
+            color: #667085;
+        }
+
+        .modal-action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 22px;
+        }
+
+        .cancel-action-btn {
+            border: 1px solid #d0d5dd;
+            border-radius: 10px;
+            background: white;
+            color: #344054;
+            font-weight: 700;
+        }
+
+        @@media (max-width: 1050px) {
+            .farmer-detail-grid {
+                grid-template-columns: repeat(2,minmax(0,1fr));
+            }
+        }
+
+        @@media (max-width: 650px) {
+            .farmer-approval-header {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .pending-counter {
+                width: 100%;
+            }
+
+            .farmer-toolbar {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .farmer-request-main {
+                flex-direction: column;
+            }
+
+            .farmer-detail-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .farmer-request-title {
+                flex-direction: column;
+            }
+
+            .farmer-request-actions {
+                flex-direction: column-reverse;
+            }
+
+            .farmer-request-actions .btn {
+                width: 100%;
+            }
+        }
+    </style>
+}
+
+
+@section Scripts
+{
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const searchInput =
+                document.getElementById("farmerSearch");
+
+            const cards =
+                document.querySelectorAll(".farmer-request-card");
+
+            searchInput?.addEventListener("input", function () {
+
+                const value =
+                    searchInput.value
+                        .trim()
+                        .toLowerCase();
+
+                cards.forEach(card => {
+
+                    const searchable =
+                        card.dataset.search || "";
+
+                    card.style.display =
+                        searchable.includes(value)
+                            ? ""
+                            : "none";
+                });
+
+            });
+
+
+            const approveModal =
+                document.getElementById("approveFarmerModal");
+
+            approveModal?.addEventListener(
+                "show.bs.modal",
+                function (event) {
+
+                    const button = event.relatedTarget;
+
+                    document.getElementById(
+                        "approveFarmerId"
+                    ).value =
+                        button.getAttribute(
+                            "data-farmer-id"
+                        );
+
+                    document.getElementById(
+                        "approveFarmerName"
+                    ).textContent =
+                        button.getAttribute(
+                            "data-business-name"
+                        );
+                }
+            );
+
+
+            const rejectModal =
+                document.getElementById("rejectFarmerModal");
+
+            rejectModal?.addEventListener(
+                "show.bs.modal",
+                function (event) {
+
+                    const button = event.relatedTarget;
+
+                    document.getElementById(
+                        "rejectFarmerId"
+                    ).value =
+                        button.getAttribute(
+                            "data-farmer-id"
+                        );
+
+                    document.getElementById(
+                        "rejectFarmerName"
+                    ).textContent =
+                        button.getAttribute(
+                            "data-business-name"
+                        );
+                }
+            );
+
+        });
+    </script>
+}

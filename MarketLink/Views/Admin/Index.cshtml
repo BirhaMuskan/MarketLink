@@ -1,0 +1,578 @@
+﻿@using System.Text.Json
+@model MarketLink.ViewModels.AdminDashboardViewModel
+
+@{
+    ViewData["Title"] = "Admin Dashboard";
+    Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
+
+    string StatusClass(string status)
+    {
+        status = (status ?? "").ToLowerInvariant();
+
+        if (status.Contains("complete")) return "completed";
+        if (status.Contains("ready")) return "ready";
+        if (status.Contains("accept")) return "accepted";
+        if (status.Contains("cancel")) return "danger";
+        return "pending";
+    }
+
+    string AlertClass(string severity)
+    {
+        severity = (severity ?? "").ToLowerInvariant();
+        if (severity.Contains("critical") || severity.Contains("high")) return "danger";
+        if (severity.Contains("medium")) return "warn";
+        return "good";
+    }
+
+    string Initial(string value) =>
+        string.IsNullOrWhiteSpace(value) ? "?" : value.Trim()[0].ToString().ToUpper();
+}
+
+<section class="admin-welcome">
+    <div class="admin-welcome-content">
+        <span class="admin-welcome-label">
+            <i class="bi bi-speedometer2"></i>
+            MARKET INTELLIGENCE CENTER
+        </span>
+
+        <h2>Welcome to MarketLink Admin! 👋</h2>
+        <p>
+            Live marketplace activity, moderation, demand signals,
+            inventory intelligence and AI alerts from the MarketLink database.
+        </p>
+    </div>
+
+    <div class="admin-date-box">
+        <i class="bi bi-calendar3"></i>
+        <div>
+            <span>Live snapshot</span>
+            <strong>@Model.GeneratedAt.ToString("MMMM dd, yyyy · hh:mm tt")</strong>
+        </div>
+    </div>
+</section>
+
+<section class="admin-statistics">
+    <div class="admin-stat-card">
+        <div class="admin-stat-icon farmers-stat">
+            <i class="bi bi-people-fill"></i>
+        </div>
+        <div class="admin-stat-info">
+            <span>Total Farmers</span>
+            <strong>@Model.TotalFarmers.ToString("N0")</strong>
+            <small>
+                <i class="bi bi-arrow-up"></i>
+                @Model.NewFarmersThisMonth new this month
+                @if (Model.PendingFarmerApprovals > 0)
+                {
+                    <text> · @Model.PendingFarmerApprovals awaiting approval</text>
+                }
+            </small>
+        </div>
+    </div>
+
+    <div class="admin-stat-card">
+        <div class="admin-stat-icon customers-stat">
+            <i class="bi bi-person-check-fill"></i>
+        </div>
+        <div class="admin-stat-info">
+            <span>Total Customers</span>
+            <strong>@Model.TotalCustomers.ToString("N0")</strong>
+            <small>
+                <i class="bi bi-arrow-up"></i>
+                @Model.NewCustomersThisMonth new this month
+            </small>
+        </div>
+    </div>
+
+    <div class="admin-stat-card">
+        <div class="admin-stat-icon markets-stat">
+            <i class="bi bi-shop"></i>
+        </div>
+        <div class="admin-stat-info">
+            <span>Active Markets</span>
+            <strong>@Model.ActiveMarkets.ToString("N0")</strong>
+            <small>@Model.ActiveMarkets of @Model.TotalMarkets markets active</small>
+        </div>
+    </div>
+
+    <div class="admin-stat-card">
+        <div class="admin-stat-icon orders-stat">
+            <i class="bi bi-receipt"></i>
+        </div>
+        <div class="admin-stat-info">
+            <span>Total Orders</span>
+            <strong>@Model.TotalOrders.ToString("N0")</strong>
+            <small>
+                <i class="bi bi-arrow-up"></i>
+                @Model.OrdersThisMonth this month
+            </small>
+        </div>
+    </div>
+</section>
+
+<section class="admin-secondary-stats">
+    <div class="admin-mini-stat">
+        <div class="admin-mini-icon green"><i class="bi bi-basket"></i></div>
+        <div>
+            <span>Active Products</span>
+            <strong>@Model.TotalProducts.ToString("N0")</strong>
+        </div>
+    </div>
+
+    <div class="admin-mini-stat">
+        <div class="admin-mini-icon orange"><i class="bi bi-clock-history"></i></div>
+        <div>
+            <span>Open Orders</span>
+            <strong>@Model.PendingOrders.ToString("N0")</strong>
+        </div>
+    </div>
+
+    <div class="admin-mini-stat">
+        <div class="admin-mini-icon blue"><i class="bi bi-star-fill"></i></div>
+        <div>
+            <span>Reviews</span>
+            <strong>@Model.TotalReviews.ToString("N0")</strong>
+        </div>
+    </div>
+
+    <div class="admin-mini-stat">
+        <div class="admin-mini-icon purple"><i class="bi bi-cash-stack"></i></div>
+        <div>
+            <span>Completed Sales</span>
+            <strong>Rs. @Model.MarketplaceSales.ToString("N0")</strong>
+        </div>
+    </div>
+</section>
+
+<div class="admin-dashboard-grid">
+    <section class="admin-card admin-orders-card">
+        <div class="admin-card-header">
+            <div>
+                <span>MARKETPLACE ACTIVITY</span>
+                <h3>Recent Orders</h3>
+            </div>
+            <a asp-controller="Orders" asp-action="Index" class="admin-view-link">
+                View All <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+
+        <div class="admin-orders">
+            @if (Model.RecentOrders.Count == 0)
+            {
+                <div class="admin-empty-state">No orders have been recorded yet.</div>
+            }
+            else
+            {
+                foreach (var order in Model.RecentOrders)
+                {
+                    <div class="admin-order">
+                        <div class="admin-order-number">#@order.OrderNo</div>
+
+                        <div class="admin-order-info">
+                            <strong>@order.ProductSummary</strong>
+                            <span>
+                                @order.CustomerName · @order.FarmerName ·
+                                @order.OrderDate.ToString("dd MMM, hh:mm tt")
+                            </span>
+                        </div>
+
+                        <strong class="admin-order-price">
+                            Rs. @order.TotalAmount.ToString("N0")
+                        </strong>
+
+                        <span class="admin-status @StatusClass(order.Status)">
+                            @order.Status
+                        </span>
+                    </div>
+                }
+            }
+        </div>
+    </section>
+
+    <section class="admin-card">
+        <div class="admin-card-header">
+            <div>
+                <span>LIVE DEMAND</span>
+                <h3>Orders — Last 7 Days</h3>
+            </div>
+        </div>
+        <div class="admin-chart-wrap">
+            <canvas id="orders7DayChart"></canvas>
+        </div>
+    </section>
+</div>
+
+<div class="admin-dashboard-grid admin-lower-grid">
+    <section class="admin-card">
+        <div class="admin-card-header">
+            <div>
+                <span>REVENUE TREND</span>
+                <h3>Completed Sales — 6 Months</h3>
+            </div>
+        </div>
+        <div class="admin-chart-wrap">
+            <canvas id="revenue6MonthChart"></canvas>
+        </div>
+    </section>
+
+    <section class="admin-card">
+        <div class="admin-card-header">
+            <div>
+                <span>DEMAND SIGNAL</span>
+                <h3>Most Demanded Products</h3>
+            </div>
+        </div>
+        <div class="admin-chart-wrap">
+            <canvas id="topProductsChart"></canvas>
+        </div>
+    </section>
+</div>
+
+<div class="admin-dashboard-grid admin-lower-grid">
+    <section class="admin-card">
+        <div class="admin-card-header">
+            <div>
+                <span>FARMER MANAGEMENT</span>
+                <h3>Farmer Overview</h3>
+            </div>
+            <a asp-controller="Farmers" asp-action="Index" class="admin-view-link">
+                Manage <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+
+        <div class="admin-user-list">
+            @if (Model.Farmers.Count == 0)
+            {
+                <div class="admin-empty-state">No farmers found.</div>
+            }
+            else
+            {
+                foreach (var farmer in Model.Farmers)
+                {
+                    <div class="admin-user-row">
+                        <div class="admin-user-avatar green-avatar">
+                            @Initial(farmer.BusinessName)
+                        </div>
+
+                        <div class="admin-user-info">
+                            <strong>@farmer.BusinessName</strong>
+                            <span>@farmer.MarketName</span>
+                        </div>
+
+                        @if (!farmer.IsApproved)
+                        {
+                            <span class="admin-review-badge">Review</span>
+                        }
+                        else if (farmer.IsActive)
+                        {
+                            <span class="admin-active-badge">Active</span>
+                        }
+                        else
+                        {
+                            <span class="admin-status pending">Inactive</span>
+                        }
+                    </div>
+                }
+            }
+        </div>
+    </section>
+
+    <section class="admin-card">
+        <div class="admin-card-header">
+            <div>
+                <span>CUSTOMER ACTIVITY</span>
+                <h3>Recent Customers</h3>
+            </div>
+            <a asp-controller="Customers" asp-action="Index" class="admin-view-link">
+                View All <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+
+        <div class="admin-user-list">
+            @if (Model.Customers.Count == 0)
+            {
+                <div class="admin-empty-state">No customers found.</div>
+            }
+            else
+            {
+                foreach (var customer in Model.Customers)
+                {
+                    <div class="admin-user-row">
+                        <div class="admin-user-avatar purple-avatar">
+                            @Initial(customer.FullName)
+                        </div>
+
+                        <div class="admin-user-info">
+                            <strong>@customer.FullName</strong>
+                            <span>
+                                @customer.OrderCount order@(customer.OrderCount == 1 ? "" : "s")
+                                · joined @customer.CreatedAt.ToString("dd MMM yyyy")
+                            </span>
+                        </div>
+
+                        <i class="bi bi-chevron-right admin-row-arrow"></i>
+                    </div>
+                }
+            }
+        </div>
+    </section>
+</div>
+
+<section class="admin-card admin-alert-card">
+    <div class="admin-card-header">
+        <div>
+            <span>ATTENTION REQUIRED</span>
+            <h3>Moderation & Approvals</h3>
+        </div>
+    </div>
+
+    <div class="admin-alerts">
+        <div class="admin-alert">
+            <div class="admin-alert-icon orange">
+                <i class="bi bi-person-check"></i>
+            </div>
+            <div>
+                <strong>@Model.PendingFarmerApprovals farmer profiles need review</strong>
+                <span>Approve farmer accounts before they become active marketplace sellers.</span>
+            </div>
+        </div>
+
+        <div class="admin-alert">
+            <div class="admin-alert-icon blue">
+                <i class="bi bi-basket"></i>
+            </div>
+            <div>
+                <strong>@Model.PendingProductApprovals product listings need review</strong>
+                <span>Review farmer-specific products that are not yet approved.</span>
+            </div>
+        </div>
+
+        <div class="admin-alert">
+            <div class="admin-alert-icon purple">
+                <i class="bi bi-star"></i>
+            </div>
+            <div>
+                <strong>@Model.HiddenReviews hidden reviews</strong>
+                <span>Review moderation status and keep the marketplace trustworthy.</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="admin-card admin-ai-card">
+    <div class="admin-card-header">
+        <div>
+            <span>AI & INTELLIGENCE</span>
+            <h3>Prediction Health & Smart Alerts</h3>
+        </div>
+        <div class="admin-ai-run">
+            <span>Latest model</span>
+            <strong>@Model.LatestAiModelName</strong>
+            <small>
+                @Model.LatestAiRunStatus
+                @if (Model.LatestAiRunAt.HasValue)
+                {
+                    <text> · @Model.LatestAiRunAt.Value.ToString("dd MMM, hh:mm tt")</text>
+                }
+            </small>
+        </div>
+    </div>
+
+    <div class="admin-intelligence-kpis">
+        <div>
+            <span>Unacknowledged anomalies</span>
+            <strong>@Model.UnacknowledgedAnomalies</strong>
+        </div>
+        <div>
+            <span>High shortage risks</span>
+            <strong>@Model.HighShortageRisks</strong>
+        </div>
+        <div>
+            <span>High waste risks</span>
+            <strong>@Model.HighWasteRisks</strong>
+        </div>
+    </div>
+
+    <div class="admin-ai-alert-list">
+        @if (Model.IntelligenceAlerts.Count == 0)
+        {
+            <div class="admin-empty-state">
+                No current AI anomaly or high waste-risk alerts.
+            </div>
+        }
+        else
+        {
+            foreach (var alert in Model.IntelligenceAlerts)
+            {
+                <div class="admin-ai-alert">
+                    <span class="admin-status @AlertClass(alert.Severity)">
+                        @alert.Severity
+                    </span>
+                    <div>
+                        <strong>@alert.Type</strong>
+                        <p>@alert.Message</p>
+                    </div>
+                    <small>@alert.CreatedAt.ToString("dd MMM, hh:mm tt")</small>
+                </div>
+            }
+        }
+    </div>
+</section>
+
+@section Styles {
+    <style>
+        .admin-chart-wrap {
+            min-height: 300px;
+            padding: 18px;
+            position: relative;
+        }
+
+        .admin-empty-state {
+            color: #667085;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .admin-intelligence-kpis {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+            padding: 18px;
+        }
+
+        .admin-intelligence-kpis > div {
+            border: 1px solid #e7ecf3;
+            border-radius: 14px;
+            padding: 16px;
+            background: #f8fafc;
+        }
+
+        .admin-intelligence-kpis span,
+        .admin-ai-run span {
+            display: block;
+            color: #667085;
+            font-size: 12px;
+        }
+
+        .admin-intelligence-kpis strong {
+            display: block;
+            margin-top: 4px;
+            font-size: 25px;
+        }
+
+        .admin-ai-run {
+            text-align: right;
+        }
+
+        .admin-ai-run strong,
+        .admin-ai-run small {
+            display: block;
+        }
+
+        .admin-ai-alert-list {
+            padding: 0 18px 18px;
+        }
+
+        .admin-ai-alert {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 12px;
+            align-items: start;
+            border-top: 1px solid #eef1f5;
+            padding: 14px 0;
+        }
+
+        .admin-ai-alert p {
+            margin: 3px 0 0;
+            color: #667085;
+            font-size: 13px;
+        }
+
+        .admin-ai-alert small {
+            color: #98a2b3;
+            white-space: nowrap;
+        }
+
+        @@media (max-width: 768px) {
+            .admin-intelligence-kpis {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-ai-alert {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-ai-run {
+                text-align: left;
+            }
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        const orders7Day = @Html.Raw(JsonSerializer.Serialize(Model.OrdersLast7Days));
+        const revenue6Month = @Html.Raw(JsonSerializer.Serialize(Model.RevenueLast6Months));
+        const topProducts = @Html.Raw(JsonSerializer.Serialize(Model.TopProducts));
+
+        new Chart(document.getElementById("orders7DayChart"), {
+            type: "line",
+            data: {
+                labels: orders7Day.map(x => x.Label),
+                datasets: [{
+                    label: "Orders",
+                    data: orders7Day.map(x => x.Value),
+                    tension: .35,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+            }
+        });
+
+        new Chart(document.getElementById("revenue6MonthChart"), {
+            type: "bar",
+            data: {
+                labels: revenue6Month.map(x => x.Label),
+                datasets: [{
+                    label: "Completed sales",
+                    data: revenue6Month.map(x => x.Value)
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: value => "Rs. " + Number(value).toLocaleString()
+                        }
+                    }
+                }
+            }
+        });
+
+        new Chart(document.getElementById("topProductsChart"), {
+            type: "doughnut",
+            data: {
+                labels: topProducts.map(x => x.Label),
+                datasets: [{
+                    data: topProducts.map(x => x.Value)
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: "bottom" }
+                }
+            }
+        });
+    </script>
+}

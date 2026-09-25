@@ -1,0 +1,953 @@
+﻿@{
+    ViewData["Title"] = "Admin Dashboard";
+
+    Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
+}
+
+
+<!-- =====================================================
+     WELCOME
+====================================================== -->
+
+<section class="admin-welcome">
+
+    <div class="admin-welcome-content">
+
+        <span class="admin-welcome-label">
+
+            <i class="bi bi-speedometer2"></i>
+
+            ADMINISTRATION CENTER
+
+        </span>
+
+
+        <h2>
+            Welcome to MarketLink Admin! 👋
+        </h2>
+
+
+        <p>
+            Monitor the marketplace, manage users, review
+            activity and keep MarketLink running smoothly.
+        </p>
+
+    </div>
+
+
+    <div class="admin-date-box">
+
+        <i class="bi bi-calendar3"></i>
+
+        <div>
+
+            <span>Today</span>
+
+            <strong>September 24, 2026</strong>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     MAIN STATISTICS
+====================================================== -->
+
+<section class="admin-statistics">
+
+
+    <!-- FARMERS -->
+
+    <div class="admin-stat-card">
+
+        <div class="admin-stat-icon farmers-stat">
+
+            <i class="bi bi-people-fill"></i>
+
+        </div>
+
+
+        <div class="admin-stat-info">
+
+            <span>Total Farmers</span>
+
+            <strong>24</strong>
+
+            <small>
+                <i class="bi bi-arrow-up"></i>
+                4 new this month
+            </small>
+
+        </div>
+
+    </div>
+
+
+    <!-- CUSTOMERS -->
+
+    <div class="admin-stat-card">
+
+        <div class="admin-stat-icon customers-stat">
+
+            <i class="bi bi-person-check-fill"></i>
+
+        </div>
+
+
+        <div class="admin-stat-info">
+
+            <span>Total Customers</span>
+
+            <strong>186</strong>
+
+            <small>
+                <i class="bi bi-arrow-up"></i>
+                18 new this month
+            </small>
+
+        </div>
+
+    </div>
+
+
+    <!-- MARKETS -->
+
+    <div class="admin-stat-card">
+
+        <div class="admin-stat-icon markets-stat">
+
+            <i class="bi bi-shop"></i>
+
+        </div>
+
+
+        <div class="admin-stat-info">
+
+            <span>Active Markets</span>
+
+            <strong>12</strong>
+
+            <small>
+                All currently active
+            </small>
+
+        </div>
+
+    </div>
+
+
+    <!-- ORDERS -->
+
+    <div class="admin-stat-card">
+
+        <div class="admin-stat-icon orders-stat">
+
+            <i class="bi bi-receipt"></i>
+
+        </div>
+
+
+        <div class="admin-stat-info">
+
+            <span>Total Orders</span>
+
+            <strong>428</strong>
+
+            <small>
+                <i class="bi bi-arrow-up"></i>
+                8.4% this month
+            </small>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     SECONDARY STATS
+====================================================== -->
+
+<section class="admin-secondary-stats">
+
+
+    <div class="admin-mini-stat">
+
+        <div class="admin-mini-icon green">
+
+            <i class="bi bi-basket"></i>
+
+        </div>
+
+        <div>
+
+            <span>Products</span>
+
+            <strong>342</strong>
+
+        </div>
+
+    </div>
+
+
+    <div class="admin-mini-stat">
+
+        <div class="admin-mini-icon orange">
+
+            <i class="bi bi-clock-history"></i>
+
+        </div>
+
+        <div>
+
+            <span>Pending Orders</span>
+
+            <strong>12</strong>
+
+        </div>
+
+    </div>
+
+
+    <div class="admin-mini-stat">
+
+        <div class="admin-mini-icon blue">
+
+            <i class="bi bi-star-fill"></i>
+
+        </div>
+
+        <div>
+
+            <span>Reviews</span>
+
+            <strong>156</strong>
+
+        </div>
+
+    </div>
+
+
+    <div class="admin-mini-stat">
+
+        <div class="admin-mini-icon purple">
+
+            <i class="bi bi-cash-stack"></i>
+
+        </div>
+
+        <div>
+
+            <span>Marketplace Sales</span>
+
+            <strong>$18.4K</strong>
+
+        </div>
+
+    </div>
+
+
+</section>
+
+
+<!-- =====================================================
+     MAIN GRID
+====================================================== -->
+
+<div class="admin-dashboard-grid">
+
+
+    <!-- =================================================
+         RECENT ORDERS
+    ================================================== -->
+
+    <section class="admin-card admin-orders-card">
+
+
+        <div class="admin-card-header">
+
+            <div>
+
+                <span>
+                    MARKETPLACE ACTIVITY
+                </span>
+
+                <h3>Recent Orders</h3>
+
+            </div>
+
+
+            <a href="#"
+               class="admin-view-link">
+
+                View All
+
+                <i class="bi bi-arrow-right"></i>
+
+            </a>
+
+        </div>
+
+
+        <div class="admin-orders">
+
+
+            <!-- ORDER 1 -->
+
+            <div class="admin-order">
+
+                <div class="admin-order-number">
+                    #1024
+                </div>
+
+
+                <div class="admin-order-info">
+
+                    <strong>
+                        Fresh Vegetable Basket
+                    </strong>
+
+                    <span>
+                        Customer: Ahmed · Green Valley Farm
+                    </span>
+
+                </div>
+
+
+                <strong class="admin-order-price">
+                    $42.50
+                </strong>
+
+
+                <span class="admin-status completed">
+                    Completed
+                </span>
+
+            </div>
+
+
+            <!-- ORDER 2 -->
+
+            <div class="admin-order">
+
+                <div class="admin-order-number">
+                    #1023
+                </div>
+
+
+                <div class="admin-order-info">
+
+                    <strong>
+                        Organic Fruit Box
+                    </strong>
+
+                    <span>
+                        Customer: Sarah · Sunrise Farm
+                    </span>
+
+                </div>
+
+
+                <strong class="admin-order-price">
+                    $35.00
+                </strong>
+
+
+                <span class="admin-status ready">
+                    Ready
+                </span>
+
+            </div>
+
+
+            <!-- ORDER 3 -->
+
+            <div class="admin-order">
+
+                <div class="admin-order-number">
+                    #1022
+                </div>
+
+
+                <div class="admin-order-info">
+
+                    <strong>
+                        Farm Fresh Eggs
+                    </strong>
+
+                    <span>
+                        Customer: Ali · Happy Hives Farm
+                    </span>
+
+                </div>
+
+
+                <strong class="admin-order-price">
+                    $18.00
+                </strong>
+
+
+                <span class="admin-status pending">
+                    Pending
+                </span>
+
+            </div>
+
+
+            <!-- ORDER 4 -->
+
+            <div class="admin-order">
+
+                <div class="admin-order-number">
+                    #1021
+                </div>
+
+
+                <div class="admin-order-info">
+
+                    <strong>
+                        Fresh Herbs Pack
+                    </strong>
+
+                    <span>
+                        Customer: Maria · Green Valley Farm
+                    </span>
+
+                </div>
+
+
+                <strong class="admin-order-price">
+                    $21.75
+                </strong>
+
+
+                <span class="admin-status accepted">
+                    Accepted
+                </span>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         ADMIN ACTIONS
+    ================================================== -->
+
+    <section class="admin-card">
+
+
+        <div class="admin-card-header">
+
+            <div>
+
+                <span>
+                    MANAGEMENT
+                </span>
+
+                <h3>Quick Actions</h3>
+
+            </div>
+
+        </div>
+
+
+        <div class="admin-quick-actions">
+
+
+            <a href="#"
+               class="admin-quick-action">
+
+                <div class="admin-quick-icon green">
+
+                    <i class="bi bi-person-plus"></i>
+
+                </div>
+
+                <div>
+
+                    <strong>Manage Farmers</strong>
+
+                    <small>
+                        Approve and manage farmer accounts
+                    </small>
+
+                </div>
+
+                <i class="bi bi-chevron-right"></i>
+
+            </a>
+
+
+            <a href="#"
+               class="admin-quick-action">
+
+                <div class="admin-quick-icon blue">
+
+                    <i class="bi bi-shop"></i>
+
+                </div>
+
+                <div>
+
+                    <strong>Manage Markets</strong>
+
+                    <small>
+                        Add and manage market locations
+                    </small>
+
+                </div>
+
+                <i class="bi bi-chevron-right"></i>
+
+            </a>
+
+
+            <a href="#"
+               class="admin-quick-action">
+
+                <div class="admin-quick-icon orange">
+
+                    <i class="bi bi-tags"></i>
+
+                </div>
+
+                <div>
+
+                    <strong>Manage Categories</strong>
+
+                    <small>
+                        Organize product categories
+                    </small>
+
+                </div>
+
+                <i class="bi bi-chevron-right"></i>
+
+            </a>
+
+
+            <a href="#"
+               class="admin-quick-action">
+
+                <div class="admin-quick-icon purple">
+
+                    <i class="bi bi-bar-chart-line"></i>
+
+                </div>
+
+                <div>
+
+                    <strong>View Reports</strong>
+
+                    <small>
+                        Check marketplace analytics
+                    </small>
+
+                </div>
+
+                <i class="bi bi-chevron-right"></i>
+
+            </a>
+
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<!-- =====================================================
+     SECOND GRID
+====================================================== -->
+
+<div class="admin-dashboard-grid admin-lower-grid">
+
+
+    <!-- =================================================
+         FARMER MANAGEMENT
+    ================================================== -->
+
+    <section class="admin-card">
+
+
+        <div class="admin-card-header">
+
+            <div>
+
+                <span>
+                    FARMER MANAGEMENT
+                </span>
+
+                <h3>Farmer Overview</h3>
+
+            </div>
+
+
+            <a href="#"
+               class="admin-view-link">
+
+                Manage
+
+                <i class="bi bi-arrow-right"></i>
+
+            </a>
+
+        </div>
+
+
+        <div class="admin-user-list">
+
+
+            <div class="admin-user-row">
+
+                <div class="admin-user-avatar green-avatar">
+                    G
+                </div>
+
+                <div class="admin-user-info">
+
+                    <strong>
+                        Green Valley Farm
+                    </strong>
+
+                    <span>
+                        Central Farmers Market
+                    </span>
+
+                </div>
+
+                <span class="admin-active-badge">
+                    Active
+                </span>
+
+            </div>
+
+
+            <div class="admin-user-row">
+
+                <div class="admin-user-avatar blue-avatar">
+                    S
+                </div>
+
+                <div class="admin-user-info">
+
+                    <strong>
+                        Sunrise Organics
+                    </strong>
+
+                    <span>
+                        Riverside Farmers Market
+                    </span>
+
+                </div>
+
+                <span class="admin-active-badge">
+                    Active
+                </span>
+
+            </div>
+
+
+            <div class="admin-user-row">
+
+                <div class="admin-user-avatar orange-avatar">
+                    H
+                </div>
+
+                <div class="admin-user-info">
+
+                    <strong>
+                        Happy Hives Farm
+                    </strong>
+
+                    <span>
+                        Weekend Fresh Market
+                    </span>
+
+                </div>
+
+                <span class="admin-review-badge">
+                    Review
+                </span>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         CUSTOMER OVERVIEW
+    ================================================== -->
+
+    <section class="admin-card">
+
+
+        <div class="admin-card-header">
+
+            <div>
+
+                <span>
+                    CUSTOMER ACTIVITY
+                </span>
+
+                <h3>Recent Customers</h3>
+
+            </div>
+
+
+            <a href="#"
+               class="admin-view-link">
+
+                View All
+
+                <i class="bi bi-arrow-right"></i>
+
+            </a>
+
+        </div>
+
+
+        <div class="admin-user-list">
+
+
+            <div class="admin-user-row">
+
+                <div class="admin-user-avatar purple-avatar">
+                    A
+                </div>
+
+                <div class="admin-user-info">
+
+                    <strong>
+                        Ahmed
+                    </strong>
+
+                    <span>
+                        8 orders · Active customer
+                    </span>
+
+                </div>
+
+                <i class="bi bi-chevron-right admin-row-arrow"></i>
+
+            </div>
+
+
+            <div class="admin-user-row">
+
+                <div class="admin-user-avatar green-avatar">
+                    S
+                </div>
+
+                <div class="admin-user-info">
+
+                    <strong>
+                        Sarah
+                    </strong>
+
+                    <span>
+                        5 orders · Active customer
+                    </span>
+
+                </div>
+
+                <i class="bi bi-chevron-right admin-row-arrow"></i>
+
+            </div>
+
+
+            <div class="admin-user-row">
+
+                <div class="admin-user-avatar blue-avatar">
+                    M
+                </div>
+
+                <div class="admin-user-info">
+
+                    <strong>
+                        Maria
+                    </strong>
+
+                    <span>
+                        12 orders · Active customer
+                    </span>
+
+                </div>
+
+                <i class="bi bi-chevron-right admin-row-arrow"></i>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<!-- =====================================================
+     MODERATION ALERTS
+====================================================== -->
+
+<section class="admin-card admin-alert-card">
+
+
+    <div class="admin-card-header">
+
+        <div>
+
+            <span>
+                ATTENTION REQUIRED
+            </span>
+
+            <h3>Moderation & Approvals</h3>
+
+        </div>
+
+    </div>
+
+
+    <div class="admin-alerts">
+
+
+        <div class="admin-alert">
+
+            <div class="admin-alert-icon orange">
+
+                <i class="bi bi-person-check"></i>
+
+            </div>
+
+            <div>
+
+                <strong>
+                    3 farmer profiles need review
+                </strong>
+
+                <span>
+                    Check newly submitted farmer accounts.
+                </span>
+
+            </div>
+
+            <a href="#">
+                Review
+            </a>
+
+        </div>
+
+
+        <div class="admin-alert">
+
+            <div class="admin-alert-icon red">
+
+                <i class="bi bi-star"></i>
+
+            </div>
+
+            <div>
+
+                <strong>
+                    7 reviews awaiting moderation
+                </strong>
+
+                <span>
+                    Review recently submitted customer feedback.
+                </span>
+
+            </div>
+
+            <a href="#">
+                Moderate
+            </a>
+
+        </div>
+
+
+        <div class="admin-alert">
+
+            <div class="admin-alert-icon blue">
+
+                <i class="bi bi-shop"></i>
+
+            </div>
+
+            <div>
+
+                <strong>
+                    2 market requests
+                </strong>
+
+                <span>
+                    New market locations require approval.
+                </span>
+
+            </div>
+
+            <a href="#">
+                Review
+            </a>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     ANALYTICS BANNER
+====================================================== -->
+
+<section class="admin-analytics-banner">
+
+
+    <div class="admin-analytics-icon">
+
+        <i class="bi bi-bar-chart-line-fill"></i>
+
+    </div>
+
+
+    <div>
+
+        <span>
+            MARKETPLACE INSIGHTS
+        </span>
+
+        <h3>
+            Track your marketplace performance
+        </h3>
+
+        <p>
+            Review orders, users, products and sales activity
+            from the Reports & Analytics section.
+        </p>
+
+    </div>
+
+
+    <a href="#"
+       class="admin-analytics-button">
+
+        Open Analytics
+
+        <i class="bi bi-arrow-right"></i>
+
+    </a>
+
+</section>

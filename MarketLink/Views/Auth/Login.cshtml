@@ -1,0 +1,1023 @@
+﻿@{
+    ViewData["Title"] = "Login";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login | MarketLink</title>
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: #f5f7f5;
+            color: #1f2933;
+        }
+
+        .auth-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            background:
+                radial-gradient(circle at 10% 20%, rgba(72, 160, 96, 0.10), transparent 30%),
+                radial-gradient(circle at 90% 80%, rgba(72, 160, 96, 0.08), transparent 30%),
+                #f5f7f5;
+        }
+
+        .auth-wrapper {
+            width: 100%;
+            max-width: 1150px;
+            min-height: 700px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.10);
+        }
+
+        /* =========================
+           LEFT SIDE
+        ========================= */
+
+        .auth-info {
+            background: linear-gradient(145deg, #173d2b, #24623e);
+            color: white;
+            padding: 55px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .auth-logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: white;
+            font-size: 25px;
+            width: fit-content;
+        }
+
+        .auth-logo strong {
+            font-weight: 700;
+        }
+
+        .auth-logo b {
+            color: #8ee3a8;
+        }
+
+        .logo-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 13px;
+            background: #8ee3a8;
+            color: #173d2b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 23px;
+        }
+
+        .auth-info-content {
+            margin-top: auto;
+            margin-bottom: auto;
+            max-width: 470px;
+        }
+
+        .auth-small-title {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #8ee3a8;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            margin-bottom: 20px;
+        }
+
+        .auth-info h1 {
+            font-size: 48px;
+            line-height: 1.08;
+            margin-bottom: 22px;
+            font-weight: 700;
+        }
+
+        .auth-info h1 span {
+            color: #8ee3a8;
+        }
+
+        .auth-info-content > p {
+            color: #d3e5d8;
+            font-size: 16px;
+            line-height: 1.7;
+            margin-bottom: 38px;
+        }
+
+        .auth-features {
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+        }
+
+        .auth-feature {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .feature-icon {
+            min-width: 46px;
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            background: rgba(142, 227, 168, 0.13);
+            color: #8ee3a8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .auth-feature h6 {
+            font-size: 15px;
+            margin-bottom: 3px;
+            color: white;
+        }
+
+        .auth-feature p {
+            font-size: 13px;
+            color: #bdd2c3;
+            margin: 0;
+        }
+
+        /* =========================
+           RIGHT SIDE
+        ========================= */
+
+        .auth-card {
+            padding: 55px 65px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .mobile-auth-logo {
+            display: none;
+        }
+
+        .auth-card-header {
+            margin-bottom: 32px;
+        }
+
+        .form-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 15px;
+            background: #eaf7ed;
+            color: #267542;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 18px;
+        }
+
+        .auth-card-header h2 {
+            font-size: 31px;
+            color: #17231b;
+            margin-bottom: 7px;
+        }
+
+        .auth-card-header p {
+            color: #718078;
+            font-size: 14px;
+        }
+
+        /* =========================
+           FORM
+        ========================= */
+
+        .auth-form {
+            width: 100%;
+        }
+
+        .form-group {
+            margin-bottom: 21px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #34423a;
+            margin-bottom: 8px;
+        }
+
+        .password-label-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .password-label-row label {
+            margin-bottom: 0;
+        }
+
+        .password-label-row a {
+            font-size: 13px;
+            color: #267542;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .password-label-row a:hover {
+            text-decoration: underline;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper > i:first-child {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #8a968e;
+            font-size: 17px;
+            z-index: 2;
+        }
+
+        .form-control {
+            width: 100%;
+            height: 52px;
+            border: 1px solid #d9e1dc;
+            border-radius: 11px;
+            background: #fafcfb;
+            padding: 0 48px;
+            font-size: 14px;
+            color: #1f2923;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .form-control::placeholder {
+            color: #a4aea8;
+        }
+
+        .form-control:focus {
+            border-color: #4d9c68;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(77, 156, 104, 0.10);
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 13px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: none;
+            background: transparent;
+            color: #849089;
+            cursor: pointer;
+            font-size: 17px;
+            padding: 5px;
+        }
+
+        .password-toggle:hover {
+            color: #267542;
+        }
+
+        /* =========================
+           REMEMBER ME
+        ========================= */
+
+        .remember-row {
+            margin-top: -3px;
+            margin-bottom: 25px;
+        }
+
+        .remember-label {
+            display: inline-flex !important;
+            align-items: center;
+            gap: 9px;
+            cursor: pointer;
+            color: #5d6a62 !important;
+            font-weight: 400 !important;
+            font-size: 13px !important;
+        }
+
+        .remember-label input {
+            display: none;
+        }
+
+        .custom-check {
+            width: 18px;
+            height: 18px;
+            border: 1px solid #cdd7d0;
+            border-radius: 5px;
+            background: white;
+            position: relative;
+        }
+
+        .remember-label input:checked + .custom-check {
+            background: #267542;
+            border-color: #267542;
+        }
+
+        .remember-label input:checked + .custom-check::after {
+            content: "✓";
+            position: absolute;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            left: 3px;
+            top: -1px;
+        }
+
+        /* =========================
+           LOGIN BUTTON
+        ========================= */
+
+        .auth-submit {
+            width: 100%;
+            height: 53px;
+            border: none;
+            border-radius: 11px;
+            background: #267542;
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .auth-submit:hover {
+            background: #1d6135;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(38, 117, 66, 0.20);
+        }
+
+        .auth-submit:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .auth-submit .spinner {
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255,255,255,0.35);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+
+        /* =========================
+           MESSAGES
+        ========================= */
+
+        .login-message {
+            margin-top: 17px;
+            padding: 12px 14px;
+            border-radius: 9px;
+            font-size: 13px;
+            line-height: 1.5;
+            display: none;
+        }
+
+        .login-message.success {
+            display: block;
+            background: #eaf7ed;
+            color: #246b3c;
+            border: 1px solid #c7e6cf;
+        }
+
+        .login-message.error {
+            display: block;
+            background: #fff0f0;
+            color: #b42323;
+            border: 1px solid #f1caca;
+        }
+
+        /* =========================
+           REGISTER
+        ========================= */
+
+        .auth-switch {
+            text-align: center;
+            margin-top: 25px;
+            color: #77827b;
+            font-size: 13px;
+        }
+
+        .auth-switch a {
+            color: #267542;
+            text-decoration: none;
+            font-weight: 600;
+            margin-left: 4px;
+        }
+
+        .auth-switch a:hover {
+            text-decoration: underline;
+        }
+
+        /* =========================
+           HOME
+        ========================= */
+
+        .auth-home {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .auth-home a {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            color: #718078;
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        .auth-home a:hover {
+            color: #267542;
+        }
+
+        /* =========================
+           ANIMATION
+        ========================= */
+
+        @@keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @@media (max-width: 900px) {
+
+            .auth-wrapper {
+                grid-template-columns: 1fr;
+                max-width: 600px;
+            }
+
+            .auth-info {
+                display: none;
+            }
+
+            .auth-card {
+                padding: 45px;
+            }
+
+            .mobile-auth-logo {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 12px;
+                font-size: 24px;
+                margin-bottom: 35px;
+            }
+
+            .mobile-auth-logo strong {
+                color: #173d2b;
+            }
+
+            .mobile-auth-logo b {
+                color: #267542;
+            }
+        }
+
+        @@media (max-width: 500px) {
+
+            .auth-page {
+                padding: 15px;
+            }
+
+            .auth-wrapper {
+                border-radius: 18px;
+                min-height: auto;
+            }
+
+            .auth-card {
+                padding: 35px 24px;
+            }
+
+            .auth-card-header h2 {
+                font-size: 27px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="auth-page">
+
+    <div class="auth-wrapper">
+
+        <!-- =========================
+             LEFT SIDE
+        ========================== -->
+
+        <div class="auth-info">
+
+            <a href="/" class="auth-logo">
+
+                <span class="logo-icon">
+                    <i class="bi bi-basket2-fill"></i>
+                </span>
+
+                <span>
+                    <strong>Market</strong><b>Link</b>
+                </span>
+
+            </a>
+
+            <div class="auth-info-content">
+
+                <span class="auth-small-title">
+                    <i class="bi bi-leaf-fill"></i>
+                    WELCOME BACK
+                </span>
+
+                <h1>
+                    Your fresh
+                    <span>basket awaits.</span>
+                </h1>
+
+                <p>
+                    Sign in to continue shopping fresh groceries,
+                    manage your orders and enjoy a seamless
+                    MarketLink experience.
+                </p>
+
+                <div class="auth-features">
+
+                    <div class="auth-feature">
+
+                        <div class="feature-icon">
+                            <i class="bi bi-cart-check-fill"></i>
+                        </div>
+
+                        <div>
+                            <h6>Your Shopping Cart</h6>
+                            <p>Continue where you left off.</p>
+                        </div>
+
+                    </div>
+
+                    <div class="auth-feature">
+
+                        <div class="feature-icon">
+                            <i class="bi bi-receipt"></i>
+                        </div>
+
+                        <div>
+                            <h6>Track Your Orders</h6>
+                            <p>Keep an eye on your latest purchases.</p>
+                        </div>
+
+                    </div>
+
+                    <div class="auth-feature">
+
+                        <div class="feature-icon">
+                            <i class="bi bi-heart-fill"></i>
+                        </div>
+
+                        <div>
+                            <h6>Your Favorites</h6>
+                            <p>Access your favorite products anytime.</p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             RIGHT SIDE
+        ========================== -->
+
+        <div class="auth-card">
+
+            <!-- MOBILE LOGO -->
+
+            <div class="mobile-auth-logo">
+
+                <span class="logo-icon">
+                    <i class="bi bi-basket2-fill"></i>
+                </span>
+
+                <span>
+                    <strong>Market</strong><b>Link</b>
+                </span>
+
+            </div>
+
+
+            <!-- HEADER -->
+
+            <div class="auth-card-header">
+
+                <span class="form-icon">
+                    <i class="bi bi-box-arrow-in-right"></i>
+                </span>
+
+                <h2>
+                    Welcome Back
+                </h2>
+
+                <p>
+                    Sign in to your MarketLink account.
+                </p>
+
+            </div>
+
+
+            <!-- LOGIN FORM -->
+
+            <form id="loginForm" class="auth-form">
+
+                <!-- EMAIL -->
+
+                <div class="form-group">
+
+                    <label for="loginEmail">
+                        Email Address
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <i class="bi bi-envelope"></i>
+
+                        <input type="email"
+                               id="loginEmail"
+                               class="form-control"
+                               placeholder="Enter your email"
+                               required />
+
+                    </div>
+
+                </div>
+
+
+                <!-- PASSWORD -->
+
+                <div class="form-group">
+
+                    <div class="password-label-row">
+
+                        <label for="loginPassword">
+                            Password
+                        </label>
+
+                        <a href="#">
+                            Forgot Password?
+                        </a>
+
+                    </div>
+
+                    <div class="input-wrapper">
+
+                        <i class="bi bi-lock"></i>
+
+                        <input type="password"
+                               id="loginPassword"
+                               class="form-control"
+                               placeholder="Enter your password"
+                               required />
+
+                        <button type="button"
+                                class="password-toggle"
+                                onclick="togglePassword('loginPassword', this)">
+
+                            <i class="bi bi-eye"></i>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- REMEMBER ME -->
+
+                <div class="remember-row">
+
+                    <label class="remember-label">
+
+                        <input type="checkbox"
+                               id="rememberMe">
+
+                        <span class="custom-check"></span>
+
+                        <span>
+                            Remember me
+                        </span>
+
+                    </label>
+
+                </div>
+
+
+                <!-- LOGIN BUTTON -->
+
+                <button type="submit"
+                        id="loginButton"
+                        class="auth-submit">
+
+                    <span id="loginButtonText">
+                        Sign In
+                    </span>
+
+                    <i id="loginButtonIcon"
+                       class="bi bi-arrow-right"></i>
+
+                </button>
+
+
+                <!-- MESSAGE -->
+
+                <div id="message"
+                     class="login-message">
+                </div>
+
+
+                <!-- REGISTER -->
+
+                <div class="auth-switch">
+
+                    <span>
+                        Don't have an account?
+                    </span>
+
+                    <a href="/Auth/Register">
+                        Create Account
+                    </a>
+
+                </div>
+
+            </form>
+
+
+            <!-- HOME -->
+
+            <div class="auth-home">
+
+                <a href="/">
+
+                    <i class="bi bi-arrow-left"></i>
+
+                    Back to MarketLink
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    // =========================
+    // PASSWORD TOGGLE
+    // =========================
+
+    function togglePassword(inputId, button) {
+
+        const input = document.getElementById(inputId);
+        const icon = button.querySelector("i");
+
+        if (input.type === "password") {
+
+            input.type = "text";
+
+            icon.classList.remove("bi-eye");
+            icon.classList.add("bi-eye-slash");
+
+        } else {
+
+            input.type = "password";
+
+            icon.classList.remove("bi-eye-slash");
+            icon.classList.add("bi-eye");
+        }
+    }
+
+
+    // =========================
+    // LOGIN
+    // =========================
+
+    document.getElementById("loginForm").addEventListener("submit", async function (event) {
+
+        event.preventDefault();
+
+        const email =
+            document.getElementById("loginEmail").value.trim();
+
+        const password =
+            document.getElementById("loginPassword").value;
+
+        const rememberMe =
+            document.getElementById("rememberMe").checked;
+
+        const message =
+            document.getElementById("message");
+
+        const loginButton =
+            document.getElementById("loginButton");
+
+        const loginButtonText =
+            document.getElementById("loginButtonText");
+
+        const loginButtonIcon =
+            document.getElementById("loginButtonIcon");
+
+
+        // Clear previous message
+
+        message.className = "login-message";
+        message.innerHTML = "";
+
+
+        // Loading state
+
+        loginButton.disabled = true;
+
+        loginButtonText.textContent = "Signing In...";
+
+        loginButtonIcon.className = "spinner";
+
+
+        try {
+
+            const response = await fetch("/api/Auth/login", {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                credentials: "same-origin",
+
+                body: JSON.stringify({
+                    email: email,
+                    password: password
+                })
+
+            });
+
+            const data = await response.json();
+
+
+            // =========================
+            // SUCCESS
+            // =========================
+
+            if (response.ok) {
+
+                localStorage.setItem(
+                    "accessToken",
+                    data.accessToken
+                );
+
+                localStorage.setItem(
+                    "refreshToken",
+                    data.refreshToken
+                );
+
+
+                message.className =
+                    "login-message success";
+
+                message.innerHTML =
+                    `<i class="bi bi-check-circle-fill"></i>
+                     ${data.message || "Login successful."}`;
+
+
+                console.log(
+                    "Logged in user:",
+                    data.user
+                );
+
+
+                // Redirect after successful login
+
+setTimeout(function () {
+
+    const role =
+        data.user?.role?.toLowerCase();
+
+    if (role === "admin") {
+
+        window.location.href = "/Admin/Index";
+
+    }
+    else if (role === "farmer") {
+
+        window.location.href = "/Farmer/Index";
+
+    }
+    else if (role === "customer") {
+
+        window.location.href = "/";
+
+    }
+    else {
+
+        window.location.href = "/";
+    }
+
+}, 1200);
+
+
+            }
+
+            // =========================
+            // LOGIN FAILED
+            // =========================
+
+            else {
+
+                message.className =
+                    "login-message error";
+
+                message.innerHTML =
+                    `<i class="bi bi-exclamation-circle-fill"></i>
+                     ${data.message || "Invalid email or password."}`;
+
+                loginButton.disabled = false;
+
+                loginButtonText.textContent = "Sign In";
+
+                loginButtonIcon.className =
+                    "bi bi-arrow-right";
+            }
+
+        }
+
+        // =========================
+        // SERVER ERROR
+        // =========================
+
+        catch (error) {
+
+            console.error(error);
+
+            message.className =
+                "login-message error";
+
+            message.innerHTML =
+                `<i class="bi bi-exclamation-circle-fill"></i>
+                 Unable to connect to the server. Please try again.`;
+
+            loginButton.disabled = false;
+
+            loginButtonText.textContent = "Sign In";
+
+            loginButtonIcon.className =
+                "bi bi-arrow-right";
+        }
+
+    });
+
+</script>
+
+</body>
+</html>

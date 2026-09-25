@@ -1,0 +1,1623 @@
+﻿@{
+    ViewData["Title"] = "Farmer Details";
+
+    var farmerId = ViewBag.FarmerId ?? 1;
+}
+
+<!-- =========================
+     FARMER DETAILS HERO
+========================= -->
+<section class="farmer-details-hero">
+
+    <div class="container">
+
+        <div class="farmer-breadcrumb">
+            <a asp-controller="Home" asp-action="Index">
+                Home
+            </a>
+
+            <i class="bi bi-chevron-right"></i>
+
+            <a asp-controller="Farmers" asp-action="Index">
+                Farmers
+            </a>
+
+            <i class="bi bi-chevron-right"></i>
+
+            <span>Farmer Details</span>
+        </div>
+
+
+        <div class="row align-items-center g-5">
+
+            <div class="col-lg-5">
+
+                <div class="farmer-profile-image">
+
+                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=900&q=85"
+                         alt="Ahmed Khan">
+
+                    <span class="verified-profile">
+                        <i class="bi bi-patch-check-fill"></i>
+                        Verified Farmer
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-lg-7">
+
+                <div class="farmer-profile-content">
+
+                    <span class="profile-label">
+                        LOCAL FARMER
+                    </span>
+
+                    <h1>Ahmed Khan</h1>
+
+                    <h3>
+                        <i class="bi bi-flower1"></i>
+                        Green Valley Farm
+                    </h3>
+
+                    <div class="profile-rating">
+
+                        <span class="rating-stars">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                        </span>
+
+                        <strong>4.9</strong>
+
+                        <span>
+                            38 Reviews
+                        </span>
+
+                    </div>
+
+                    <p>
+                        Welcome to Green Valley Farm. Ahmed Khan is a local
+                        farmer dedicated to growing fresh, quality produce
+                        for families and communities.
+                    </p>
+
+                    <div class="profile-location">
+
+                        <i class="bi bi-geo-alt-fill"></i>
+
+                        <span>
+                            Karachi, Sindh, Pakistan
+                        </span>
+
+                    </div>
+
+                    <div class="profile-actions">
+
+                        <button type="button"
+                                class="btn btn-farmer-contact">
+
+                            <i class="bi bi-chat-dots-fill"></i>
+                            Contact Farmer
+
+                        </button>
+
+                        <button type="button"
+                                class="btn btn-farmer-favorite"
+                                id="favoriteFarmer">
+
+                            <i class="bi bi-heart"></i>
+                            <span>Save Farmer</span>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     FARMER STATS
+========================= -->
+<section class="farmer-stats-section">
+
+    <div class="container">
+
+        <div class="farmer-stat-wrapper">
+
+            <div class="farmer-stat">
+
+                <div class="stat-icon">
+                    <i class="bi bi-calendar3"></i>
+                </div>
+
+                <div>
+                    <strong>8+</strong>
+                    <span>Years Farming</span>
+                </div>
+
+            </div>
+
+
+            <div class="farmer-stat">
+
+                <div class="stat-icon">
+                    <i class="bi bi-basket2-fill"></i>
+                </div>
+
+                <div>
+                    <strong>24</strong>
+                    <span>Products</span>
+                </div>
+
+            </div>
+
+
+            <div class="farmer-stat">
+
+                <div class="stat-icon">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+
+                <div>
+                    <strong>1,200+</strong>
+                    <span>Happy Customers</span>
+                </div>
+
+            </div>
+
+
+            <div class="farmer-stat">
+
+                <div class="stat-icon">
+                    <i class="bi bi-star-fill"></i>
+                </div>
+
+                <div>
+                    <strong>4.9</strong>
+                    <span>Average Rating</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     ABOUT FARMER
+========================= -->
+<section class="about-farmer-section">
+
+    <div class="container">
+
+        <div class="row g-5">
+
+            <div class="col-lg-7">
+
+                <div class="details-section-heading">
+
+                    <span>ABOUT THE FARMER</span>
+
+                    <h2>
+                        Growing With
+                        <strong>Care & Purpose</strong>
+                    </h2>
+
+                </div>
+
+                <p>
+                    Ahmed Khan has been working in agriculture for more than
+                    eight years. His farm focuses on providing fresh,
+                    locally grown vegetables and seasonal produce to nearby
+                    communities.
+                </p>
+
+                <p>
+                    At Green Valley Farm, every product is grown with
+                    attention to freshness and quality. Ahmed believes that
+                    customers should know where their food comes from and
+                    should have a direct connection with local farmers.
+                </p>
+
+                <p>
+                    Through MarketLink, customers can discover his products,
+                    find the markets where he sells and connect with his farm
+                    more easily.
+                </p>
+
+
+                <div class="farmer-values">
+
+                    <div>
+                        <i class="bi bi-check-circle-fill"></i>
+                        Fresh Local Produce
+                    </div>
+
+                    <div>
+                        <i class="bi bi-check-circle-fill"></i>
+                        Quality Focused
+                    </div>
+
+                    <div>
+                        <i class="bi bi-check-circle-fill"></i>
+                        Community Support
+                    </div>
+
+                    <div>
+                        <i class="bi bi-check-circle-fill"></i>
+                        Responsible Farming
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-lg-5">
+
+                <div class="farm-information-card">
+
+                    <div class="card-heading">
+
+                        <div class="heading-icon">
+                            <i class="bi bi-info-circle-fill"></i>
+                        </div>
+
+                        <div>
+                            <h3>Farm Information</h3>
+                            <span>Green Valley Farm</span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="information-row">
+
+                        <div class="info-icon">
+                            <i class="bi bi-geo-alt-fill"></i>
+                        </div>
+
+                        <div>
+                            <small>Location</small>
+                            <strong>Karachi, Sindh</strong>
+                        </div>
+
+                    </div>
+
+
+                    <div class="information-row">
+
+                        <div class="info-icon">
+                            <i class="bi bi-rulers"></i>
+                        </div>
+
+                        <div>
+                            <small>Farm Size</small>
+                            <strong>12 Acres</strong>
+                        </div>
+
+                    </div>
+
+
+                    <div class="information-row">
+
+                        <div class="info-icon">
+                            <i class="bi bi-flower1"></i>
+                        </div>
+
+                        <div>
+                            <small>Speciality</small>
+                            <strong>Vegetables & Herbs</strong>
+                        </div>
+
+                    </div>
+
+
+                    <div class="information-row">
+
+                        <div class="info-icon">
+                            <i class="bi bi-calendar-check"></i>
+                        </div>
+
+                        <div>
+                            <small>Joined MarketLink</small>
+                            <strong>January 2024</strong>
+                        </div>
+
+                    </div>
+
+
+                    <div class="information-row">
+
+                        <div class="info-icon">
+                            <i class="bi bi-clock-fill"></i>
+                        </div>
+
+                        <div>
+                            <small>Availability</small>
+                            <strong>Mon - Sat</strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     FARMER PRODUCTS
+========================= -->
+<section class="farmer-products-section">
+
+    <div class="container">
+
+        <div class="details-section-heading text-center">
+
+            <span>FARMER'S PRODUCTS</span>
+
+            <h2>
+                Fresh From
+                <strong>Green Valley Farm</strong>
+            </h2>
+
+            <p>
+                Explore fresh products currently offered by this farmer.
+            </p>
+
+        </div>
+
+
+        <div class="row g-4">
+
+
+            <!-- Product 1 -->
+
+            <div class="col-md-6 col-lg-3">
+
+                <div class="farmer-product-card">
+
+                    <div class="product-image">
+
+                        <img src="https://images.unsplash.com/photo-1546094096-0df4bcaaa337?auto=format&fit=crop&w=600&q=85"
+                             alt="Fresh Tomatoes">
+
+                        <span>Fresh</span>
+
+                    </div>
+
+                    <div class="product-content">
+
+                        <small>Vegetables</small>
+
+                        <h3>Fresh Tomatoes</h3>
+
+                        <div class="product-bottom">
+
+                            <strong>Rs. 180/kg</strong>
+
+                            <a asp-controller="Products"
+                               asp-action="Details"
+                               asp-route-id="1">
+
+                                <i class="bi bi-arrow-right"></i>
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Product 2 -->
+
+            <div class="col-md-6 col-lg-3">
+
+                <div class="farmer-product-card">
+
+                    <div class="product-image">
+
+                        <img src="https://images.unsplash.com/photo-1576045057995-568f588f82fb?auto=format&fit=crop&w=600&q=85"
+                             alt="Fresh Spinach">
+
+                        <span>Organic</span>
+
+                    </div>
+
+                    <div class="product-content">
+
+                        <small>Vegetables</small>
+
+                        <h3>Organic Spinach</h3>
+
+                        <div class="product-bottom">
+
+                            <strong>Rs. 120/bunch</strong>
+
+                            <a asp-controller="Products"
+                               asp-action="Details"
+                               asp-route-id="2">
+
+                                <i class="bi bi-arrow-right"></i>
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Product 3 -->
+
+            <div class="col-md-6 col-lg-3">
+
+                <div class="farmer-product-card">
+
+                    <div class="product-image">
+
+                        <img src="https://images.unsplash.com/photo-1597362925123-77861d3fbac7?auto=format&fit=crop&w=600&q=85"
+                             alt="Fresh Cucumbers">
+
+                        <span>Fresh</span>
+
+                    </div>
+
+                    <div class="product-content">
+
+                        <small>Vegetables</small>
+
+                        <h3>Fresh Cucumbers</h3>
+
+                        <div class="product-bottom">
+
+                            <strong>Rs. 150/kg</strong>
+
+                            <a asp-controller="Products"
+                               asp-action="Details"
+                               asp-route-id="3">
+
+                                <i class="bi bi-arrow-right"></i>
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Product 4 -->
+
+            <div class="col-md-6 col-lg-3">
+
+                <div class="farmer-product-card">
+
+                    <div class="product-image">
+
+                        <img src="https://images.unsplash.com/photo-1518977676601-b53f82aba655?auto=format&fit=crop&w=600&q=85"
+                             alt="Fresh Potatoes">
+
+                        <span>Local</span>
+
+                    </div>
+
+                    <div class="product-content">
+
+                        <small>Vegetables</small>
+
+                        <h3>Fresh Potatoes</h3>
+
+                        <div class="product-bottom">
+
+                            <strong>Rs. 130/kg</strong>
+
+                            <a asp-controller="Products"
+                               asp-action="Details"
+                               asp-route-id="4">
+
+                                <i class="bi bi-arrow-right"></i>
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="text-center products-more-btn">
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               class="btn btn-view-products">
+
+                View All Products
+                <i class="bi bi-arrow-right"></i>
+
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     AVAILABLE MARKET
+========================= -->
+<section class="farmer-market-section">
+
+    <div class="container">
+
+        <div class="row align-items-center g-5">
+
+            <div class="col-lg-6">
+
+                <div class="market-image-wrapper">
+
+                    <img src="https://images.unsplash.com/photo-1488459716781-31db52582fe9?auto=format&fit=crop&w=1000&q=85"
+                         alt="Farmers Market">
+
+                    <div class="market-image-badge">
+
+                        <i class="bi bi-shop"></i>
+
+                        <div>
+                            <strong>MarketLink</strong>
+                            <span>Local Farmers Market</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-lg-6">
+
+                <div class="market-details">
+
+                    <span class="profile-label">
+                        AVAILABLE MARKET
+                    </span>
+
+                    <h2>
+                        Clifton Fresh
+                        <strong>Farmers Market</strong>
+                    </h2>
+
+                    <p>
+                        Find Ahmed and other local farmers at this market.
+                        Visit the market to explore fresh produce directly
+                        from local farms.
+                    </p>
+
+
+                    <div class="market-info-list">
+
+                        <div>
+
+                            <i class="bi bi-geo-alt-fill"></i>
+
+                            <div>
+                                <small>Location</small>
+                                <strong>Clifton, Karachi</strong>
+                            </div>
+
+                        </div>
+
+
+                        <div>
+
+                            <i class="bi bi-calendar3"></i>
+
+                            <div>
+                                <small>Market Day</small>
+                                <strong>Saturday</strong>
+                            </div>
+
+                        </div>
+
+
+                        <div>
+
+                            <i class="bi bi-clock-fill"></i>
+
+                            <div>
+                                <small>Opening Hours</small>
+                                <strong>08:00 AM - 02:00 PM</strong>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <a asp-controller="Markets"
+                       asp-action="Details"
+                       asp-route-id="1"
+                       class="btn btn-market">
+
+                        View Market
+                        <i class="bi bi-arrow-right"></i>
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     CTA
+========================= -->
+<section class="farmer-details-cta">
+
+    <div class="container">
+
+        <div class="cta-content">
+
+            <div>
+
+                <span>SUPPORT LOCAL FARMING</span>
+
+                <h2>
+                    Fresh Food Starts
+                    With Local Farmers
+                </h2>
+
+                <p>
+                    Discover more farmers and fresh products through
+                    MarketLink.
+                </p>
+
+            </div>
+
+            <div class="cta-actions">
+
+                <a asp-controller="Farmers"
+                   asp-action="Index"
+                   class="btn btn-light">
+
+                    <i class="bi bi-people"></i>
+                    All Farmers
+
+                </a>
+
+                <a asp-controller="Products"
+                   asp-action="Index"
+                   class="btn btn-outline-light">
+
+                    Explore Products
+                    <i class="bi bi-arrow-right"></i>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+@section Styles {
+
+    <style>
+
+        /* =========================
+               HERO
+            ========================= */
+
+        .farmer-details-hero {
+            padding: 45px 0 80px;
+            background: linear-gradient(135deg, #f4fbf5, #ffffff);
+        }
+
+        .farmer-breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            margin-bottom: 45px;
+            color: #839087;
+            font-size: 13px;
+        }
+
+            .farmer-breadcrumb a {
+                color: #378050;
+                text-decoration: none;
+                font-weight: 600;
+            }
+
+            .farmer-breadcrumb i {
+                font-size: 10px;
+            }
+
+        .farmer-profile-image {
+            position: relative;
+            overflow: hidden;
+            border-radius: 28px;
+            box-shadow: 0 20px 50px rgba(30, 75, 45, .15);
+        }
+
+            .farmer-profile-image img {
+                width: 100%;
+                height: 510px;
+                display: block;
+                object-fit: cover;
+            }
+
+        .verified-profile {
+            position: absolute;
+            left: 20px;
+            bottom: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 10px 15px;
+            color: #216d3d;
+            background: #e9f7ed;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .farmer-profile-content {
+            padding-left: 20px;
+        }
+
+        .profile-label {
+            display: inline-block;
+            margin-bottom: 12px;
+            color: #2b9653;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 1.8px;
+        }
+
+        .farmer-profile-content h1 {
+            margin-bottom: 8px;
+            color: #193d29;
+            font-size: clamp(40px, 5vw, 60px);
+            font-weight: 800;
+        }
+
+        .farmer-profile-content h3 {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 18px;
+            color: #63806d;
+            font-size: 19px;
+            font-weight: 600;
+        }
+
+            .farmer-profile-content h3 i {
+                color: #2d9955;
+            }
+
+        .profile-rating {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            margin-bottom: 20px;
+        }
+
+        .rating-stars {
+            color: #e7a82e;
+            font-size: 15px;
+        }
+
+        .profile-rating strong {
+            color: #304b39;
+        }
+
+        .profile-rating > span:last-child {
+            color: #89958d;
+            font-size: 13px;
+        }
+
+        .farmer-profile-content > p {
+            max-width: 620px;
+            margin-bottom: 20px;
+            color: #68776e;
+            font-size: 16px;
+            line-height: 1.85;
+        }
+
+        .profile-location {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 27px;
+            color: #3d7952;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .profile-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn-farmer-contact,
+        .btn-farmer-favorite {
+            min-height: 50px;
+            padding: 13px 21px;
+            border-radius: 11px;
+            font-weight: 700;
+        }
+
+        .btn-farmer-contact {
+            color: #fff;
+            background: #2d9955;
+            border-color: #2d9955;
+        }
+
+            .btn-farmer-contact:hover {
+                color: #fff;
+                background: #237c44;
+            }
+
+        .btn-farmer-favorite {
+            color: #36714a;
+            background: #fff;
+            border: 1px solid #d3e6d9;
+        }
+
+            .btn-farmer-favorite:hover,
+            .btn-farmer-favorite.active {
+                color: #d84d61;
+                background: #fff3f5;
+                border-color: #f0ccd2;
+            }
+
+
+        /* =========================
+               STATS
+            ========================= */
+
+        .farmer-stats-section {
+            padding: 25px 0;
+            background: #fff;
+        }
+
+        .farmer-stat-wrapper {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            padding: 20px;
+            border: 1px solid #e2ece5;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(34, 75, 47, .06);
+        }
+
+        .farmer-stat {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding: 12px 18px;
+            border-right: 1px solid #e8eee9;
+        }
+
+            .farmer-stat:last-child {
+                border-right: 0;
+            }
+
+        .stat-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            width: 48px;
+            height: 48px;
+            color: #2d9955;
+            background: #e8f6eb;
+            border-radius: 13px;
+            font-size: 19px;
+        }
+
+        .farmer-stat strong {
+            display: block;
+            color: #234430;
+            font-size: 21px;
+        }
+
+        .farmer-stat span {
+            color: #829087;
+            font-size: 12px;
+        }
+
+
+        /* =========================
+               ABOUT
+            ========================= */
+
+        .about-farmer-section {
+            padding: 95px 0;
+            background: #fff;
+        }
+
+        .details-section-heading {
+            margin-bottom: 25px;
+        }
+
+            .details-section-heading > span {
+                display: block;
+                margin-bottom: 9px;
+                color: #2b9653;
+                font-size: 12px;
+                font-weight: 800;
+                letter-spacing: 1.7px;
+            }
+
+            .details-section-heading h2 {
+                margin: 0;
+                color: #193d29;
+                font-size: clamp(31px, 4vw, 44px);
+                font-weight: 800;
+                line-height: 1.2;
+            }
+
+                .details-section-heading h2 strong {
+                    color: #2d9955;
+                }
+
+        .about-farmer-section p {
+            color: #6e7d74;
+            line-height: 1.85;
+            font-size: 15px;
+        }
+
+        .farmer-values {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 28px;
+        }
+
+            .farmer-values div {
+                display: flex;
+                align-items: center;
+                gap: 9px;
+                color: #42674f;
+                font-size: 13px;
+                font-weight: 700;
+            }
+
+            .farmer-values i {
+                color: #2d9955;
+                font-size: 17px;
+            }
+
+
+        /* FARM INFORMATION */
+
+        .farm-information-card {
+            padding: 28px;
+            background: #f6faf7;
+            border: 1px solid #dfebe2;
+            border-radius: 20px;
+        }
+
+        .card-heading {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding-bottom: 20px;
+            margin-bottom: 5px;
+            border-bottom: 1px solid #e0ebe3;
+        }
+
+        .heading-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 47px;
+            height: 47px;
+            color: #2d9955;
+            background: #e4f4e8;
+            border-radius: 12px;
+        }
+
+        .card-heading h3 {
+            margin: 0 0 3px;
+            color: #294936;
+            font-size: 17px;
+            font-weight: 800;
+        }
+
+        .card-heading span {
+            color: #859188;
+            font-size: 12px;
+        }
+
+        .information-row {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding: 17px 0;
+            border-bottom: 1px solid #e0ebe3;
+        }
+
+            .information-row:last-child {
+                border-bottom: 0;
+            }
+
+        .info-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            flex-shrink: 0;
+            color: #398355;
+            background: #eaf6ed;
+            border-radius: 10px;
+        }
+
+        .information-row small {
+            display: block;
+            margin-bottom: 3px;
+            color: #8a968e;
+            font-size: 11px;
+        }
+
+        .information-row strong {
+            color: #36523f;
+            font-size: 13px;
+        }
+
+
+        /* =========================
+               PRODUCTS
+            ========================= */
+
+        .farmer-products-section {
+            padding: 95px 0;
+            background: #f5faf6;
+        }
+
+        .details-section-heading.text-center {
+            max-width: 700px;
+            margin: 0 auto 45px;
+        }
+
+        .details-section-heading p {
+            margin: 12px 0 0;
+            color: #77847c;
+            line-height: 1.7;
+        }
+
+        .farmer-product-card {
+            height: 100%;
+            overflow: hidden;
+            background: #fff;
+            border: 1px solid #e3ece5;
+            border-radius: 17px;
+            transition: .3s;
+        }
+
+            .farmer-product-card:hover {
+                transform: translateY(-6px);
+                box-shadow: 0 16px 35px rgba(32, 71, 45, .1);
+            }
+
+        .product-image {
+            position: relative;
+            height: 210px;
+            overflow: hidden;
+        }
+
+            .product-image img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: .4s;
+            }
+
+        .farmer-product-card:hover .product-image img {
+            transform: scale(1.06);
+        }
+
+        .product-image span {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            padding: 6px 10px;
+            color: #277544;
+            background: #e9f7ed;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+        .product-content {
+            padding: 18px;
+        }
+
+            .product-content small {
+                color: #7f8c84;
+                font-size: 11px;
+            }
+
+            .product-content h3 {
+                margin: 5px 0 16px;
+                color: #294936;
+                font-size: 17px;
+                font-weight: 800;
+            }
+
+        .product-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+            .product-bottom strong {
+                color: #27804a;
+                font-size: 14px;
+            }
+
+            .product-bottom a {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 35px;
+                height: 35px;
+                color: #fff;
+                background: #2d9955;
+                border-radius: 9px;
+                text-decoration: none;
+            }
+
+        .products-more-btn {
+            margin-top: 40px;
+        }
+
+        .btn-view-products {
+            padding: 12px 22px;
+            color: #2b7f47;
+            background: #fff;
+            border: 1px solid #cfe3d5;
+            border-radius: 10px;
+            font-weight: 700;
+        }
+
+            .btn-view-products:hover {
+                color: #fff;
+                background: #2d9955;
+            }
+
+
+        /* =========================
+               MARKET
+            ========================= */
+
+        .farmer-market-section {
+            padding: 95px 0;
+            background: #fff;
+        }
+
+        .market-image-wrapper {
+            position: relative;
+        }
+
+            .market-image-wrapper > img {
+                width: 100%;
+                height: 470px;
+                object-fit: cover;
+                border-radius: 25px;
+                box-shadow: 0 20px 45px rgba(32, 71, 45, .12);
+            }
+
+        .market-image-badge {
+            position: absolute;
+            right: 20px;
+            bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 18px;
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 12px 30px rgba(32, 71, 45, .15);
+        }
+
+            .market-image-badge > i {
+                color: #2d9955;
+                font-size: 25px;
+            }
+
+            .market-image-badge strong,
+            .market-image-badge span {
+                display: block;
+            }
+
+            .market-image-badge strong {
+                color: #294936;
+                font-size: 13px;
+            }
+
+            .market-image-badge span {
+                color: #849087;
+                font-size: 11px;
+            }
+
+        .market-details h2 {
+            margin-bottom: 17px;
+            color: #193d29;
+            font-size: clamp(30px, 4vw, 43px);
+            font-weight: 800;
+            line-height: 1.2;
+        }
+
+            .market-details h2 strong {
+                display: block;
+                color: #2d9955;
+            }
+
+        .market-details > p {
+            margin-bottom: 25px;
+            color: #6f7d75;
+            line-height: 1.8;
+        }
+
+        .market-info-list {
+            margin-bottom: 25px;
+        }
+
+            .market-info-list > div {
+                display: flex;
+                align-items: center;
+                gap: 13px;
+                padding: 13px 0;
+                border-bottom: 1px solid #edf1ee;
+            }
+
+                .market-info-list > div > i {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: 40px;
+                    height: 40px;
+                    color: #2d9955;
+                    background: #eaf6ed;
+                    border-radius: 10px;
+                }
+
+            .market-info-list small,
+            .market-info-list strong {
+                display: block;
+            }
+
+            .market-info-list small {
+                margin-bottom: 2px;
+                color: #89948d;
+                font-size: 11px;
+            }
+
+            .market-info-list strong {
+                color: #3c5745;
+                font-size: 13px;
+            }
+
+        .btn-market {
+            padding: 12px 21px;
+            color: #fff;
+            background: #2d9955;
+            border-radius: 10px;
+            font-weight: 700;
+        }
+
+            .btn-market:hover {
+                color: #fff;
+                background: #237c44;
+            }
+
+
+        /* =========================
+               CTA
+            ========================= */
+
+        .farmer-details-cta {
+            padding: 75px 0;
+            background: #216f3d;
+        }
+
+        .cta-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 30px;
+        }
+
+            .cta-content > div:first-child span {
+                color: #a9ddb8;
+                font-size: 11px;
+                font-weight: 800;
+                letter-spacing: 1.7px;
+            }
+
+            .cta-content h2 {
+                max-width: 650px;
+                margin: 9px 0 12px;
+                color: #fff;
+                font-size: clamp(30px, 4vw, 45px);
+                font-weight: 800;
+            }
+
+            .cta-content p {
+                margin: 0;
+                color: #c5e5cd;
+            }
+
+        .cta-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+            .cta-actions .btn {
+                min-height: 48px;
+                padding: 12px 19px;
+                border-radius: 10px;
+                font-weight: 700;
+            }
+
+
+        /* =========================
+               RESPONSIVE
+            ========================= */
+
+        @@media (max-width: 991.98px) {
+
+            .farmer-details-hero {
+                padding: 35px 0 65px;
+            }
+
+            .farmer-profile-content {
+                padding-left: 0;
+            }
+
+            .farmer-profile-image img {
+                height: 450px;
+            }
+
+            .farmer-stat-wrapper {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .farmer-stat:nth-child(2) {
+                border-right: 0;
+            }
+
+            .market-image-wrapper {
+                max-width: 700px;
+                margin: auto;
+            }
+
+            .cta-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+
+        @@media (max-width: 767.98px) {
+
+            .farmer-profile-image img {
+                height: 380px;
+            }
+
+            .farmer-breadcrumb {
+                margin-bottom: 30px;
+            }
+
+            .farmer-profile-content h1 {
+                font-size: 42px;
+            }
+
+            .farmer-stat-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .farmer-stat {
+                border-right: 0;
+                border-bottom: 1px solid #e8eee9;
+            }
+
+                .farmer-stat:last-child {
+                    border-bottom: 0;
+                }
+
+            .about-farmer-section,
+            .farmer-products-section,
+            .farmer-market-section {
+                padding: 70px 0;
+            }
+
+            .farmer-values {
+                grid-template-columns: 1fr;
+            }
+
+            .market-image-wrapper > img {
+                height: 370px;
+            }
+        }
+
+
+        @@media (max-width: 575.98px) {
+
+            .farmer-details-hero {
+                padding-top: 25px;
+            }
+
+            .farmer-profile-image img {
+                height: 330px;
+            }
+
+            .verified-profile {
+                left: 12px;
+                bottom: 12px;
+                font-size: 11px;
+            }
+
+            .farmer-profile-content h1 {
+                font-size: 36px;
+            }
+
+            .farmer-profile-content h3 {
+                font-size: 16px;
+            }
+
+            .profile-actions {
+                flex-direction: column;
+            }
+
+                .profile-actions .btn {
+                    width: 100%;
+                }
+
+            .farm-information-card {
+                padding: 20px;
+            }
+
+            .product-image {
+                height: 230px;
+            }
+
+            .market-image-wrapper > img {
+                height: 300px;
+                border-radius: 18px;
+            }
+
+            .market-image-badge {
+                right: 10px;
+                bottom: 10px;
+            }
+
+            .cta-actions {
+                width: 100%;
+                flex-direction: column;
+            }
+
+                .cta-actions .btn {
+                    width: 100%;
+                }
+        }
+
+    </style>
+
+}
+
+
+@section Scripts {
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const favoriteButton =
+                document.getElementById("favoriteFarmer");
+
+
+            favoriteButton.addEventListener("click", function () {
+
+                this.classList.toggle("active");
+
+                const icon =
+                    this.querySelector("i");
+
+                const text =
+                    this.querySelector("span");
+
+
+                if (this.classList.contains("active")) {
+
+                    icon.classList.remove("bi-heart");
+
+                    icon.classList.add("bi-heart-fill");
+
+                    text.textContent = "Saved";
+
+                }
+                else {
+
+                    icon.classList.remove("bi-heart-fill");
+
+                    icon.classList.add("bi-heart");
+
+                    text.textContent = "Save Farmer";
+
+                }
+
+            });
+
+
+            const contactButton =
+                document.querySelector(".btn-farmer-contact");
+
+
+            contactButton.addEventListener("click", function () {
+
+                this.innerHTML =
+                    '<i class="bi bi-check-circle-fill"></i> Contact Request Sent';
+
+                this.classList.add("contact-sent");
+
+            });
+
+        });
+
+    </script>
+
+}

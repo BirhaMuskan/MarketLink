@@ -1,0 +1,113 @@
+@model MarketLink.ViewModels.AdminSidebarSummaryViewModel
+
+<nav class="admin-menu">
+
+    <div class="admin-menu-heading">OVERVIEW</div>
+
+    <a asp-controller="Admin"
+       asp-action="Index"
+       class="admin-menu-link">
+        <i class="bi bi-grid-1x2-fill"></i>
+        <span>Dashboard</span>
+    </a>
+
+    <div class="admin-menu-heading admin-second-heading">MANAGEMENT</div>
+
+    <a asp-controller="AdminFarmers"
+   asp-action="Pending"
+   class="admin-menu-link">
+
+    <i class="bi bi-people"></i>
+    <span>Farmers</span>
+
+    <span class="admin-count">
+        @Model.Farmers
+    </span>
+
+</a>
+
+    <a asp-controller="Customers"
+       asp-action="Index"
+       class="admin-menu-link">
+        <i class="bi bi-person-check"></i>
+        <span>Customers</span>
+        <span class="admin-count">@Model.Customers</span>
+    </a>
+
+    <a asp-controller="Markets"
+       asp-action="Index"
+       class="admin-menu-link">
+        <i class="bi bi-shop"></i>
+        <span>Markets</span>
+    </a>
+
+    <a asp-controller="Products"
+       asp-action="Index"
+       class="admin-menu-link">
+        <i class="bi bi-basket"></i>
+        <span>Products</span>
+    </a>
+
+    <a asp-controller="Orders"
+       asp-action="Index"
+       class="admin-menu-link">
+        <i class="bi bi-receipt"></i>
+        <span>Orders</span>
+        @if (Model.OrdersNeedingAttention > 0)
+        {
+            <span class="admin-count orange">@Model.OrdersNeedingAttention</span>
+        }
+    </a>
+
+    <div class="admin-menu-heading admin-second-heading">MODERATION</div>
+
+    <a asp-controller="Reviews"
+       asp-action="Index"
+       class="admin-menu-link">
+        <i class="bi bi-star"></i>
+        <span>Reviews</span>
+        <span class="admin-count">@Model.Reviews</span>
+    </a>
+
+    <a asp-controller="Categories"
+       asp-action="Index"
+       class="admin-menu-link">
+        <i class="bi bi-tags"></i>
+        <span>Categories</span>
+    </a>
+
+    <a asp-controller="Notifications"
+       asp-action="Index"
+       class="admin-menu-link">
+        <i class="bi bi-bell"></i>
+        <span>Notifications</span>
+        @if (Model.UnreadNotifications > 0)
+        {
+            <span class="admin-count">@Model.UnreadNotifications</span>
+        }
+    </a>
+
+    <div class="admin-menu-heading admin-second-heading">INTELLIGENCE</div>
+
+    <a asp-controller="Admin"
+       asp-action="Analytics"
+       class="admin-menu-link">
+        <i class="bi bi-bar-chart-line"></i>
+        <span>Reports & Analytics</span>
+    </a>
+
+    <a asp-controller="Admin"
+       asp-action="AiIntelligence"
+       class="admin-menu-link">
+        <i class="bi bi-stars"></i>
+        <span>AI Intelligence</span>
+    </a>
+
+    <a asp-controller="Admin"
+       asp-action="Settings"
+       class="admin-menu-link">
+        <i class="bi bi-gear"></i>
+        <span>Settings</span>
+    </a>
+
+</nav>

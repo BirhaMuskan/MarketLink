@@ -1,0 +1,1912 @@
+﻿
+@{
+    ViewData["Title"] = "Register";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Register | MarketLink</title>
+
+
+    <!-- Bootstrap Icons -->
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+
+    <!-- =====================================================
+         ALL CSS IS INSIDE THIS FILE
+         ===================================================== -->
+
+    <style>
+
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+
+            body {
+                font-family: "Segoe UI", Arial, sans-serif;
+                background: #f5f8f4;
+                color: #26352b;
+            }
+
+
+            /* =====================================================
+                       MAIN PAGE
+                       ===================================================== */
+
+            .auth-page {
+                min-height: 100vh;
+                padding: 35px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: linear-gradient( 135deg, #f4f8f2 0%, #edf5ed 50%, #f8faf7 100% );
+            }
+
+
+            /* =====================================================
+                       MAIN WRAPPER
+                       ===================================================== */
+
+            .auth-wrapper {
+                width: 100%;
+                max-width: 1150px;
+                min-height: 720px;
+                display: grid;
+                grid-template-columns: 1fr 0.9fr;
+                background: white;
+                border-radius: 24px;
+                overflow: hidden;
+                box-shadow: 0 20px 60px rgba(40, 70, 45, 0.12);
+            }
+
+
+            /* =====================================================
+                       LEFT SIDE
+                       ===================================================== */
+
+            .auth-info {
+                position: relative;
+                padding: 55px;
+                color: white;
+                background: linear-gradient( 145deg, #183d27, #27613a );
+                overflow: hidden;
+            }
+
+
+                .auth-info::before {
+                    content: "";
+                    position: absolute;
+                    width: 350px;
+                    height: 350px;
+                    border-radius: 50%;
+                    background: rgba(255,255,255,0.04);
+                    top: -120px;
+                    right: -100px;
+                }
+
+
+                .auth-info::after {
+                    content: "";
+                    position: absolute;
+                    width: 250px;
+                    height: 250px;
+                    border-radius: 50%;
+                    background: rgba(255,255,255,0.035);
+                    bottom: -100px;
+                    left: -100px;
+                }
+
+
+            /* =====================================================
+                       LOGO
+                       ===================================================== */
+
+            .auth-logo {
+                position: relative;
+                z-index: 2;
+                display: inline-flex;
+                align-items: center;
+                gap: 12px;
+                text-decoration: none;
+                color: white;
+                font-size: 25px;
+                font-weight: 500;
+            }
+
+
+                .auth-logo strong,
+                .mobile-auth-logo strong {
+                    font-weight: 700;
+                }
+
+
+                .auth-logo b,
+                .mobile-auth-logo b {
+                    color: #91d66d;
+                    font-weight: 700;
+                }
+
+
+            .logo-icon {
+                width: 44px;
+                height: 44px;
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: #91d66d;
+                color: #173b26;
+                font-size: 21px;
+            }
+
+
+            /* =====================================================
+                       LEFT CONTENT
+                       ===================================================== */
+
+            .auth-info-content {
+                position: relative;
+                z-index: 2;
+                margin-top: 110px;
+                max-width: 490px;
+            }
+
+
+            .auth-small-title {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                color: #a7df88;
+                font-size: 12px;
+                font-weight: 700;
+                letter-spacing: 1.5px;
+                margin-bottom: 22px;
+            }
+
+
+            .auth-info-content h1 {
+                font-size: 48px;
+                line-height: 1.12;
+                margin-bottom: 22px;
+                font-weight: 700;
+            }
+
+
+                .auth-info-content h1 span {
+                    display: block;
+                    color: #91d66d;
+                }
+
+
+            .auth-info-content > p {
+                color: #d3e5d7;
+                font-size: 16px;
+                line-height: 1.8;
+                max-width: 440px;
+                margin-bottom: 45px;
+            }
+
+
+            /* =====================================================
+                       FEATURES
+                       ===================================================== */
+
+            .auth-features {
+                display: flex;
+                flex-direction: column;
+                gap: 25px;
+            }
+
+
+            .auth-feature {
+                display: flex;
+                align-items: center;
+                gap: 16px;
+            }
+
+
+            .feature-icon {
+                width: 46px;
+                height: 46px;
+                min-width: 46px;
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: rgba(145, 214, 109, 0.12);
+                color: #91d66d;
+                font-size: 19px;
+                border: 1px solid rgba(145, 214, 109, 0.15);
+            }
+
+
+            .auth-feature h6 {
+                font-size: 15px;
+                margin-bottom: 4px;
+                color: white;
+            }
+
+
+            .auth-feature p {
+                font-size: 13px;
+                color: #bad2bf;
+                line-height: 1.4;
+            }
+
+
+            /* =====================================================
+                       RIGHT CARD
+                       ===================================================== */
+
+            .auth-card {
+                padding: 45px 55px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                background: white;
+                overflow-y: auto;
+            }
+
+
+            /* =====================================================
+                       MOBILE LOGO
+                       ===================================================== */
+
+            .mobile-auth-logo {
+                display: none;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+                color: #183d27;
+                font-size: 24px;
+                margin-bottom: 25px;
+            }
+
+
+            /* =====================================================
+                       FORM HEADER
+                       ===================================================== */
+
+            .auth-card-header {
+                text-align: center;
+                margin-bottom: 28px;
+            }
+
+
+            .form-icon {
+                width: 55px;
+                height: 55px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 15px;
+                background: #edf7e9;
+                color: #4f9b3c;
+                font-size: 23px;
+                margin-bottom: 15px;
+            }
+
+
+            .auth-card-header h2 {
+                color: #203126;
+                font-size: 29px;
+                margin-bottom: 8px;
+            }
+
+
+            .auth-card-header p {
+                color: #829087;
+                font-size: 14px;
+            }
+
+
+            /* =====================================================
+                       FORM
+                       ===================================================== */
+
+            .auth-form {
+                width: 100%;
+            }
+
+
+            .form-group {
+                margin-bottom: 17px;
+            }
+
+
+                .form-group label {
+                    display: block;
+                    font-size: 13px;
+                    font-weight: 600;
+                    color: #34433a;
+                    margin-bottom: 7px;
+                }
+
+
+            /* =====================================================
+                       INPUT
+                       ===================================================== */
+
+            .input-wrapper {
+                position: relative;
+                display: flex;
+                align-items: center;
+            }
+
+
+                .input-wrapper > i {
+                    position: absolute;
+                    left: 15px;
+                    color: #8b9890;
+                    font-size: 17px;
+                    pointer-events: none;
+                    z-index: 2;
+                }
+
+
+            .form-control {
+                width: 100%;
+                height: 48px;
+                border: 1px solid #dce4de;
+                border-radius: 10px;
+                background: #fbfcfb;
+                padding: 0 45px;
+                font-size: 14px;
+                color: #29372e;
+                outline: none;
+                transition: all 0.2s ease;
+            }
+
+
+            textarea.form-control {
+                height: auto;
+                min-height: 85px;
+                padding-top: 14px;
+                padding-bottom: 14px;
+                resize: vertical;
+            }
+
+
+            .form-control::placeholder {
+                color: #aab3ad;
+            }
+
+
+            .form-control:focus {
+                border-color: #6db954;
+                background: white;
+                box-shadow: 0 0 0 3px rgba(109, 185, 84, 0.12);
+            }
+
+
+            /* =====================================================
+                       SELECT
+                       ===================================================== */
+
+            select.form-control {
+                appearance: none;
+                cursor: pointer;
+                padding-right: 40px;
+            }
+
+
+            .input-wrapper:has(select)::after {
+                content: "\F282";
+                font-family: "bootstrap-icons";
+                position: absolute;
+                right: 15px;
+                color: #89968e;
+                pointer-events: none;
+            }
+
+
+            /* =====================================================
+                       TEXTAREA ICON
+                       ===================================================== */
+
+            .textarea-wrapper {
+                align-items: flex-start;
+            }
+
+
+                .textarea-wrapper > i {
+                    top: 15px;
+                }
+
+
+            /* =====================================================
+                       PASSWORD TOGGLE
+                       ===================================================== */
+
+            .password-toggle {
+                position: absolute;
+                right: 10px;
+                top: 50%;
+                transform: translateY(-50%);
+                border: none;
+                background: transparent;
+                color: #8b9890;
+                cursor: pointer;
+                font-size: 17px;
+                width: 30px;
+                height: 30px;
+            }
+
+
+                .password-toggle:hover {
+                    color: #4f9b3c;
+                }
+
+
+            /* =====================================================
+                       FARMER FIELDS
+                       ===================================================== */
+
+            .farmer-fields {
+                display: none;
+                padding: 14px 15px 2px;
+                margin: 5px 0 17px;
+                border-left: 3px solid #79bf5c;
+                background: #f8fbf6;
+                border-radius: 0 10px 10px 0;
+                animation: farmerFieldsIn 0.25s ease;
+            }
+
+
+            @@keyframes farmerFieldsIn {
+
+                from {
+                    opacity: 0;
+                    transform: translateY(-8px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+
+            /* =====================================================
+                       TERMS
+                       ===================================================== */
+
+            .terms-check {
+                margin: 5px 0 20px;
+            }
+
+
+                .terms-check label {
+                    display: flex;
+                    align-items: flex-start;
+                    gap: 10px;
+                    cursor: pointer;
+                    font-size: 12px;
+                    color: #758078;
+                    line-height: 1.5;
+                }
+
+
+                .terms-check input {
+                    position: absolute;
+                    opacity: 0;
+                    pointer-events: none;
+                }
+
+
+            .custom-check {
+                width: 17px;
+                height: 17px;
+                min-width: 17px;
+                border: 1px solid #ccd7cf;
+                border-radius: 4px;
+                background: white;
+                margin-top: 1px;
+                position: relative;
+                transition: all 0.2s ease;
+            }
+
+
+            .terms-check input:checked + .custom-check {
+                background: #5ca844;
+                border-color: #5ca844;
+            }
+
+
+                .terms-check input:checked + .custom-check::after {
+                    content: "\F26E";
+                    font-family: "bootstrap-icons";
+                    color: white;
+                    position: absolute;
+                    font-size: 12px;
+                    left: 2px;
+                    top: -1px;
+                }
+
+
+            .terms-check a {
+                color: #4e963c;
+                text-decoration: none;
+                font-weight: 600;
+            }
+
+
+                .terms-check a:hover {
+                    text-decoration: underline;
+                }
+
+
+            /* =====================================================
+                       MESSAGE
+                       ===================================================== */
+
+            #message {
+                width: 100%;
+            }
+
+
+            .register-success {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 12px 14px;
+                margin-bottom: 15px;
+                border-radius: 9px;
+                background: #eaf7e7;
+                color: #348126;
+                border: 1px solid #cce9c5;
+                font-size: 13px;
+                line-height: 1.4;
+            }
+
+
+                .register-success i {
+                    font-size: 18px;
+                    flex-shrink: 0;
+                }
+
+
+            .register-error {
+                display: flex;
+                align-items: flex-start;
+                gap: 10px;
+                padding: 12px 14px;
+                margin-bottom: 15px;
+                border-radius: 9px;
+                background: #fff1f1;
+                color: #c52e2e;
+                border: 1px solid #f1cece;
+                font-size: 13px;
+                line-height: 1.4;
+            }
+
+
+                .register-error i {
+                    font-size: 18px;
+                    flex-shrink: 0;
+                }
+
+
+            /* =====================================================
+                       SUBMIT BUTTON
+                       ===================================================== */
+
+            .auth-submit {
+                width: 100%;
+                height: 50px;
+                border: none;
+                border-radius: 10px;
+                background: linear-gradient( 135deg, #4f963c, #67ad4f );
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+                font-size: 14px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.25s ease;
+                box-shadow: 0 8px 18px rgba(79, 150, 60, 0.18);
+            }
+
+
+                .auth-submit:hover {
+                    transform: translateY(-1px);
+                    box-shadow: 0 10px 22px rgba(79, 150, 60, 0.25);
+                }
+
+
+                .auth-submit:active {
+                    transform: translateY(0);
+                }
+
+
+                .auth-submit:disabled {
+                    opacity: 0.7;
+                    cursor: not-allowed;
+                    transform: none;
+                }
+
+
+            /* =====================================================
+                       LOGIN LINK
+                       ===================================================== */
+
+            .auth-switch {
+                text-align: center;
+                margin-top: 20px;
+                font-size: 13px;
+                color: #7d8981;
+            }
+
+
+                .auth-switch a {
+                    color: #4e963c;
+                    font-weight: 700;
+                    text-decoration: none;
+                    margin-left: 4px;
+                }
+
+
+                    .auth-switch a:hover {
+                        text-decoration: underline;
+                    }
+
+
+            /* =====================================================
+                       BACK HOME
+                       ===================================================== */
+
+            .auth-home {
+                text-align: center;
+                margin-top: 25px;
+                padding-top: 20px;
+                border-top: 1px solid #edf0ed;
+            }
+
+
+                .auth-home a {
+                    color: #77837b;
+                    text-decoration: none;
+                    font-size: 12px;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 7px;
+                    transition: color 0.2s ease;
+                }
+
+
+                    .auth-home a:hover {
+                        color: #4e963c;
+                    }
+
+
+            /* =====================================================
+                       LOADING
+                       ===================================================== */
+
+            .bi-arrow-repeat {
+                animation: spin 1s linear infinite;
+            }
+
+
+            @@keyframes spin {
+
+                from {
+                    transform: rotate(0deg);
+                }
+
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+
+
+            /* =====================================================
+                       RESPONSIVE - TABLET
+                       ===================================================== */
+
+            @@media (max-width: 900px) {
+
+                .auth-page {
+                    padding: 20px;
+                }
+
+
+                .auth-wrapper {
+                    grid-template-columns: 1fr;
+                    max-width: 600px;
+                }
+
+
+                .auth-info {
+                    display: none;
+                }
+
+
+                .mobile-auth-logo {
+                    display: flex;
+                }
+
+
+                .auth-card {
+                    padding: 40px;
+                }
+            }
+
+
+            /* =====================================================
+                       RESPONSIVE - MOBILE
+                       ===================================================== */
+
+            @@media (max-width: 500px) {
+
+                .auth-page {
+                    padding: 0;
+                    align-items: stretch;
+                }
+
+
+                .auth-wrapper {
+                    min-height: 100vh;
+                    border-radius: 0;
+                    box-shadow: none;
+                }
+
+
+                .auth-card {
+                    padding: 30px 22px;
+                }
+
+
+                .auth-card-header h2 {
+                    font-size: 25px;
+                }
+
+
+                .auth-card-header p {
+                    font-size: 13px;
+                }
+
+
+                .form-control {
+                    height: 46px;
+                }
+
+
+                .auth-submit {
+                    height: 48px;
+                }
+            }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <div class="auth-page">
+
+
+        <div class="auth-wrapper">
+
+
+            <!-- =================================================
+             LEFT SIDE
+             ================================================= -->
+
+            <div class="auth-info">
+
+
+                <!-- LOGO -->
+
+                <a href="/" class="auth-logo">
+
+                    <span class="logo-icon">
+
+                        <i class="bi bi-basket2-fill"></i>
+
+                    </span>
+
+                    <span>
+
+                        <strong>Market</strong><b>Link</b>
+
+                    </span>
+
+                </a>
+
+
+                <!-- CONTENT -->
+
+                <div class="auth-info-content">
+
+
+                    <span class="auth-small-title">
+
+                        <i class="bi bi-leaf-fill"></i>
+
+                        FRESH • SIMPLE • SMART
+
+                    </span>
+
+
+                    <h1>
+
+                        Fresh shopping,
+
+                        <span>better living.</span>
+
+                    </h1>
+
+
+                    <p>
+
+                        Create your MarketLink account and discover
+                        a smarter way to shop for fresh groceries
+                        and everyday essentials.
+
+                    </p>
+
+
+                    <!-- FEATURES -->
+
+                    <div class="auth-features">
+
+
+                        <div class="auth-feature">
+
+                            <div class="feature-icon">
+
+                                <i class="bi bi-bag-check-fill"></i>
+
+                            </div>
+
+                            <div>
+
+                                <h6>Easy Shopping</h6>
+
+                                <p>
+                                    Shop your favorite products with ease.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="auth-feature">
+
+                            <div class="feature-icon">
+
+                                <i class="bi bi-truck"></i>
+
+                            </div>
+
+                            <div>
+
+                                <h6>Fast Delivery</h6>
+
+                                <p>
+                                    Get your groceries delivered to your door.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="auth-feature">
+
+                            <div class="feature-icon">
+
+                                <i class="bi bi-shield-check"></i>
+
+                            </div>
+
+                            <div>
+
+                                <h6>Secure Account</h6>
+
+                                <p>
+                                    Your account information stays protected.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+             RIGHT SIDE
+             ================================================= -->
+
+            <div class="auth-card">
+
+
+                <!-- MOBILE LOGO -->
+
+                <div class="mobile-auth-logo">
+
+                    <span class="logo-icon">
+
+                        <i class="bi bi-basket2-fill"></i>
+
+                    </span>
+
+                    <span>
+
+                        <strong>Market</strong><b>Link</b>
+
+                    </span>
+
+                </div>
+
+
+                <!-- HEADER -->
+
+                <div class="auth-card-header">
+
+
+                    <span class="form-icon">
+
+                        <i class="bi bi-person-plus-fill"></i>
+
+                    </span>
+
+
+                    <h2>
+                        Create Account
+                    </h2>
+
+
+                    <p>
+                        Join MarketLink and start shopping smarter.
+                    </p>
+
+
+                </div>
+
+
+                <!-- =================================================
+                 REGISTRATION FORM
+                 ================================================= -->
+
+                <form id="registerForm"
+                      class="auth-form">
+
+
+                    <!-- ACCOUNT TYPE -->
+
+                    <div class="form-group">
+
+
+                        <label for="accountType">
+                            Account Type
+                        </label>
+
+
+                        <div class="input-wrapper">
+
+
+                            <i class="bi bi-person-badge"></i>
+
+
+                            <select id="accountType"
+                                    class="form-control">
+
+
+                                <option value="customer">
+                                    Customer
+                                </option>
+
+
+                                <option value="farmer">
+                                    Farmer
+                                </option>
+
+
+                            </select>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                    <!-- FULL NAME -->
+
+                    <div class="form-group">
+
+
+                        <label for="fullName">
+                            Full Name
+                        </label>
+
+
+                        <div class="input-wrapper">
+
+
+                            <i class="bi bi-person"></i>
+
+
+                            <input type="text"
+                                   id="fullName"
+                                   class="form-control"
+                                   placeholder="Enter your full name"
+                                   required>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                    <!-- EMAIL -->
+
+                    <div class="form-group">
+
+
+                        <label for="email">
+                            Email Address
+                        </label>
+
+
+                        <div class="input-wrapper">
+
+
+                            <i class="bi bi-envelope"></i>
+
+
+                            <input type="email"
+                                   id="email"
+                                   class="form-control"
+                                   placeholder="Enter your email"
+                                   required>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                    <!-- PHONE -->
+
+                    <div class="form-group">
+
+
+                        <label for="phone">
+                            Phone Number
+                        </label>
+
+
+                        <div class="input-wrapper">
+
+
+                            <i class="bi bi-telephone"></i>
+
+
+                            <input type="text"
+                                   id="phone"
+                                   class="form-control"
+                                   placeholder="Enter your phone number"
+                                   required>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                    <!-- ADDRESS -->
+
+                    <div class="form-group">
+
+
+                        <label for="address">
+                            Address
+                        </label>
+
+
+                        <div class="input-wrapper textarea-wrapper">
+
+
+                            <i class="bi bi-geo-alt"></i>
+
+
+                            <textarea id="address"
+                                      class="form-control"
+                                      placeholder="Enter your address"
+                                      rows="3"
+                                      required></textarea>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                    <!-- =================================================
+                     FARMER FIELDS
+                     ================================================= -->
+
+                    <div id="farmerFields"
+                         class="farmer-fields">
+
+
+                        <!-- BUSINESS NAME -->
+
+                        <div class="form-group">
+
+
+                            <label for="businessName">
+                                Business Name
+                            </label>
+
+
+                            <div class="input-wrapper">
+
+
+                                <i class="bi bi-shop"></i>
+
+
+                                <input type="text"
+                                       id="businessName"
+                                       class="form-control"
+                                       placeholder="Enter your business name">
+
+
+                            </div>
+
+
+                        </div>
+
+
+                        <!-- DESCRIPTION -->
+
+                        <div class="form-group">
+
+
+                            <label for="description">
+                                Business Description
+                            </label>
+
+
+                            <div class="input-wrapper textarea-wrapper">
+
+
+                                <i class="bi bi-card-text"></i>
+
+
+                                <textarea id="description"
+                                          class="form-control"
+                                          placeholder="Describe your farming business"
+                                          rows="3"></textarea>
+
+
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                    <!-- PASSWORD -->
+
+                    <div class="form-group">
+
+
+                        <label for="password">
+                            Password
+                        </label>
+
+
+                        <div class="input-wrapper">
+
+
+                            <i class="bi bi-lock"></i>
+
+
+                            <input type="password"
+                                   id="password"
+                                   class="form-control"
+                                   placeholder="Create a password"
+                                   required>
+
+
+                            <button type="button"
+                                    class="password-toggle"
+                                    onclick="togglePassword('password', this)">
+
+
+                                <i class="bi bi-eye"></i>
+
+
+                            </button>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                    <!-- CONFIRM PASSWORD -->
+
+                    <div class="form-group">
+
+
+                        <label for="confirmPassword">
+                            Confirm Password
+                        </label>
+
+
+                        <div class="input-wrapper">
+
+
+                            <i class="bi bi-shield-lock"></i>
+
+
+                            <input type="password"
+                                   id="confirmPassword"
+                                   class="form-control"
+                                   placeholder="Confirm your password"
+                                   required>
+
+
+                            <button type="button"
+                                    class="password-toggle"
+                                    onclick="togglePassword('confirmPassword', this)">
+
+
+                                <i class="bi bi-eye"></i>
+
+
+                            </button>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                    <!-- TERMS -->
+
+                    <div class="terms-check">
+
+
+                        <label>
+
+
+                            <input type="checkbox"
+                                   id="terms"
+                                   required>
+
+
+                            <span class="custom-check"></span>
+
+
+                            <span>
+
+                                I agree to the
+
+                                <a href="#">
+                                    Terms & Conditions
+                                </a>
+
+                                and
+
+                                <a href="#">
+                                    Privacy Policy
+                                </a>.
+
+                            </span>
+
+
+                        </label>
+
+
+                    </div>
+
+
+                    <!-- MESSAGE -->
+
+                    <div id="message"></div>
+
+
+                    <!-- SUBMIT -->
+
+                    <button type="submit"
+                            class="auth-submit"
+                            id="registerButton">
+
+
+                        <span id="buttonText">
+                            Create Account
+                        </span>
+
+
+                        <i class="bi bi-arrow-right"
+                           id="buttonIcon"></i>
+
+
+                    </button>
+
+
+                    <!-- LOGIN -->
+
+                    <div class="auth-switch">
+
+
+                        <span>
+                            Already have an account?
+                        </span>
+
+
+                        <a href="/Auth/Login">
+                            Sign In
+                        </a>
+
+
+                    </div>
+
+
+                </form>
+
+
+                <!-- HOME -->
+
+                <div class="auth-home">
+
+
+                    <a href="/">
+
+
+                        <i class="bi bi-arrow-left"></i>
+
+
+                        Back to MarketLink
+
+
+                    </a>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+
+    <script>
+
+
+            /* =========================================================
+               ACCOUNT TYPE
+               ========================================================= */
+
+
+            const accountType =
+                document.getElementById("accountType");
+
+
+            const farmerFields =
+                document.getElementById("farmerFields");
+
+
+            const businessName =
+                document.getElementById("businessName");
+
+
+            const description =
+                document.getElementById("description");
+
+
+
+            accountType.addEventListener("change", function () {
+
+
+                if (this.value === "farmer") {
+
+
+                    farmerFields.style.display = "block";
+
+
+                    businessName.required = true;
+
+                    description.required = true;
+
+
+                } else {
+
+
+                    farmerFields.style.display = "none";
+
+
+                    businessName.required = false;
+
+                    description.required = false;
+
+
+                    businessName.value = "";
+
+                    description.value = "";
+
+                }
+
+            });
+
+
+
+            /* =========================================================
+               PASSWORD VISIBILITY
+               ========================================================= */
+
+
+            function togglePassword(inputId, button) {
+
+
+                const input =
+                    document.getElementById(inputId);
+
+
+                const icon =
+                    button.querySelector("i");
+
+
+                if (input.type === "password") {
+
+
+                    input.type = "text";
+
+
+                    icon.classList.remove("bi-eye");
+
+                    icon.classList.add("bi-eye-slash");
+
+
+                } else {
+
+
+                    input.type = "password";
+
+
+                    icon.classList.remove("bi-eye-slash");
+
+                    icon.classList.add("bi-eye");
+
+                }
+
+            }
+
+
+
+            /* =========================================================
+               REGISTRATION
+               ========================================================= */
+
+
+            document.getElementById("registerForm")
+                .addEventListener("submit", async function (event) {
+
+
+                    event.preventDefault();
+
+
+                    const accountTypeValue =
+                        accountType.value;
+
+
+                    const password =
+                        document.getElementById("password").value;
+
+
+                    const confirmPassword =
+                        document.getElementById("confirmPassword").value;
+
+
+                    const message =
+                        document.getElementById("message");
+
+
+                    const registerButton =
+                        document.getElementById("registerButton");
+
+
+                    const buttonText =
+                        document.getElementById("buttonText");
+
+
+                    const buttonIcon =
+                        document.getElementById("buttonIcon");
+
+
+                    message.innerHTML = "";
+
+
+
+                    /* =====================================================
+                       PASSWORD CHECK
+                       ===================================================== */
+
+
+                    if (password !== confirmPassword) {
+
+
+                        message.innerHTML = `
+
+                            <div class="register-error">
+
+                                <i class="bi bi-exclamation-circle"></i>
+
+                                <span>
+                                    Passwords do not match.
+                                </span>
+
+                            </div>
+
+                        `;
+
+
+                        return;
+
+                    }
+
+
+
+                    /* =====================================================
+                       TERMS CHECK
+                       ===================================================== */
+
+
+                    if (!document.getElementById("terms").checked) {
+
+
+                        message.innerHTML = `
+
+                            <div class="register-error">
+
+                                <i class="bi bi-exclamation-circle"></i>
+
+                                <span>
+                                    Please accept the Terms & Conditions
+                                    and Privacy Policy.
+                                </span>
+
+                            </div>
+
+                        `;
+
+
+                        return;
+
+                    }
+
+
+
+                    /* =====================================================
+                       COMMON DATA
+                       ===================================================== */
+
+
+                    let data = {
+
+
+                        fullName:
+                            document.getElementById("fullName")
+                                .value
+                                .trim(),
+
+
+                        email:
+                            document.getElementById("email")
+                                .value
+                                .trim(),
+
+
+                        phone:
+                            document.getElementById("phone")
+                                .value
+                                .trim(),
+
+
+                        address:
+                            document.getElementById("address")
+                                .value
+                                .trim(),
+
+
+                        password:
+                            password
+
+                    };
+
+
+
+                    /* =====================================================
+                       FARMER DATA
+                       ===================================================== */
+
+
+                    if (accountTypeValue === "farmer") {
+
+
+                        data.businessName =
+                            businessName.value.trim();
+
+
+                        data.description =
+                            description.value.trim();
+
+                    }
+
+
+
+                    /* =====================================================
+                       API ENDPOINT
+                       ===================================================== */
+
+
+                    const endpoint =
+
+                        accountTypeValue === "customer"
+
+                            ? "/api/Auth/register/customer"
+
+                            : "/api/Auth/register/farmer";
+
+
+
+                    /* =====================================================
+                       LOADING
+                       ===================================================== */
+
+
+                    registerButton.disabled = true;
+
+
+                    buttonText.textContent =
+                        "Creating Account...";
+
+
+                    buttonIcon.className =
+                        "bi bi-arrow-repeat";
+
+
+
+                    try {
+
+
+                        const response =
+                            await fetch(endpoint, {
+
+
+                                method: "POST",
+
+
+                                headers: {
+
+                                    "Content-Type":
+                                        "application/json"
+
+                                },
+
+
+                                body:
+                                    JSON.stringify(data)
+
+                            });
+
+
+
+                        const result =
+                            await response.json();
+
+
+
+                        /* =================================================
+                           SUCCESS
+                           ================================================= */
+
+
+                        if (response.ok) {
+
+
+                            message.innerHTML = `
+
+                                <div class="register-success">
+
+                                    <i class="bi bi-check-circle-fill"></i>
+
+                                    <span>
+                                        ${result.message}
+                                    </span>
+
+                                </div>
+
+                            `;
+
+
+                            document.getElementById("registerForm")
+                                .reset();
+
+
+                            farmerFields.style.display =
+                                "none";
+
+
+                            buttonText.textContent =
+                                "Account Created";
+
+
+                            buttonIcon.className =
+                                "bi bi-check";
+
+
+                            setTimeout(function () {
+
+
+                                window.location.href =
+                                    "/Auth/Login";
+
+
+                            }, 2000);
+
+
+                        }
+
+
+                        /* =================================================
+                           ERROR
+                           ================================================= */
+
+                        else {
+
+
+                            console.error(
+                                "Registration error:",
+                                result
+                            );
+
+
+                            let errorMessage =
+                                "Registration failed.";
+
+
+                            if (result.message) {
+
+
+                                errorMessage =
+                                    result.message;
+
+                            }
+
+
+                            else if (result.errors) {
+
+
+                                errorMessage =
+
+                                    Object.values(result.errors)
+                                        .flat()
+                                        .join("<br>");
+
+                            }
+
+
+                            message.innerHTML = `
+
+                                <div class="register-error">
+
+                                    <i class="bi bi-exclamation-circle-fill"></i>
+
+                                    <span>
+                                        ${errorMessage}
+                                    </span>
+
+                                </div>
+
+                            `;
+
+
+                            registerButton.disabled =
+                                false;
+
+
+                            buttonText.textContent =
+                                "Create Account";
+
+
+                            buttonIcon.className =
+                                "bi bi-arrow-right";
+
+                        }
+
+
+                    }
+
+
+                    /* =====================================================
+                       CONNECTION ERROR
+                       ===================================================== */
+
+                    catch (error) {
+
+
+                        console.error(error);
+
+
+                        message.innerHTML = `
+
+                            <div class="register-error">
+
+                                <i class="bi bi-wifi-off"></i>
+
+                                <span>
+                                    Unable to connect to the server.
+                                    Please try again.
+                                </span>
+
+                            </div>
+
+                        `;
+
+
+                        registerButton.disabled =
+                            false;
+
+
+                        buttonText.textContent =
+                            "Create Account";
+
+
+                        buttonIcon.className =
+                            "bi bi-arrow-right";
+
+                    }
+
+                });
+
+
+    </script>
+
+
+</body>
+
+</html>

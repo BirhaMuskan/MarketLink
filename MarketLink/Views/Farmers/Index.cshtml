@@ -1,0 +1,1549 @@
+﻿@{
+    ViewData["Title"] = "Farmers";
+}
+
+<!-- =========================
+     FARMERS HERO
+========================= -->
+<section class="farmers-hero">
+    <div class="container">
+        <div class="row align-items-center g-5">
+
+            <div class="col-lg-7">
+                <span class="farmers-badge">
+                    <i class="bi bi-person-heart"></i>
+                    Meet Our Farmers
+                </span>
+
+                <h1>
+                    Meet the People
+                    <span>Behind Your Food</span>
+                </h1>
+
+                <p>
+                    Discover local farmers who grow fresh, quality produce
+                    with care. Support local agriculture and know where your
+                    food comes from.
+                </p>
+
+                <div class="hero-actions">
+                    <a asp-controller="Products"
+                       asp-action="Index"
+                       class="btn btn-farmer-primary">
+                        <i class="bi bi-basket2"></i>
+                        Explore Products
+                    </a>
+
+                    <a href="#farmers"
+                       class="btn btn-farmer-outline">
+                        Meet Farmers
+                        <i class="bi bi-arrow-down"></i>
+                    </a>
+                </div>
+
+                <div class="farmer-hero-stats">
+                    <div>
+                        <strong>80+</strong>
+                        <span>Local Farmers</span>
+                    </div>
+
+                    <div>
+                        <strong>250+</strong>
+                        <span>Fresh Products</span>
+                    </div>
+
+                    <div>
+                        <strong>15+</strong>
+                        <span>Local Markets</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="farmers-hero-image">
+                    <img src="https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=900&q=85"
+                         alt="Local farmer working in farm">
+
+                    <div class="hero-floating-card">
+                        <div class="floating-icon">
+                            <i class="bi bi-patch-check-fill"></i>
+                        </div>
+
+                        <div>
+                            <strong>Verified Farmers</strong>
+                            <small>Trusted local producers</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<!-- =========================
+     FARMERS SECTION
+========================= -->
+<section class="farmers-section" id="farmers">
+
+    <div class="container">
+
+        <div class="section-heading text-center">
+            <span>OUR FARMING COMMUNITY</span>
+
+            <h2>
+                Meet Our <strong>Local Farmers</strong>
+            </h2>
+
+            <p>
+                Get to know the hardworking people growing fresh and healthy
+                food for your community.
+            </p>
+        </div>
+
+
+        <!-- Search & Filter -->
+        <div class="farmers-filter-box">
+
+            <div class="row g-3 align-items-center">
+
+                <div class="col-lg-6">
+                    <div class="farmer-search">
+                        <i class="bi bi-search"></i>
+
+                        <input type="text"
+                               id="farmerSearch"
+                               class="form-control"
+                               placeholder="Search farmer by name or farm..." />
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-3">
+                    <select id="farmerLocation" class="form-select">
+                        <option value="">All Locations</option>
+                        <option value="karachi">Karachi</option>
+                        <option value="lahore">Lahore</option>
+                        <option value="islamabad">Islamabad</option>
+                        <option value="hyderabad">Hyderabad</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6 col-lg-3">
+                    <button type="button"
+                            id="resetFarmers"
+                            class="btn btn-reset w-100">
+                        <i class="bi bi-arrow-counterclockwise"></i>
+                        Reset Filters
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Farmers Grid -->
+        <div class="row g-4" id="farmersGrid">
+
+
+            <!-- Farmer 1 -->
+            <div class="col-md-6 col-lg-4 farmer-item"
+                 data-name="ahmed khan"
+                 data-location="karachi">
+
+                <div class="farmer-card">
+
+                    <div class="farmer-image">
+                        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=700&q=85"
+                             alt="Ahmed Khan">
+
+                        <span class="verified-badge">
+                            <i class="bi bi-patch-check-fill"></i>
+                            Verified
+                        </span>
+                    </div>
+
+                    <div class="farmer-content">
+
+                        <div class="farmer-name-row">
+                            <div>
+                                <h3>Ahmed Khan</h3>
+                                <span>Green Valley Farm</span>
+                            </div>
+
+                            <button class="favorite-farmer"
+                                    type="button"
+                                    aria-label="Favorite farmer">
+                                <i class="bi bi-heart"></i>
+                            </button>
+                        </div>
+
+                        <div class="farmer-location">
+                            <i class="bi bi-geo-alt-fill"></i>
+                            Karachi, Sindh
+                        </div>
+
+                        <p>
+                            Growing fresh vegetables and seasonal produce
+                            using responsible farming practices.
+                        </p>
+
+                        <div class="farmer-meta">
+                            <span>
+                                <i class="bi bi-star-fill"></i>
+                                4.9
+                            </span>
+
+                            <span>
+                                <i class="bi bi-basket2"></i>
+                                24 Products
+                            </span>
+                        </div>
+
+                        <a asp-controller="Farmers"
+                           asp-action="Details"
+                           asp-route-id="1"
+                           class="farmer-view-btn">
+                            View Farmer
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Farmer 2 -->
+            <div class="col-md-6 col-lg-4 farmer-item"
+                 data-name="fatima bibi"
+                 data-location="lahore">
+
+                <div class="farmer-card">
+
+                    <div class="farmer-image">
+                        <img src="https://images.unsplash.com/photo-1592982537447-6f2a6a0a1d8b?auto=format&fit=crop&w=700&q=85"
+                             alt="Fatima Bibi">
+
+                        <span class="verified-badge">
+                            <i class="bi bi-patch-check-fill"></i>
+                            Verified
+                        </span>
+                    </div>
+
+                    <div class="farmer-content">
+
+                        <div class="farmer-name-row">
+                            <div>
+                                <h3>Fatima Bibi</h3>
+                                <span>Fresh Harvest Farm</span>
+                            </div>
+
+                            <button class="favorite-farmer"
+                                    type="button"
+                                    aria-label="Favorite farmer">
+                                <i class="bi bi-heart"></i>
+                            </button>
+                        </div>
+
+                        <div class="farmer-location">
+                            <i class="bi bi-geo-alt-fill"></i>
+                            Lahore, Punjab
+                        </div>
+
+                        <p>
+                            Producing naturally grown fruits, vegetables and
+                            farm-fresh products for local families.
+                        </p>
+
+                        <div class="farmer-meta">
+                            <span>
+                                <i class="bi bi-star-fill"></i>
+                                4.8
+                            </span>
+
+                            <span>
+                                <i class="bi bi-basket2"></i>
+                                18 Products
+                            </span>
+                        </div>
+
+                        <a asp-controller="Farmers"
+                           asp-action="Details"
+                           asp-route-id="2"
+                           class="farmer-view-btn">
+                            View Farmer
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Farmer 3 -->
+            <div class="col-md-6 col-lg-4 farmer-item"
+                 data-name="usman ali"
+                 data-location="islamabad">
+
+                <div class="farmer-card">
+
+                    <div class="farmer-image">
+                        <img src="https://images.unsplash.com/photo-1594911772127-3b7f3e4b7f6c?auto=format&fit=crop&w=700&q=85"
+                             alt="Usman Ali">
+
+                        <span class="verified-badge">
+                            <i class="bi bi-patch-check-fill"></i>
+                            Verified
+                        </span>
+                    </div>
+
+                    <div class="farmer-content">
+
+                        <div class="farmer-name-row">
+                            <div>
+                                <h3>Usman Ali</h3>
+                                <span>Sunrise Organic Farm</span>
+                            </div>
+
+                            <button class="favorite-farmer"
+                                    type="button"
+                                    aria-label="Favorite farmer">
+                                <i class="bi bi-heart"></i>
+                            </button>
+                        </div>
+
+                        <div class="farmer-location">
+                            <i class="bi bi-geo-alt-fill"></i>
+                            Islamabad
+                        </div>
+
+                        <p>
+                            Specializing in organic vegetables and healthy
+                            seasonal produce grown with care.
+                        </p>
+
+                        <div class="farmer-meta">
+                            <span>
+                                <i class="bi bi-star-fill"></i>
+                                4.9
+                            </span>
+
+                            <span>
+                                <i class="bi bi-basket2"></i>
+                                31 Products
+                            </span>
+                        </div>
+
+                        <a asp-controller="Farmers"
+                           asp-action="Details"
+                           asp-route-id="3"
+                           class="farmer-view-btn">
+                            View Farmer
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Farmer 4 -->
+            <div class="col-md-6 col-lg-4 farmer-item"
+                 data-name="sana malik"
+                 data-location="hyderabad">
+
+                <div class="farmer-card">
+
+                    <div class="farmer-image">
+                        <img src="https://images.unsplash.com/photo-1537519646099-335112f03225?auto=format&fit=crop&w=700&q=85"
+                             alt="Sana Malik">
+
+                        <span class="verified-badge">
+                            <i class="bi bi-patch-check-fill"></i>
+                            Verified
+                        </span>
+                    </div>
+
+                    <div class="farmer-content">
+
+                        <div class="farmer-name-row">
+                            <div>
+                                <h3>Sana Malik</h3>
+                                <span>Green Roots Farm</span>
+                            </div>
+
+                            <button class="favorite-farmer"
+                                    type="button"
+                                    aria-label="Favorite farmer">
+                                <i class="bi bi-heart"></i>
+                            </button>
+                        </div>
+
+                        <div class="farmer-location">
+                            <i class="bi bi-geo-alt-fill"></i>
+                            Hyderabad, Sindh
+                        </div>
+
+                        <p>
+                            Growing fresh local produce while supporting
+                            sustainable and community-focused farming.
+                        </p>
+
+                        <div class="farmer-meta">
+                            <span>
+                                <i class="bi bi-star-fill"></i>
+                                4.7
+                            </span>
+
+                            <span>
+                                <i class="bi bi-basket2"></i>
+                                16 Products
+                            </span>
+                        </div>
+
+                        <a asp-controller="Farmers"
+                           asp-action="Details"
+                           asp-route-id="4"
+                           class="farmer-view-btn">
+                            View Farmer
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Farmer 5 -->
+            <div class="col-md-6 col-lg-4 farmer-item"
+                 data-name="bilal ahmed"
+                 data-location="karachi">
+
+                <div class="farmer-card">
+
+                    <div class="farmer-image">
+                        <img src="https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=700&q=85"
+                             alt="Bilal Ahmed">
+
+                        <span class="verified-badge">
+                            <i class="bi bi-patch-check-fill"></i>
+                            Verified
+                        </span>
+                    </div>
+
+                    <div class="farmer-content">
+
+                        <div class="farmer-name-row">
+                            <div>
+                                <h3>Bilal Ahmed</h3>
+                                <span>Pure Fields Farm</span>
+                            </div>
+
+                            <button class="favorite-farmer"
+                                    type="button"
+                                    aria-label="Favorite farmer">
+                                <i class="bi bi-heart"></i>
+                            </button>
+                        </div>
+
+                        <div class="farmer-location">
+                            <i class="bi bi-geo-alt-fill"></i>
+                            Karachi, Sindh
+                        </div>
+
+                        <p>
+                            Providing fresh vegetables, herbs and quality
+                            farm products directly to local markets.
+                        </p>
+
+                        <div class="farmer-meta">
+                            <span>
+                                <i class="bi bi-star-fill"></i>
+                                4.8
+                            </span>
+
+                            <span>
+                                <i class="bi bi-basket2"></i>
+                                21 Products
+                            </span>
+                        </div>
+
+                        <a asp-controller="Farmers"
+                           asp-action="Details"
+                           asp-route-id="5"
+                           class="farmer-view-btn">
+                            View Farmer
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Farmer 6 -->
+            <div class="col-md-6 col-lg-4 farmer-item"
+                 data-name="ayesha iqbal"
+                 data-location="lahore">
+
+                <div class="farmer-card">
+
+                    <div class="farmer-image">
+                        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=700&q=85"
+                             alt="Ayesha Iqbal">
+
+                        <span class="verified-badge">
+                            <i class="bi bi-patch-check-fill"></i>
+                            Verified
+                        </span>
+                    </div>
+
+                    <div class="farmer-content">
+
+                        <div class="farmer-name-row">
+                            <div>
+                                <h3>Ayesha Iqbal</h3>
+                                <span>Nature's Basket Farm</span>
+                            </div>
+
+                            <button class="favorite-farmer"
+                                    type="button"
+                                    aria-label="Favorite farmer">
+                                <i class="bi bi-heart"></i>
+                            </button>
+                        </div>
+
+                        <div class="farmer-location">
+                            <i class="bi bi-geo-alt-fill"></i>
+                            Lahore, Punjab
+                        </div>
+
+                        <p>
+                            Growing fresh fruits and vegetables with a focus
+                            on quality, freshness and natural farming.
+                        </p>
+
+                        <div class="farmer-meta">
+                            <span>
+                                <i class="bi bi-star-fill"></i>
+                                4.9
+                            </span>
+
+                            <span>
+                                <i class="bi bi-basket2"></i>
+                                27 Products
+                            </span>
+                        </div>
+
+                        <a asp-controller="Farmers"
+                           asp-action="Details"
+                           asp-route-id="6"
+                           class="farmer-view-btn">
+                            View Farmer
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- No Result -->
+        <div id="noFarmers" class="no-farmers d-none">
+            <i class="bi bi-person-x"></i>
+            <h3>No Farmers Found</h3>
+            <p>
+                Try changing your search or location filter.
+            </p>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     WHY SUPPORT FARMERS
+========================= -->
+<section class="support-farmers">
+
+    <div class="container">
+
+        <div class="section-heading text-center">
+            <span>WHY SHOP LOCAL?</span>
+
+            <h2>
+                Support Your <strong>Local Farmers</strong>
+            </h2>
+
+            <p>
+                Every purchase helps strengthen local communities and
+                supports the people who grow our food.
+            </p>
+        </div>
+
+        <div class="row g-4">
+
+            <div class="col-md-6 col-lg-3">
+                <div class="support-card">
+                    <div class="support-icon">
+                        <i class="bi bi-basket2-fill"></i>
+                    </div>
+
+                    <h3>Fresh Produce</h3>
+
+                    <p>
+                        Get fresh products sourced directly from local farms.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="support-card">
+                    <div class="support-icon">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
+
+                    <h3>Support Farmers</h3>
+
+                    <p>
+                        Help local farmers grow their businesses and
+                        communities.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="support-card">
+                    <div class="support-icon">
+                        <i class="bi bi-geo-alt-fill"></i>
+                    </div>
+
+                    <h3>Shop Locally</h3>
+
+                    <p>
+                        Discover quality food from farms around your area.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="support-card">
+                    <div class="support-icon">
+                        <i class="bi bi-heart-fill"></i>
+                    </div>
+
+                    <h3>Build Community</h3>
+
+                    <p>
+                        Create stronger connections between farmers and
+                        families.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     CTA
+========================= -->
+<section class="farmer-cta">
+
+    <div class="container">
+
+        <div class="farmer-cta-inner">
+
+            <div>
+                <span>GROW LOCAL. SHOP LOCAL.</span>
+
+                <h2>
+                    Discover Freshness<br />
+                    From Local Farms
+                </h2>
+
+                <p>
+                    Find farmers near you and explore their fresh products.
+                </p>
+            </div>
+
+            <div class="cta-buttons">
+
+                <a asp-controller="Products"
+                   asp-action="Index"
+                   class="btn btn-light">
+                    <i class="bi bi-basket2"></i>
+                    Browse Products
+                </a>
+
+                <a asp-controller="Markets"
+                   asp-action="Index"
+                   class="btn btn-outline-light">
+                    Find Markets
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+@section Styles {
+
+    <style>
+
+        /* =========================
+               FARMERS HERO
+            ========================= */
+
+        .farmers-hero {
+            padding: 90px 0 85px;
+            background: linear-gradient(135deg, #f4fbf5 0%, #ffffff 55%, #eef8f1 100%);
+            overflow: hidden;
+        }
+
+        .farmers-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 16px;
+            margin-bottom: 20px;
+            border-radius: 50px;
+            background: #e4f4e8;
+            color: #24864a;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+            .farmers-badge i {
+                font-size: 16px;
+            }
+
+        .farmers-hero h1 {
+            max-width: 700px;
+            margin-bottom: 22px;
+            color: #173b28;
+            font-size: clamp(40px, 5vw, 68px);
+            line-height: 1.08;
+            font-weight: 800;
+        }
+
+            .farmers-hero h1 span {
+                display: block;
+                color: #2c9955;
+            }
+
+        .farmers-hero p {
+            max-width: 620px;
+            margin-bottom: 30px;
+            color: #63736a;
+            font-size: 17px;
+            line-height: 1.8;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn-farmer-primary,
+        .btn-farmer-outline {
+            min-height: 50px;
+            padding: 13px 23px;
+            border-radius: 12px;
+            font-weight: 700;
+        }
+
+        .btn-farmer-primary {
+            color: #fff;
+            background: #2d9955;
+            border: 1px solid #2d9955;
+        }
+
+            .btn-farmer-primary:hover {
+                color: #fff;
+                background: #237c44;
+                border-color: #237c44;
+                transform: translateY(-2px);
+            }
+
+        .btn-farmer-outline {
+            color: #267f47;
+            background: #fff;
+            border: 1px solid #cce4d3;
+        }
+
+            .btn-farmer-outline:hover {
+                color: #267f47;
+                background: #edf8f0;
+                border-color: #b7dbbf;
+            }
+
+        .farmer-hero-stats {
+            display: flex;
+            gap: 35px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+            .farmer-hero-stats div {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .farmer-hero-stats strong {
+                color: #1d5633;
+                font-size: 28px;
+                line-height: 1;
+            }
+
+            .farmer-hero-stats span {
+                margin-top: 7px;
+                color: #77857c;
+                font-size: 13px;
+            }
+
+        .farmers-hero-image {
+            position: relative;
+            padding: 12px;
+        }
+
+            .farmers-hero-image::before {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: -20px;
+                width: 180px;
+                height: 180px;
+                border-radius: 50%;
+                background: #dff2e4;
+                z-index: 0;
+            }
+
+            .farmers-hero-image img {
+                position: relative;
+                z-index: 1;
+                width: 100%;
+                height: 520px;
+                object-fit: cover;
+                border-radius: 30px;
+                box-shadow: 0 25px 60px rgba(34, 77, 48, 0.16);
+            }
+
+        .hero-floating-card {
+            position: absolute;
+            z-index: 2;
+            left: -15px;
+            bottom: 45px;
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding: 15px 18px;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 15px 40px rgba(27, 67, 42, 0.15);
+        }
+
+        .floating-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            background: #e7f6eb;
+            color: #2b9653;
+            font-size: 21px;
+        }
+
+        .hero-floating-card strong {
+            display: block;
+            color: #244332;
+            font-size: 14px;
+        }
+
+        .hero-floating-card small {
+            color: #849087;
+            font-size: 12px;
+        }
+
+
+        /* =========================
+               FARMERS SECTION
+            ========================= */
+
+        .farmers-section {
+            padding: 95px 0;
+            background: #fff;
+        }
+
+        .section-heading {
+            max-width: 720px;
+            margin: 0 auto 45px;
+        }
+
+            .section-heading span {
+                display: block;
+                margin-bottom: 10px;
+                color: #2b9653;
+                font-size: 12px;
+                font-weight: 800;
+                letter-spacing: 1.8px;
+            }
+
+            .section-heading h2 {
+                margin-bottom: 14px;
+                color: #193d29;
+                font-size: clamp(30px, 4vw, 44px);
+                font-weight: 800;
+            }
+
+                .section-heading h2 strong {
+                    color: #2c9955;
+                }
+
+            .section-heading p {
+                margin: 0;
+                color: #758078;
+                line-height: 1.8;
+            }
+
+
+        /* FILTER */
+
+        .farmers-filter-box {
+            padding: 18px;
+            margin-bottom: 40px;
+            background: #f6faf7;
+            border: 1px solid #e1eee4;
+            border-radius: 18px;
+        }
+
+        .farmer-search {
+            position: relative;
+        }
+
+            .farmer-search i {
+                position: absolute;
+                top: 50%;
+                left: 17px;
+                z-index: 2;
+                color: #789082;
+                transform: translateY(-50%);
+            }
+
+            .farmer-search input {
+                height: 50px;
+                padding-left: 45px;
+                border: 1px solid #dce9df;
+                border-radius: 12px;
+            }
+
+                .farmer-search input:focus,
+                .farmers-filter-box select:focus {
+                    border-color: #70b687;
+                    box-shadow: 0 0 0 3px rgba(45, 153, 85, 0.08);
+                }
+
+        .farmers-filter-box select {
+            height: 50px;
+            border-color: #dce9df;
+            border-radius: 12px;
+        }
+
+        .btn-reset {
+            height: 50px;
+            color: #36714a;
+            background: #fff;
+            border: 1px solid #d5e7da;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+            .btn-reset:hover {
+                color: #fff;
+                background: #2d9955;
+                border-color: #2d9955;
+            }
+
+
+        /* FARMER CARD */
+
+        .farmer-card {
+            height: 100%;
+            overflow: hidden;
+            background: #fff;
+            border: 1px solid #e5eee7;
+            border-radius: 20px;
+            box-shadow: 0 8px 28px rgba(32, 71, 45, 0.06);
+            transition: all .3s ease;
+        }
+
+            .farmer-card:hover {
+                transform: translateY(-7px);
+                border-color: #cae2d0;
+                box-shadow: 0 18px 45px rgba(32, 71, 45, 0.12);
+            }
+
+        .farmer-image {
+            position: relative;
+            height: 245px;
+            overflow: hidden;
+        }
+
+            .farmer-image img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: transform .5s ease;
+            }
+
+        .farmer-card:hover .farmer-image img {
+            transform: scale(1.05);
+        }
+
+        .verified-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 7px 11px;
+            color: #216d3d;
+            background: #e9f7ed;
+            border-radius: 30px;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .farmer-content {
+            padding: 22px;
+        }
+
+        .farmer-name-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+            .farmer-name-row h3 {
+                margin: 0 0 5px;
+                color: #203d2b;
+                font-size: 21px;
+                font-weight: 800;
+            }
+
+            .farmer-name-row span {
+                color: #829087;
+                font-size: 13px;
+            }
+
+        .favorite-farmer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            width: 38px;
+            height: 38px;
+            color: #809087;
+            background: #f5f9f6;
+            border: 0;
+            border-radius: 50%;
+            font-size: 17px;
+            transition: all .2s ease;
+        }
+
+            .favorite-farmer:hover,
+            .favorite-farmer.active {
+                color: #d84d61;
+                background: #fff0f2;
+            }
+
+        .farmer-location {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 15px;
+            color: #3f7952;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+            .farmer-location i {
+                font-size: 14px;
+            }
+
+        .farmer-content p {
+            min-height: 67px;
+            margin: 13px 0 17px;
+            color: #748078;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .farmer-meta {
+            display: flex;
+            gap: 18px;
+            padding: 13px 0;
+            margin-bottom: 15px;
+            border-top: 1px solid #edf2ee;
+            border-bottom: 1px solid #edf2ee;
+        }
+
+            .farmer-meta span {
+                color: #77847c;
+                font-size: 12px;
+            }
+
+            .farmer-meta i {
+                margin-right: 4px;
+                color: #e5a52d;
+            }
+
+            .farmer-meta span:last-child i {
+                color: #4d9865;
+            }
+
+        .farmer-view-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 12px 15px;
+            color: #2b7f47;
+            background: #f0f8f2;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all .2s ease;
+        }
+
+            .farmer-view-btn:hover {
+                color: #fff;
+                background: #2d9955;
+            }
+
+
+        /* NO RESULT */
+
+        .no-farmers {
+            padding: 60px 20px;
+            text-align: center;
+            background: #f8fbf9;
+            border-radius: 20px;
+        }
+
+            .no-farmers > i {
+                color: #91a69a;
+                font-size: 45px;
+            }
+
+            .no-farmers h3 {
+                margin-top: 15px;
+                color: #31513d;
+            }
+
+            .no-farmers p {
+                color: #829087;
+            }
+
+
+        /* =========================
+               SUPPORT SECTION
+            ========================= */
+
+        .support-farmers {
+            padding: 95px 0;
+            background: #f5faf6;
+        }
+
+        .support-card {
+            height: 100%;
+            padding: 30px 25px;
+            text-align: center;
+            background: #fff;
+            border: 1px solid #e3eee6;
+            border-radius: 18px;
+            transition: all .3s ease;
+        }
+
+            .support-card:hover {
+                transform: translateY(-6px);
+                box-shadow: 0 15px 35px rgba(32, 71, 45, 0.08);
+            }
+
+        .support-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 18px;
+            color: #2d9955;
+            background: #e8f6eb;
+            border-radius: 16px;
+            font-size: 25px;
+        }
+
+        .support-card h3 {
+            margin-bottom: 10px;
+            color: #244332;
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .support-card p {
+            margin: 0;
+            color: #7b877f;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+
+        /* =========================
+               CTA
+            ========================= */
+
+        .farmer-cta {
+            padding: 80px 0;
+            background: #216f3d;
+        }
+
+        .farmer-cta-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 35px;
+        }
+
+            .farmer-cta-inner > div:first-child span {
+                color: #a9ddb8;
+                font-size: 12px;
+                font-weight: 800;
+                letter-spacing: 1.7px;
+            }
+
+        .farmer-cta h2 {
+            margin: 10px 0 12px;
+            color: #fff;
+            font-size: clamp(30px, 4vw, 46px);
+            line-height: 1.15;
+            font-weight: 800;
+        }
+
+        .farmer-cta p {
+            margin: 0;
+            color: #c5e5cd;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+            .cta-buttons .btn {
+                min-height: 48px;
+                padding: 12px 20px;
+                border-radius: 10px;
+                font-weight: 700;
+            }
+
+
+        /* =========================
+               RESPONSIVE
+            ========================= */
+
+        @@media (max-width: 991.98px) {
+
+            .farmers-hero {
+                padding: 65px 0;
+            }
+
+            .farmers-hero-image {
+                max-width: 650px;
+                margin: 20px auto 0;
+            }
+
+                .farmers-hero-image img {
+                    height: 450px;
+                }
+
+            .hero-floating-card {
+                left: 5px;
+            }
+
+            .farmer-cta-inner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        @@media (max-width: 767.98px) {
+
+            .farmers-hero {
+                padding: 50px 0;
+            }
+
+                .farmers-hero h1 {
+                    font-size: 42px;
+                }
+
+            .farmer-hero-stats {
+                gap: 22px;
+            }
+
+            .farmers-hero-image img {
+                height: 380px;
+                border-radius: 22px;
+            }
+
+            .hero-floating-card {
+                bottom: 25px;
+                padding: 12px;
+            }
+
+            .farmers-section,
+            .support-farmers {
+                padding: 70px 0;
+            }
+
+            .farmer-image {
+                height: 270px;
+            }
+
+            .farmer-content p {
+                min-height: auto;
+            }
+
+            .farmer-cta {
+                padding: 65px 0;
+            }
+        }
+
+        @@media (max-width: 575.98px) {
+
+            .farmers-hero h1 {
+                font-size: 36px;
+            }
+
+            .farmers-hero p {
+                font-size: 15px;
+            }
+
+            .hero-actions {
+                flex-direction: column;
+            }
+
+                .hero-actions .btn {
+                    width: 100%;
+                }
+
+            .farmer-hero-stats {
+                justify-content: space-between;
+                gap: 10px;
+            }
+
+                .farmer-hero-stats strong {
+                    font-size: 23px;
+                }
+
+                .farmer-hero-stats span {
+                    font-size: 11px;
+                }
+
+            .farmers-hero-image img {
+                height: 330px;
+            }
+
+            .hero-floating-card {
+                left: 0;
+                bottom: 15px;
+            }
+
+            .section-heading {
+                margin-bottom: 30px;
+            }
+
+            .farmer-cta-inner {
+                gap: 25px;
+            }
+
+            .cta-buttons {
+                width: 100%;
+                flex-direction: column;
+            }
+
+                .cta-buttons .btn {
+                    width: 100%;
+                }
+        }
+
+    </style>
+}
+
+
+@section Scripts {
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const searchInput = document.getElementById("farmerSearch");
+            const locationFilter = document.getElementById("farmerLocation");
+            const resetButton = document.getElementById("resetFarmers");
+
+            const farmerItems =
+                document.querySelectorAll(".farmer-item");
+
+            const noFarmers =
+                document.getElementById("noFarmers");
+
+
+            function filterFarmers() {
+
+                const searchValue =
+                    searchInput.value.toLowerCase().trim();
+
+                const locationValue =
+                    locationFilter.value.toLowerCase();
+
+                let visibleCount = 0;
+
+
+                farmerItems.forEach(function (farmer) {
+
+                    const name =
+                        farmer.dataset.name.toLowerCase();
+
+                    const location =
+                        farmer.dataset.location.toLowerCase();
+
+
+                    const matchesSearch =
+                        name.includes(searchValue);
+
+                    const matchesLocation =
+                        locationValue === "" ||
+                        location === locationValue;
+
+
+                    if (matchesSearch && matchesLocation) {
+
+                        farmer.classList.remove("d-none");
+
+                        visibleCount++;
+
+                    } else {
+
+                        farmer.classList.add("d-none");
+
+                    }
+
+                });
+
+
+                if (visibleCount === 0) {
+
+                    noFarmers.classList.remove("d-none");
+
+                } else {
+
+                    noFarmers.classList.add("d-none");
+
+                }
+
+            }
+
+
+            searchInput.addEventListener(
+                "input",
+                filterFarmers
+            );
+
+
+            locationFilter.addEventListener(
+                "change",
+                filterFarmers
+            );
+
+
+            resetButton.addEventListener(
+                "click",
+                function () {
+
+                    searchInput.value = "";
+                    locationFilter.value = "";
+
+                    filterFarmers();
+
+                }
+            );
+
+
+            /* Favorite Farmer */
+
+            document
+                .querySelectorAll(".favorite-farmer")
+                .forEach(function (button) {
+
+                    button.addEventListener(
+                        "click",
+                        function () {
+
+                            const icon =
+                                this.querySelector("i");
+
+                            this.classList.toggle("active");
+
+                            if (this.classList.contains("active")) {
+
+                                icon.classList.remove("bi-heart");
+                                icon.classList.add("bi-heart-fill");
+
+                            } else {
+
+                                icon.classList.remove("bi-heart-fill");
+                                icon.classList.add("bi-heart");
+
+                            }
+
+                        }
+                    );
+
+                });
+
+        });
+
+    </script>
+
+}

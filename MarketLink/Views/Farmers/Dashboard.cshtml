@@ -1,0 +1,2645 @@
+﻿@* @{
+    ViewData["Title"] = "Farmer Dashboard";
+
+    Layout = "~/Views/Shared/_FarmerDashboardLayout.cshtml";
+}
+
+
+<!-- =====================================================
+     FARMER WELCOME
+====================================================== -->
+
+<section class="farmer-welcome">
+
+    <div class="farmer-welcome-content">
+
+        <span class="farmer-welcome-label">
+
+            <i class="bi bi-sun"></i>
+
+            FARMER CENTER
+
+        </span>
+
+
+        <h2>
+            Good morning, Green Valley Farm! 👋
+        </h2>
+
+
+        <p>
+            Manage your products, stock, orders and
+            customer activity from one place.
+        </p>
+
+    </div>
+
+
+    <div>
+
+        <a href="#"
+           class="farmer-primary-button">
+
+            <i class="bi bi-plus-lg"></i>
+
+            Add New Product
+
+        </a>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     STATISTICS
+====================================================== -->
+
+<section class="farmer-statistics">
+
+
+    <!-- PRODUCTS -->
+
+    <div class="farmer-stat-card">
+
+        <div class="farmer-stat-icon products-stat">
+
+            <i class="bi bi-basket-fill"></i>
+
+        </div>
+
+
+        <div class="farmer-stat-info">
+
+            <span>Total Products</span>
+
+            <strong>18</strong>
+
+            <small>
+                Active listings
+            </small>
+
+        </div>
+
+    </div>
+
+
+    <!-- ORDERS -->
+
+    <div class="farmer-stat-card">
+
+        <div class="farmer-stat-icon orders-stat">
+
+            <i class="bi bi-receipt"></i>
+
+        </div>
+
+
+        <div class="farmer-stat-info">
+
+            <span>Pending Orders</span>
+
+            <strong>5</strong>
+
+            <small>
+                Need your attention
+            </small>
+
+        </div>
+
+    </div>
+
+
+    <!-- SALES -->
+
+    <div class="farmer-stat-card">
+
+        <div class="farmer-stat-icon sales-stat">
+
+            <i class="bi bi-graph-up-arrow"></i>
+
+        </div>
+
+
+        <div class="farmer-stat-info">
+
+            <span>This Month Sales</span>
+
+            <strong>$2,480</strong>
+
+            <small>
+                <i class="bi bi-arrow-up"></i>
+                12.5% this month
+            </small>
+
+        </div>
+
+    </div>
+
+
+    <!-- RATING -->
+
+    <div class="farmer-stat-card">
+
+        <div class="farmer-stat-icon rating-stat">
+
+            <i class="bi bi-star-fill"></i>
+
+        </div>
+
+
+        <div class="farmer-stat-info">
+
+            <span>Customer Rating</span>
+
+            <strong>4.8</strong>
+
+            <small>
+                From 36 reviews
+            </small>
+
+        </div>
+
+    </div>
+
+
+</section>
+
+
+<!-- =====================================================
+     MAIN GRID
+====================================================== -->
+
+<div class="farmer-dashboard-grid">
+
+
+    <!-- =================================================
+         INCOMING ORDERS
+    ================================================== -->
+
+    <section class="farmer-card farmer-orders-card">
+
+
+        <div class="farmer-card-header">
+
+            <div>
+
+                <span>
+                    CUSTOMER ORDERS
+                </span>
+
+                <h3>Incoming Orders</h3>
+
+            </div>
+
+
+            <a href="#"
+               class="farmer-view-link">
+
+                View All
+
+                <i class="bi bi-arrow-right"></i>
+
+            </a>
+
+        </div>
+
+
+        <div class="farmer-orders">
+
+
+            <!-- ORDER 1 -->
+
+            <div class="farmer-order-item">
+
+                <div class="farmer-order-icon">
+
+                    <i class="bi bi-basket"></i>
+
+                </div>
+
+
+                <div class="farmer-order-info">
+
+                    <strong>
+                        Fresh Vegetable Basket
+                    </strong>
+
+                    <span>
+                        #ML-1024 · 4 items · Today
+                    </span>
+
+                </div>
+
+
+                <div class="farmer-order-right">
+
+                    <strong>
+                        $42.50
+                    </strong>
+
+                    <span class="farmer-order-status pending">
+                        Pending
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- ORDER 2 -->
+
+            <div class="farmer-order-item">
+
+                <div class="farmer-order-icon">
+
+                    <i class="bi bi-apple"></i>
+
+                </div>
+
+
+                <div class="farmer-order-info">
+
+                    <strong>
+                        Organic Fruit Box
+                    </strong>
+
+                    <span>
+                        #ML-1021 · 6 items · Today
+                    </span>
+
+                </div>
+
+
+                <div class="farmer-order-right">
+
+                    <strong>
+                        $35.00
+                    </strong>
+
+                    <span class="farmer-order-status accepted">
+                        Accepted
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- ORDER 3 -->
+
+            <div class="farmer-order-item">
+
+                <div class="farmer-order-icon">
+
+                    <i class="bi bi-flower1"></i>
+
+                </div>
+
+
+                <div class="farmer-order-info">
+
+                    <strong>
+                        Fresh Herbs Pack
+                    </strong>
+
+                    <span>
+                        #ML-1018 · 3 items · Tomorrow
+                    </span>
+
+                </div>
+
+
+                <div class="farmer-order-right">
+
+                    <strong>
+                        $18.50
+                    </strong>
+
+                    <span class="farmer-order-status ready">
+                        Ready
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- ORDER 4 -->
+
+            <div class="farmer-order-item">
+
+                <div class="farmer-order-icon">
+
+                    <i class="bi bi-egg"></i>
+
+                </div>
+
+
+                <div class="farmer-order-info">
+
+                    <strong>
+                        Farm Fresh Eggs
+                    </strong>
+
+                    <span>
+                        #ML-1015 · 2 items · Tomorrow
+                    </span>
+
+                </div>
+
+
+                <div class="farmer-order-right">
+
+                    <strong>
+                        $12.00
+                    </strong>
+
+                    <span class="farmer-order-status pending">
+                        Pending
+                    </span>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         QUICK ACTIONS
+    ================================================== -->
+
+    <section class="farmer-card">
+
+
+        <div class="farmer-card-header">
+
+            <div>
+
+                <span>
+                    QUICK ACTIONS
+                </span>
+
+                <h3>Manage Your Farm</h3>
+
+            </div>
+
+        </div>
+
+
+        <div class="farmer-quick-actions">
+
+
+            <a href="#"
+               class="farmer-quick-action">
+
+                <div class="quick-action-icon green">
+
+                    <i class="bi bi-plus-lg"></i>
+
+                </div>
+
+                <div>
+
+                    <strong>Add Product</strong>
+
+                    <small>
+                        Create a new product listing
+                    </small>
+
+                </div>
+
+                <i class="bi bi-chevron-right"></i>
+
+            </a>
+
+
+            <a href="#"
+               class="farmer-quick-action">
+
+                <div class="quick-action-icon orange">
+
+                    <i class="bi bi-box-seam"></i>
+
+                </div>
+
+                <div>
+
+                    <strong>Update Inventory</strong>
+
+                    <small>
+                        Manage available stock
+                    </small>
+
+                </div>
+
+                <i class="bi bi-chevron-right"></i>
+
+            </a>
+
+
+            <a href="#"
+               class="farmer-quick-action">
+
+                <div class="quick-action-icon blue">
+
+                    <i class="bi bi-clock"></i>
+
+                </div>
+
+                <div>
+
+                    <strong>Pickup Slots</strong>
+
+                    <small>
+                        Manage customer pickup times
+                    </small>
+
+                </div>
+
+                <i class="bi bi-chevron-right"></i>
+
+            </a>
+
+
+        </div>
+
+    </section>
+
+
+</div>
+
+
+<!-- =====================================================
+     SECOND GRID
+====================================================== -->
+
+<div class="farmer-dashboard-grid farmer-lower-grid">
+
+
+    <!-- =================================================
+         PRODUCT PERFORMANCE
+    ================================================== -->
+
+    <section class="farmer-card">
+
+
+        <div class="farmer-card-header">
+
+            <div>
+
+                <span>
+                    PRODUCT PERFORMANCE
+                </span>
+
+                <h3>Best Selling Products</h3>
+
+            </div>
+
+
+            <a href="#"
+               class="farmer-view-link">
+
+                Manage Products
+
+                <i class="bi bi-arrow-right"></i>
+
+            </a>
+
+        </div>
+
+
+        <div class="best-products">
+
+
+            <div class="best-product">
+
+                <div class="best-product-number">
+                    01
+                </div>
+
+
+                <div class="best-product-image tomato">
+
+                    <i class="bi bi-flower1"></i>
+
+                </div>
+
+
+                <div class="best-product-info">
+
+                    <strong>
+                        Fresh Tomatoes
+                    </strong>
+
+                    <span>
+                        48 units sold
+                    </span>
+
+                </div>
+
+
+                <strong class="best-product-sales">
+                    $216
+                </strong>
+
+            </div>
+
+
+            <div class="best-product">
+
+                <div class="best-product-number">
+                    02
+                </div>
+
+
+                <div class="best-product-image apple">
+
+                    <i class="bi bi-apple"></i>
+
+                </div>
+
+
+                <div class="best-product-info">
+
+                    <strong>
+                        Organic Apples
+                    </strong>
+
+                    <span>
+                        35 units sold
+                    </span>
+
+                </div>
+
+
+                <strong class="best-product-sales">
+                    $189
+                </strong>
+
+            </div>
+
+
+            <div class="best-product">
+
+                <div class="best-product-number">
+                    03
+                </div>
+
+
+                <div class="best-product-image herbs">
+
+                    <i class="bi bi-flower1"></i>
+
+                </div>
+
+
+                <div class="best-product-info">
+
+                    <strong>
+                        Fresh Herbs
+                    </strong>
+
+                    <span>
+                        29 units sold
+                    </span>
+
+                </div>
+
+
+                <strong class="best-product-sales">
+                    $145
+                </strong>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         STOCK ALERT
+    ================================================== -->
+
+    <section class="farmer-card">
+
+
+        <div class="farmer-card-header">
+
+            <div>
+
+                <span>
+                    INVENTORY
+                </span>
+
+                <h3>Stock Overview</h3>
+
+            </div>
+
+
+            <a href="#"
+               class="farmer-view-link">
+
+                Inventory
+
+                <i class="bi bi-arrow-right"></i>
+
+            </a>
+
+        </div>
+
+
+        <div class="stock-overview">
+
+
+            <div class="stock-row">
+
+                <div class="stock-product">
+
+                    <span class="stock-dot good"></span>
+
+                    <strong>Fresh Tomatoes</strong>
+
+                </div>
+
+                <span class="stock-value good-text">
+                    84 kg
+                </span>
+
+            </div>
+
+
+            <div class="stock-row">
+
+                <div class="stock-product">
+
+                    <span class="stock-dot good"></span>
+
+                    <strong>Organic Apples</strong>
+
+                </div>
+
+                <span class="stock-value good-text">
+                    52 kg
+                </span>
+
+            </div>
+
+
+            <div class="stock-row">
+
+                <div class="stock-product">
+
+                    <span class="stock-dot warning"></span>
+
+                    <strong>Fresh Herbs</strong>
+
+                </div>
+
+                <span class="stock-value warning-text">
+                    12 kg
+                </span>
+
+            </div>
+
+
+            <div class="stock-row">
+
+                <div class="stock-product">
+
+                    <span class="stock-dot danger"></span>
+
+                    <strong>Farm Eggs</strong>
+
+                </div>
+
+                <span class="stock-value danger-text">
+                    5 trays
+                </span>
+
+            </div>
+
+
+        </div>
+
+
+        <div class="inventory-alert">
+
+            <i class="bi bi-exclamation-circle"></i>
+
+            <span>
+                2 products are running low on stock.
+            </span>
+
+        </div>
+
+
+    </section>
+
+
+</div>
+
+
+<!-- =====================================================
+     REVIEWS + MARKET STATUS
+====================================================== -->
+
+<div class="farmer-bottom-grid">
+
+
+    <!-- REVIEWS -->
+
+    <section class="farmer-card review-preview">
+
+
+        <div class="farmer-card-header">
+
+            <div>
+
+                <span>
+                    CUSTOMER FEEDBACK
+                </span>
+
+                <h3>Latest Reviews</h3>
+
+            </div>
+
+
+            <a href="#"
+               class="farmer-view-link">
+
+                View Reviews
+
+                <i class="bi bi-arrow-right"></i>
+
+            </a>
+
+        </div>
+
+
+        <div class="review-content">
+
+            <div class="review-avatar">
+                A
+            </div>
+
+
+            <div class="review-text">
+
+                <div class="review-top">
+
+                    <strong>
+                        Ahmed
+                    </strong>
+
+                    <span>
+                        <i class="bi bi-star-fill"></i>
+                        5.0
+                    </span>
+
+                </div>
+
+
+                <p>
+                    "The vegetables were very fresh and
+                    pickup was quick. Highly recommended!"
+                </p>
+
+
+                <small>
+                    2 hours ago
+                </small>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- MARKET STATUS -->
+
+    <section class="farmer-card market-status-card">
+
+
+        <div class="farmer-card-header">
+
+            <div>
+
+                <span>
+                    YOUR MARKET
+                </span>
+
+                <h3>Market Status</h3>
+
+            </div>
+
+        </div>
+
+
+        <div class="market-status-box">
+
+            <div class="market-status-icon">
+
+                <i class="bi bi-shop"></i>
+
+            </div>
+
+
+            <div>
+
+                <strong>
+                    Central Farmers Market
+                </strong>
+
+                <span>
+                    Saturday · 8:00 AM - 2:00 PM
+                </span>
+
+            </div>
+
+
+            <span class="market-active">
+                Active
+            </span>
+
+        </div>
+
+
+        <a href="#"
+           class="manage-market-button">
+
+            Manage Market
+
+            <i class="bi bi-arrow-right"></i>
+
+        </a>
+
+    </section>
+
+</div>
+
+
+<!-- =====================================================
+     FARMER TIP
+====================================================== -->
+
+<section class="farmer-tip">
+
+    <div class="farmer-tip-icon">
+
+        <i class="bi bi-lightbulb-fill"></i>
+
+    </div>
+
+
+    <div>
+
+        <span>
+            MARKETLINK TIP
+        </span>
+
+        <h3>
+            Keep your stock updated to avoid missed orders.
+        </h3>
+
+        <p>
+            Customers see your available stock in real time,
+            so updating inventory regularly helps keep your
+            listings accurate.
+        </p>
+
+    </div>
+
+</section> *@
+
+@{
+    ViewData["Title"] = "Farmer Dashboard";
+
+    Layout = "~/Views/Shared/_FarmerDashboardLayout.cshtml";
+}
+
+
+<!-- =====================================================
+     FARMER WELCOME
+====================================================== -->
+
+<section class="farmer-welcome">
+
+    <div class="farmer-welcome-content">
+
+        <span class="farmer-welcome-label">
+            <i class="bi bi-sun"></i>
+            FARMER CENTER
+        </span>
+
+        <h2 id="welcomeMessage">
+            Welcome! 👋
+        </h2>
+
+        <p>
+            Manage your products, stock, orders and
+            customer activity from one place.
+        </p>
+
+    </div>
+
+    <div>
+
+        <a href="#"
+           class="farmer-primary-button">
+
+            <i class="bi bi-plus-lg"></i>
+
+            Add New Product
+
+        </a>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     STATISTICS
+====================================================== -->
+
+<section class="farmer-statistics">
+
+
+    <!-- PRODUCTS -->
+
+    <div class="farmer-stat-card">
+
+        <div class="farmer-stat-icon products-stat">
+            <i class="bi bi-basket-fill"></i>
+        </div>
+
+        <div class="farmer-stat-info">
+
+            <span>Total Products</span>
+
+            <strong id="totalProducts">
+                0
+            </strong>
+
+            <small>
+                Active listings
+            </small>
+
+        </div>
+
+    </div>
+
+
+    <!-- ORDERS -->
+
+    <div class="farmer-stat-card">
+
+        <div class="farmer-stat-icon orders-stat">
+            <i class="bi bi-receipt"></i>
+        </div>
+
+        <div class="farmer-stat-info">
+
+            <span>Pending Orders</span>
+
+            <strong id="pendingOrders">
+                0
+            </strong>
+
+            <small>
+                Need your attention
+            </small>
+
+        </div>
+
+    </div>
+
+
+    <!-- SALES -->
+
+    <div class="farmer-stat-card">
+
+        <div class="farmer-stat-icon sales-stat">
+            <i class="bi bi-graph-up-arrow"></i>
+        </div>
+
+        <div class="farmer-stat-info">
+
+            <span>This Month Sales</span>
+
+            <strong id="thisMonthSales">
+                $0
+            </strong>
+
+            <small>
+                Current month
+            </small>
+
+        </div>
+
+    </div>
+
+
+    <!-- RATING -->
+
+    <div class="farmer-stat-card">
+
+        <div class="farmer-stat-icon rating-stat">
+            <i class="bi bi-star-fill"></i>
+        </div>
+
+        <div class="farmer-stat-info">
+
+            <span>Customer Rating</span>
+
+            <strong id="averageRating">
+                0.0
+            </strong>
+
+            <small id="reviewCount">
+                From 0 reviews
+            </small>
+
+        </div>
+
+    </div>
+
+
+</section>
+
+
+<!-- =====================================================
+     MAIN GRID
+====================================================== -->
+
+<div class="farmer-dashboard-grid">
+
+
+    <!-- =================================================
+         INCOMING ORDERS
+    ================================================== -->
+
+    <section class="farmer-card farmer-orders-card">
+
+        <div class="farmer-card-header">
+
+            <div>
+
+                <span>
+                    CUSTOMER ORDERS
+                </span>
+
+                <h3>Incoming Orders</h3>
+
+            </div>
+
+            <a href="#"
+               class="farmer-view-link">
+
+                View All
+
+                <i class="bi bi-arrow-right"></i>
+
+            </a>
+
+        </div>
+
+
+        <div class="farmer-orders"
+             id="incomingOrders">
+
+            <div class="farmer-order-item">
+
+                <div class="farmer-order-info">
+
+                    <strong>
+                        Loading orders...
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         QUICK ACTIONS
+    ================================================== -->
+
+    <section class="farmer-card">
+
+        <div class="farmer-card-header">
+
+            <div>
+
+                <span>
+                    QUICK ACTIONS
+                </span>
+
+                <h3>Manage Your Farm</h3>
+
+            </div>
+
+        </div>
+
+
+        <div class="farmer-quick-actions">
+
+
+            <a href="#"
+               class="farmer-quick-action">
+
+                <div class="quick-action-icon green">
+
+                    <i class="bi bi-plus-lg"></i>
+
+                </div>
+
+                <div>
+
+                    <strong>Add Product</strong>
+
+                    <small>
+                        Create a new product listing
+                    </small>
+
+                </div>
+
+                <i class="bi bi-chevron-right"></i>
+
+            </a>
+
+
+            <a href="#"
+               class="farmer-quick-action">
+
+                <div class="quick-action-icon orange">
+
+                    <i class="bi bi-box-seam"></i>
+
+                </div>
+
+                <div>
+
+                    <strong>Update Inventory</strong>
+
+                    <small>
+                        Manage available stock
+                    </small>
+
+                </div>
+
+                <i class="bi bi-chevron-right"></i>
+
+            </a>
+
+
+            <a href="#"
+               class="farmer-quick-action">
+
+                <div class="quick-action-icon blue">
+
+                    <i class="bi bi-clock"></i>
+
+                </div>
+
+                <div>
+
+                    <strong>Pickup Slots</strong>
+
+                    <small>
+                        Manage customer pickup times
+                    </small>
+
+                </div>
+
+                <i class="bi bi-chevron-right"></i>
+
+            </a>
+
+
+        </div>
+
+    </section>
+
+
+</div>
+
+
+<!-- =====================================================
+     SECOND GRID
+====================================================== -->
+
+<div class="farmer-dashboard-grid farmer-lower-grid">
+
+
+    <!-- =================================================
+         PRODUCT PERFORMANCE
+    ================================================== -->
+
+    <section class="farmer-card">
+
+        <div class="farmer-card-header">
+
+            <div>
+
+                <span>
+                    PRODUCT PERFORMANCE
+                </span>
+
+                <h3>Best Selling Products</h3>
+
+            </div>
+
+            <a href="#"
+               class="farmer-view-link">
+
+                Manage Products
+
+                <i class="bi bi-arrow-right"></i>
+
+            </a>
+
+        </div>
+
+
+        <div class="best-products"
+             id="bestSellingProducts">
+
+            <div class="best-product">
+
+                <div class="best-product-info">
+
+                    <strong>
+                        Loading products...
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         STOCK ALERT
+    ================================================== -->
+
+    <section class="farmer-card">
+
+        <div class="farmer-card-header">
+
+            <div>
+
+                <span>
+                    INVENTORY
+                </span>
+
+                <h3>Stock Overview</h3>
+
+            </div>
+
+            <a href="#"
+               class="farmer-view-link">
+
+                Inventory
+
+                <i class="bi bi-arrow-right"></i>
+
+            </a>
+
+        </div>
+
+
+        <div class="stock-overview"
+             id="stockOverview">
+
+            <div class="stock-row">
+
+                <div class="stock-product">
+
+                    <strong>
+                        Loading inventory...
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="inventory-alert"
+             id="inventoryAlert"
+             style="display:none;">
+
+            <i class="bi bi-exclamation-circle"></i>
+
+            <span id="inventoryAlertText">
+                Products are running low on stock.
+            </span>
+
+        </div>
+
+    </section>
+
+
+</div>
+
+
+<!-- =====================================================
+     REVIEWS + MARKET STATUS
+====================================================== -->
+
+<div class="farmer-bottom-grid">
+
+
+    <!-- REVIEWS -->
+
+    <section class="farmer-card review-preview">
+
+        <div class="farmer-card-header">
+
+            <div>
+
+                <span>
+                    CUSTOMER FEEDBACK
+                </span>
+
+                <h3>Latest Reviews</h3>
+
+            </div>
+
+            <a href="#"
+               class="farmer-view-link">
+
+                View Reviews
+
+                <i class="bi bi-arrow-right"></i>
+
+            </a>
+
+        </div>
+
+
+        <div class="review-content"
+             id="latestReview">
+
+            <div class="review-text">
+
+                <strong>
+                    Loading review...
+                </strong>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- MARKET STATUS -->
+
+    <section class="farmer-card market-status-card">
+
+        <div class="farmer-card-header">
+
+            <div>
+
+                <span>
+                    YOUR MARKET
+                </span>
+
+                <h3>Market Status</h3>
+
+            </div>
+
+        </div>
+
+
+        <div class="market-status-box"
+             id="marketStatus">
+
+            <div class="market-status-icon">
+
+                <i class="bi bi-shop"></i>
+
+            </div>
+
+
+            <div>
+
+                <strong>
+                    Loading market...
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <a href="#"
+           class="manage-market-button">
+
+            Manage Market
+
+            <i class="bi bi-arrow-right"></i>
+
+        </a>
+
+    </section>
+
+</div>
+
+
+<!-- =====================================================
+     FARMER TIP
+====================================================== -->
+
+<section class="farmer-tip">
+
+    <div class="farmer-tip-icon">
+
+        <i class="bi bi-lightbulb-fill"></i>
+
+    </div>
+
+
+    <div>
+
+        <span>
+            MARKETLINK TIP
+        </span>
+
+        <h3>
+            Keep your stock updated to avoid missed orders.
+        </h3>
+
+        <p>
+            Customers see your available stock in real time,
+            so updating inventory regularly helps keep your
+            listings accurate.
+        </p>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     DASHBOARD API
+====================================================== -->
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        loadFarmerDashboard();
+
+    });
+
+
+    // =====================================================
+    // LOAD DASHBOARD
+    // =====================================================
+
+    async function loadFarmerDashboard() {
+
+        const token =
+            localStorage.getItem("accessToken");
+
+
+        // No token means user is not logged in
+
+        if (!token) {
+
+            window.location.href = "/Auth/Login";
+
+            return;
+        }
+
+
+        try {
+
+            const response = await fetch(
+                "/api/FarmerDashboard",
+                {
+                    method: "GET",
+
+                    headers: {
+                        "Authorization":
+                            "Bearer " + token,
+
+                        "Content-Type":
+                            "application/json"
+                    }
+                }
+            );
+
+
+            // =================================================
+            // UNAUTHORIZED
+            // =================================================
+
+            if (response.status === 401) {
+
+                localStorage.removeItem("accessToken");
+                localStorage.removeItem("refreshToken");
+
+                window.location.href =
+                    "/Auth/Login";
+
+                return;
+            }
+
+
+            // =================================================
+            // FORBIDDEN
+            // =================================================
+
+            if (response.status === 403) {
+
+                alert(
+                    "You are not authorized to access the farmer dashboard."
+                );
+
+                window.location.href = "/";
+
+                return;
+            }
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Failed to load dashboard."
+                );
+
+            }
+
+
+            const dashboard =
+                await response.json();
+
+
+            // =================================================
+            // BASIC FARMER INFORMATION
+            // =================================================
+
+            document.getElementById(
+                "welcomeMessage"
+            ).textContent =
+                "Good morning, " +
+                dashboard.businessName +
+                "! 👋";
+
+
+            // =================================================
+            // STATISTICS
+            // =================================================
+
+            document.getElementById(
+                "totalProducts"
+            ).textContent =
+                dashboard.totalProducts;
+
+
+            document.getElementById(
+                "pendingOrders"
+            ).textContent =
+                dashboard.pendingOrders;
+
+
+            document.getElementById(
+                "thisMonthSales"
+            ).textContent =
+                formatCurrency(
+                    dashboard.thisMonthSales
+                );
+
+
+            document.getElementById(
+                "averageRating"
+            ).textContent =
+                Number(
+                    dashboard.averageRating
+                ).toFixed(1);
+
+
+            document.getElementById(
+                "reviewCount"
+            ).textContent =
+                "From " +
+                dashboard.reviewCount +
+                " reviews";
+
+
+            // =================================================
+            // ORDERS
+            // =================================================
+
+            renderOrders(
+                dashboard.incomingOrders
+            );
+
+
+            // =================================================
+            // BEST SELLING PRODUCTS
+            // =================================================
+
+            renderBestSellingProducts(
+                dashboard.bestSellingProducts
+            );
+
+
+            // =================================================
+            // INVENTORY
+            // =================================================
+
+            renderStock(
+                dashboard.stockOverview
+            );
+
+
+            // =================================================
+            // LATEST REVIEW
+            // =================================================
+
+            renderLatestReview(
+                dashboard.latestReview
+            );
+
+
+            // =================================================
+            // MARKET
+            // =================================================
+
+            renderMarketStatus(
+                dashboard.marketStatus
+            );
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Dashboard error:",
+                error
+            );
+
+            showDashboardError();
+
+        }
+
+    }
+
+
+    // =====================================================
+    // ORDERS
+    // =====================================================
+
+    function renderOrders(orders) {
+
+        const container =
+            document.getElementById(
+                "incomingOrders"
+            );
+
+
+        if (!orders || orders.length === 0) {
+
+            container.innerHTML = `
+                <div class="farmer-order-item">
+                    <div class="farmer-order-info">
+                        <strong>No incoming orders</strong>
+                        <span>There are no upcoming orders.</span>
+                    </div>
+                </div>
+            `;
+
+            return;
+        }
+
+
+        container.innerHTML =
+            orders.map(function (order) {
+
+                const icon =
+                    getOrderIcon(order.orderNo);
+
+
+                const pickupDate =
+                    formatPickupDate(
+                        order.pickupDate
+                    );
+
+
+                const statusClass =
+                    getStatusClass(
+                        order.orderStatus
+                    );
+
+
+                return `
+
+                    <div class="farmer-order-item">
+
+                        <div class="farmer-order-icon">
+
+                            <i class="bi ${icon}"></i>
+
+                        </div>
+
+
+                        <div class="farmer-order-info">
+
+                            <strong>
+                                ${escapeHtml(order.orderNo)}
+                            </strong>
+
+                            <span>
+                                ${order.itemCount} items ·
+                                ${pickupDate}
+                            </span>
+
+                        </div>
+
+
+                        <div class="farmer-order-right">
+
+                            <strong>
+                                ${formatCurrency(
+                                    order.totalAmount
+                                )}
+                            </strong>
+
+                            <span class="farmer-order-status ${statusClass}">
+                                ${escapeHtml(
+                                    order.orderStatus
+                                )}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                `;
+
+            }).join("");
+
+    }
+
+
+    // =====================================================
+    // BEST SELLING PRODUCTS
+    // =====================================================
+
+    function renderBestSellingProducts(products) {
+
+        const container =
+            document.getElementById(
+                "bestSellingProducts"
+            );
+
+
+        if (!products || products.length === 0) {
+
+            container.innerHTML = `
+
+                <div class="best-product">
+
+                    <div class="best-product-info">
+
+                        <strong>
+                            No sales yet
+                        </strong>
+
+                        <span>
+                            Product sales will appear here.
+                        </span>
+
+                    </div>
+
+                </div>
+
+            `;
+
+            return;
+        }
+
+
+        container.innerHTML =
+            products.map(function (product, index) {
+
+                const number =
+                    String(index + 1).padStart(2, "0");
+
+
+                const icon =
+                    getProductIcon(
+                        product.productName
+                    );
+
+
+                const imageClass =
+                    getProductImageClass(
+                        product.productName
+                    );
+
+
+                return `
+
+                    <div class="best-product">
+
+                        <div class="best-product-number">
+                            ${number}
+                        </div>
+
+
+                        <div class="best-product-image ${imageClass}">
+
+                            <i class="bi ${icon}"></i>
+
+                        </div>
+
+
+                        <div class="best-product-info">
+
+                            <strong>
+                                ${escapeHtml(
+                                    product.productName
+                                )}
+                            </strong>
+
+                            <span>
+                                ${product.quantitySold}
+                                units sold
+                            </span>
+
+                        </div>
+
+
+                        <strong class="best-product-sales">
+
+                            ${formatCurrency(
+                                product.revenue
+                            )}
+
+                        </strong>
+
+                    </div>
+
+                `;
+
+            }).join("");
+
+    }
+
+
+    // =====================================================
+    // INVENTORY
+    // =====================================================
+
+    function renderStock(stockItems) {
+
+        const container =
+            document.getElementById(
+                "stockOverview"
+            );
+
+
+        const alertBox =
+            document.getElementById(
+                "inventoryAlert"
+            );
+
+
+        const alertText =
+            document.getElementById(
+                "inventoryAlertText"
+            );
+
+
+        if (!stockItems ||
+            stockItems.length === 0) {
+
+            container.innerHTML = `
+
+                <div class="stock-row">
+
+                    <div class="stock-product">
+
+                        <strong>
+                            No inventory available
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            `;
+
+            alertBox.style.display = "none";
+
+            return;
+        }
+
+
+        container.innerHTML =
+            stockItems.map(function (stock) {
+
+                let dotClass = "good";
+                let textClass = "good-text";
+
+
+                if (stock.isLowStock) {
+
+                    dotClass = "danger";
+                    textClass = "danger-text";
+
+                }
+
+
+                return `
+
+                    <div class="stock-row">
+
+                        <div class="stock-product">
+
+                            <span class="stock-dot ${dotClass}">
+                            </span>
+
+                            <strong>
+                                ${escapeHtml(
+                                    stock.productName
+                                )}
+                            </strong>
+
+                        </div>
+
+
+                        <span class="stock-value ${textClass}">
+
+                            ${stock.availableQuantity}
+                            ${escapeHtml(
+                                stock.unitName
+                            )}
+
+                        </span>
+
+                    </div>
+
+                `;
+
+            }).join("");
+
+
+        const lowStockCount =
+            stockItems.filter(
+                function (item) {
+                    return item.isLowStock;
+                }
+            ).length;
+
+
+        if (lowStockCount > 0) {
+
+            alertBox.style.display = "flex";
+
+            alertText.textContent =
+                lowStockCount +
+                (
+                    lowStockCount === 1
+                        ? " product is"
+                        : " products are"
+                ) +
+                " running low on stock.";
+
+        }
+
+        else {
+
+            alertBox.style.display = "none";
+
+        }
+
+    }
+
+
+    // =====================================================
+    // LATEST REVIEW
+    // =====================================================
+
+    function renderLatestReview(review) {
+
+        const container =
+            document.getElementById(
+                "latestReview"
+            );
+
+
+        if (!review) {
+
+            container.innerHTML = `
+
+                <div class="review-text">
+
+                    <strong>
+                        No reviews yet
+                    </strong>
+
+                    <p>
+                        Customer reviews will appear here.
+                    </p>
+
+                </div>
+
+            `;
+
+            return;
+        }
+
+
+        const firstLetter =
+            review.customerName
+                ? review.customerName
+                    .charAt(0)
+                    .toUpperCase()
+                : "C";
+
+
+        container.innerHTML = `
+
+            <div class="review-avatar">
+                ${escapeHtml(firstLetter)}
+            </div>
+
+
+            <div class="review-text">
+
+                <div class="review-top">
+
+                    <strong>
+                        ${escapeHtml(
+                            review.customerName
+                        )}
+                    </strong>
+
+                    <span>
+
+                        <i class="bi bi-star-fill"></i>
+
+                        ${Number(
+                            review.rating
+                        ).toFixed(1)}
+
+                    </span>
+
+                </div>
+
+
+                <p>
+                    "${escapeHtml(
+                        review.comment
+                    )}"
+                </p>
+
+
+                <small>
+                    ${formatRelativeDate(
+                        review.reviewDate
+                    )}
+                </small>
+
+            </div>
+
+        `;
+
+    }
+
+
+    // =====================================================
+    // MARKET STATUS
+    // =====================================================
+
+    function renderMarketStatus(market) {
+
+        const container =
+            document.getElementById(
+                "marketStatus"
+            );
+
+
+        if (!market) {
+
+            container.innerHTML = `
+
+                <div class="market-status-icon">
+
+                    <i class="bi bi-shop"></i>
+
+                </div>
+
+
+                <div>
+
+                    <strong>
+                        No active market
+                    </strong>
+
+                    <span>
+                        You are not currently assigned
+                        to an active market day.
+                    </span>
+
+                </div>
+
+            `;
+
+            return;
+        }
+
+
+        const statusClass =
+            market.status === "Active"
+                ? "market-active"
+                : "";
+
+
+        container.innerHTML = `
+
+            <div class="market-status-icon">
+
+                <i class="bi bi-shop"></i>
+
+            </div>
+
+
+            <div>
+
+                <strong>
+                    ${escapeHtml(
+                        market.marketName
+                    )}
+                </strong>
+
+                <span>
+
+                    ${escapeHtml(
+                        market.dayName
+                    )}
+                    ·
+                    ${formatTime(
+                        market.openingTime
+                    )}
+                    -
+                    ${formatTime(
+                        market.closingTime
+                    )}
+
+                </span>
+
+            </div>
+
+
+            <span class="${statusClass}">
+                ${escapeHtml(
+                    market.status
+                )}
+            </span>
+
+        `;
+
+    }
+
+
+    // =====================================================
+    // FORMAT CURRENCY
+    // =====================================================
+
+    function formatCurrency(value) {
+
+        const amount =
+            Number(value || 0);
+
+
+        return "$" +
+            amount.toLocaleString(
+                "en-US",
+                {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }
+            );
+
+    }
+
+
+    // =====================================================
+    // FORMAT PICKUP DATE
+    // =====================================================
+
+    function formatPickupDate(dateValue) {
+
+        if (!dateValue) {
+            return "";
+        }
+
+
+        const date =
+            new Date(dateValue);
+
+
+        const today =
+            new Date();
+
+
+        today.setHours(0, 0, 0, 0);
+
+
+        const tomorrow =
+            new Date(today);
+
+
+        tomorrow.setDate(
+            tomorrow.getDate() + 1
+        );
+
+
+        const orderDate =
+            new Date(date);
+
+
+        orderDate.setHours(0, 0, 0, 0);
+
+
+        if (
+            orderDate.getTime() ===
+            today.getTime()
+        ) {
+
+            return "Today";
+
+        }
+
+
+        if (
+            orderDate.getTime() ===
+            tomorrow.getTime()
+        ) {
+
+            return "Tomorrow";
+
+        }
+
+
+        return date.toLocaleDateString(
+            "en-US",
+            {
+                month: "short",
+                day: "numeric"
+            }
+        );
+
+    }
+
+
+    // =====================================================
+    // FORMAT TIME
+    // =====================================================
+
+    function formatTime(timeValue) {
+
+        if (!timeValue) {
+            return "";
+        }
+
+
+        /*
+         * TimeSpan from ASP.NET usually arrives as:
+         *
+         * "08:00:00"
+         *
+         * or
+         *
+         * "14:00:00"
+         */
+
+
+        const parts =
+            timeValue.split(":");
+
+
+        const hours =
+            parseInt(parts[0]);
+
+
+        const minutes =
+            parseInt(parts[1] || 0);
+
+
+        const period =
+            hours >= 12
+                ? "PM"
+                : "AM";
+
+
+        let displayHour =
+            hours % 12;
+
+
+        if (displayHour === 0) {
+            displayHour = 12;
+        }
+
+
+        return displayHour +
+            ":" +
+            String(minutes).padStart(2, "0") +
+            " " +
+            period;
+
+    }
+
+
+    // =====================================================
+    // RELATIVE REVIEW DATE
+    // =====================================================
+
+    function formatRelativeDate(dateValue) {
+
+        if (!dateValue) {
+            return "";
+        }
+
+
+        const reviewDate =
+            new Date(dateValue);
+
+
+        const now =
+            new Date();
+
+
+        const difference =
+            now.getTime() -
+            reviewDate.getTime();
+
+
+        const minutes =
+            Math.floor(
+                difference / 60000
+            );
+
+
+        if (minutes < 1) {
+            return "Just now";
+        }
+
+
+        if (minutes < 60) {
+
+            return minutes +
+                (
+                    minutes === 1
+                        ? " minute ago"
+                        : " minutes ago"
+                );
+
+        }
+
+
+        const hours =
+            Math.floor(
+                minutes / 60
+            );
+
+
+        if (hours < 24) {
+
+            return hours +
+                (
+                    hours === 1
+                        ? " hour ago"
+                        : " hours ago"
+                );
+
+        }
+
+
+        const days =
+            Math.floor(
+                hours / 24
+            );
+
+
+        if (days < 7) {
+
+            return days +
+                (
+                    days === 1
+                        ? " day ago"
+                        : " days ago"
+                );
+
+        }
+
+
+        return reviewDate.toLocaleDateString(
+            "en-US",
+            {
+                month: "short",
+                day: "numeric",
+                year: "numeric"
+            }
+        );
+
+    }
+
+
+    // =====================================================
+    // ORDER ICON
+    // =====================================================
+
+    function getOrderIcon(orderNo) {
+
+        return "bi-basket";
+
+    }
+
+
+    // =====================================================
+    // ORDER STATUS CLASS
+    // =====================================================
+
+    function getStatusClass(status) {
+
+        if (!status) {
+            return "pending";
+        }
+
+
+        const normalized =
+            status.toLowerCase();
+
+
+        if (
+            normalized === "accepted" ||
+            normalized === "confirmed"
+        ) {
+
+            return "accepted";
+
+        }
+
+
+        if (
+            normalized === "ready" ||
+            normalized === "completed"
+        ) {
+
+            return "ready";
+
+        }
+
+
+        return "pending";
+
+    }
+
+
+    // =====================================================
+    // PRODUCT ICON
+    // =====================================================
+
+    function getProductIcon(productName) {
+
+        const name =
+            (productName || "")
+                .toLowerCase();
+
+
+        if (
+            name.includes("apple") ||
+            name.includes("fruit")
+        ) {
+
+            return "bi-apple";
+
+        }
+
+
+        if (
+            name.includes("egg")
+        ) {
+
+            return "bi-egg";
+
+        }
+
+
+        if (
+            name.includes("herb") ||
+            name.includes("vegetable")
+        ) {
+
+            return "bi-flower1";
+
+        }
+
+
+        return "bi-basket";
+
+    }
+
+
+    // =====================================================
+    // PRODUCT IMAGE CLASS
+    // =====================================================
+
+    function getProductImageClass(productName) {
+
+        const name =
+            (productName || "")
+                .toLowerCase();
+
+
+        if (name.includes("apple")) {
+            return "apple";
+        }
+
+
+        if (
+            name.includes("herb") ||
+            name.includes("vegetable")
+        ) {
+
+            return "herbs";
+
+        }
+
+
+        return "tomato";
+
+    }
+
+
+    // =====================================================
+    // HTML ESCAPE
+    // =====================================================
+
+    function escapeHtml(value) {
+
+        if (value === null ||
+            value === undefined) {
+
+            return "";
+
+        }
+
+
+        return String(value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+
+    }
+
+
+    // =====================================================
+    // DASHBOARD ERROR
+    // =====================================================
+
+    function showDashboardError() {
+
+        const message =
+            document.getElementById(
+                "welcomeMessage"
+            );
+
+
+        if (message) {
+
+            message.textContent =
+                "Unable to load your dashboard.";
+
+        }
+
+    }
+
+</script>

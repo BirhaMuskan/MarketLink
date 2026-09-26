@@ -15,7 +15,7 @@
         <h2>Inventory</h2>
 
         <p>
-            Monitor current stock, reservations, sold quantity and availability by market.
+            Monitor dated stock, reservations, sold quantity and pickup-slot alignment.
         </p>
     </div>
 
@@ -63,6 +63,11 @@
     </div>
 </section>
 
+<div class="alignment-note">
+    <i class="bi bi-info-circle"></i>
+    Customer checkout requires the inventory date and pickup-slot date to match.
+</div>
+
 <section class="inv-card">
 
     <div class="inv-toolbar">
@@ -71,7 +76,7 @@
 
             <input type="text"
                    id="inventorySearch"
-                   placeholder="Search product or market..." />
+                   placeholder="Search product, market or date..." />
         </div>
     </div>
 
@@ -83,13 +88,13 @@
             <h3>No inventory yet</h3>
 
             <p>
-                Inventory is created when you add a product to one of your markets.
+                Save a weekly stock template, then generate the next dated inventory.
             </p>
 
-            <a asp-controller="FarmerProducts"
-               asp-action="Create"
+            <a asp-controller="FarmerWeeklyStock"
+               asp-action="Index"
                class="inv-primary-btn">
-                Add Product
+                Weekly Stock
             </a>
         </div>
     }
@@ -103,6 +108,8 @@
                     <tr>
                         <th>Product</th>
                         <th>Market</th>
+                        <th>Inventory Date</th>
+                        <th>Pickup Slot</th>
                         <th>Price</th>
                         <th>Stock</th>
                         <th>Reserved</th>
@@ -117,32 +124,66 @@
 
                     @foreach (var item in Model.Rows)
                     {
-                        <tr data-search="@($"{item.ProductName} {item.MarketName}".ToLowerInvariant())">
+                        <tr data-search="@($"{item.ProductName} {item.MarketName} {item.InventoryDate:dd MMM yyyy}".ToLowerInvariant())">
 
                             <td>
                                 <strong>@item.ProductName</strong>
-                                <span class="unit-text">
-                                    @item.UnitName
-                                </span>
+                                <span class="unit-text">@item.UnitName</span>
                             </td>
 
                             <td>@item.MarketName</td>
 
                             <td>
+                                <strong>
+                                    @item.InventoryDate.ToString("dd MMM yyyy")
+                                </strong>
+
+                                @if (item.InventoryDate.Date == DateTime.Today)
+                                {
+                                    <span class="date-badge today">Today</span>
+                                }
+                                else if (item.InventoryDate.Date > DateTime.Today)
+                                {
+                                    <span class="date-badge future">Upcoming</span>
+                                }
+                                else
+                                {
+                                    <span class="date-badge past">Past</span>
+                                }
+                            </td>
+
+                            <td>
+                                @if (item.HasPickupSlot)
+                                {
+                                    <span class="slot-badge ok">
+                                        <i class="bi bi-check-circle"></i>
+                                        Matching
+                                    </span>
+
+                                    <span class="slot-text">
+                                        @item.PickupSlotSummary
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="slot-badge warning">
+                                        <i class="bi bi-exclamation-triangle"></i>
+                                        Missing
+                                    </span>
+
+                                    <span class="slot-text">
+                                        @item.PickupSlotSummary
+                                    </span>
+                                }
+                            </td>
+
+                            <td>
                                 Rs. @item.UnitPrice.ToString("N2")
                             </td>
 
-                            <td>
-                                @item.StockQuantity.ToString("N3")
-                            </td>
-
-                            <td>
-                                @item.ReservedQuantity.ToString("N3")
-                            </td>
-
-                            <td>
-                                @item.SoldQuantity.ToString("N3")
-                            </td>
+                            <td>@item.StockQuantity.ToString("N3")</td>
+                            <td>@item.ReservedQuantity.ToString("N3")</td>
+                            <td>@item.SoldQuantity.ToString("N3")</td>
 
                             <td>
                                 <strong>
@@ -153,21 +194,15 @@
                             <td>
                                 @if (item.IsSoldOut)
                                 {
-                                    <span class="status soldout">
-                                        Sold Out
-                                    </span>
+                                    <span class="status soldout">Sold Out</span>
                                 }
                                 else if (!item.IsAvailable)
                                 {
-                                    <span class="status unavailable">
-                                        Unavailable
-                                    </span>
+                                    <span class="status unavailable">Unavailable</span>
                                 }
                                 else
                                 {
-                                    <span class="status available">
-                                        Available
-                                    </span>
+                                    <span class="status available">Available</span>
                                 }
                             </td>
 
@@ -222,10 +257,11 @@
 .inv-header h2{margin:7px 0 5px;font-size:28px;font-weight:800}
 .inv-header p{margin:0;color:#667085}
 .inv-primary-btn{display:inline-flex;align-items:center;gap:8px;background:#13836e;color:#fff;text-decoration:none;padding:10px 15px;border-radius:10px;font-weight:700}
-.inv-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+.inv-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px}
 .inv-stats>div{background:#fff;border:1px solid #e7ebef;border-radius:16px;padding:17px}
 .inv-stats span{display:block;color:#667085;font-size:12px}
 .inv-stats strong{display:block;margin-top:4px;font-size:25px}
+.alignment-note{display:flex;gap:8px;padding:11px 13px;background:#eff8ff;color:#175cd3;border-radius:10px;margin-bottom:15px;font-size:12px}
 .inv-card{background:#fff;border:1px solid #e7ebef;border-radius:18px;overflow:hidden}
 .inv-toolbar{padding:15px 17px;border-bottom:1px solid #edf0f4}
 .inv-search{max-width:440px;position:relative}
@@ -235,11 +271,16 @@
 .inv-table{width:100%;border-collapse:collapse}
 .inv-table th{padding:12px 14px;background:#f8fafc;color:#667085;font-size:10px;text-transform:uppercase;white-space:nowrap}
 .inv-table td{padding:14px;border-top:1px solid #edf0f4;font-size:12px;vertical-align:middle;white-space:nowrap}
-.unit-text{display:block;color:#98a2b3;font-size:10px}
-.status{display:inline-flex;padding:5px 8px;border-radius:999px;font-size:10px;font-weight:800}
-.status.available{background:#dcfae6;color:#067647}
+.unit-text,.slot-text{display:block;color:#98a2b3;font-size:10px;margin-top:3px}
+.status,.date-badge,.slot-badge{display:inline-flex;align-items:center;gap:4px;padding:5px 8px;border-radius:999px;font-size:10px;font-weight:800}
+.status.available,.slot-badge.ok{background:#dcfae6;color:#067647}
 .status.soldout{background:#fee4e2;color:#b42318}
 .status.unavailable{background:#f2f4f7;color:#475467}
+.slot-badge.warning{background:#fff4e5;color:#b54708}
+.date-badge{margin-top:5px}
+.date-badge.today{background:#eef4ff;color:#3538cd}
+.date-badge.future{background:#ecfdf3;color:#067647}
+.date-badge.past{background:#f2f4f7;color:#667085}
 .row-actions{display:flex;gap:6px}
 .row-action{border:1px solid #d9dfe5;background:#fff;color:#344054;padding:6px 8px;border-radius:7px;font-size:10px;font-weight:700;text-decoration:none}
 .row-action.danger{color:#b42318;border-color:#f3c8c5}

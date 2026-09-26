@@ -142,6 +142,7 @@
         </header>
 
         <main class="farmer-content">
+            @await Component.InvokeAsync("AnnouncementBanner")
             @RenderBody()
         </main>
 

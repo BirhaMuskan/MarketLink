@@ -1,0 +1,293 @@
+@model MarketLink.ViewModels.AdminCustomerDetailsViewModel
+
+@{
+    ViewData["Title"] = Model.FullName;
+    Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
+}
+
+@section Styles {
+<style>
+.detail-head{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:18px}
+.detail-label{color:#14836f;font-size:12px;font-weight:800;letter-spacing:.08em}
+.detail-head h2{margin:7px 0 5px;font-size:27px;font-weight:800}
+.detail-head p{margin:0;color:#667085}
+.back-btn{display:inline-flex;align-items:center;gap:6px;border:1px solid #d0d5dd;color:#344054;text-decoration:none;padding:8px 10px;border-radius:8px;font-size:10px;font-weight:800}
+.detail-grid{display:grid;grid-template-columns:.75fr 1.25fr;gap:18px}
+.card{background:#fff;border:1px solid #e7ebef;border-radius:18px;overflow:hidden}
+.card-head{padding:15px 17px;border-bottom:1px solid #edf0f4}
+.card-head span{color:#13836e;font-size:10px;font-weight:800}
+.card-head h3{margin:3px 0 0;font-size:16px}
+.profile-box{padding:18px}
+.profile-avatar{width:72px;height:72px;border-radius:50%;display:grid;place-items:center;background:#e8f5ef;color:#067647;font-weight:900;font-size:22px;margin-bottom:12px}
+.info-row{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid #edf0f4}
+.info-row:last-child{border-bottom:0}
+.info-row span{color:#667085;font-size:10px}
+.info-row strong{font-size:10px;text-align:right}
+.status-badge{display:inline-flex;padding:5px 8px;border-radius:999px;font-size:9px;font-weight:800}
+.status-badge.active{background:#dcfae6;color:#067647}
+.status-badge.inactive{background:#fee4e2;color:#b42318}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:14px}
+.stats div{background:#f8fafc;border-radius:10px;padding:11px}
+.stats span{display:block;color:#667085;font-size:9px}
+.stats strong{display:block;margin-top:3px;font-size:17px}
+.table-wrap{overflow:auto}
+.orders-table{width:100%;border-collapse:collapse}
+.orders-table th{background:#f8fafc;color:#667085;padding:10px 12px;font-size:9px;text-transform:uppercase;white-space:nowrap}
+.orders-table td{padding:12px;border-top:1px solid #edf0f4;font-size:10px;white-space:nowrap}
+.status-pill{padding:4px 7px;border-radius:999px;background:#f2f4f7;color:#475467;font-size:9px;font-weight:800}
+.account-action{margin-top:18px;padding:15px;border:1px solid #e7ebef;border-radius:14px}
+.action-btn{border:0;padding:9px 12px;border-radius:8px;font-size:10px;font-weight:800}
+.action-btn.danger{background:#b42318;color:#fff}
+.action-btn.activate{background:#067647;color:#fff}
+@@media(max-width:900px){.detail-grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}}
+@@media(max-width:550px){.detail-head{flex-direction:column}.stats{grid-template-columns:1fr}}
+</style>
+}
+
+<section class="detail-head">
+
+    <div>
+        <span class="detail-label">
+            CUSTOMER DETAILS
+        </span>
+
+        <h2>@Model.FullName</h2>
+
+        <p>@Model.Email</p>
+    </div>
+
+    <a asp-controller="AdminCustomers"
+       asp-action="Index"
+       class="back-btn">
+
+        <i class="bi bi-arrow-left"></i>
+        Customers
+    </a>
+
+</section>
+
+<div class="detail-grid">
+
+    <div>
+
+        <section class="card">
+
+            <div class="card-head">
+                <span>PROFILE</span>
+                <h3>Customer Information</h3>
+            </div>
+
+            <div class="profile-box">
+
+                <div class="profile-avatar">
+                    @{
+                        var parts = Model.FullName
+                            .Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+                        var initials =
+                            parts.Length == 0
+                                ? "C"
+                                : parts.Length == 1
+                                    ? parts[0][0].ToString().ToUpper()
+                                    : $"{parts[0][0]}{parts[^1][0]}".ToUpper();
+                    }
+
+                    @initials
+                </div>
+
+                <div class="info-row">
+                    <span>Email</span>
+                    <strong>@Model.Email</strong>
+                </div>
+
+                <div class="info-row">
+                    <span>Phone</span>
+                    <strong>
+                        @(string.IsNullOrWhiteSpace(Model.Phone)
+                            ? "-"
+                            : Model.Phone)
+                    </strong>
+                </div>
+
+                <div class="info-row">
+                    <span>Address</span>
+                    <strong>
+                        @(string.IsNullOrWhiteSpace(Model.Address)
+                            ? "-"
+                            : Model.Address)
+                    </strong>
+                </div>
+
+                <div class="info-row">
+                    <span>Customer Since</span>
+                    <strong>
+                        @Model.CustomerCreatedAt.ToString("dd MMM yyyy")
+                    </strong>
+                </div>
+
+                <div class="info-row">
+                    <span>Last Login</span>
+                    <strong>
+                        @(Model.LastLoginAt.HasValue
+                            ? Model.LastLoginAt.Value.ToString("dd MMM yyyy, hh:mm tt")
+                            : "Never")
+                    </strong>
+                </div>
+
+                <div class="info-row">
+                    <span>Status</span>
+
+                    <strong>
+                        @if (Model.IsActive)
+                        {
+                            <span class="status-badge active">
+                                Active
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="status-badge inactive">
+                                Inactive
+                            </span>
+                        }
+                    </strong>
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="account-action">
+
+            <form asp-controller="AdminCustomers"
+                  asp-action="ToggleStatus"
+                  method="post"
+                  onsubmit="return confirm('@(Model.IsActive ? "Deactivate this customer account?" : "Activate this customer account?")');">
+
+                @Html.AntiForgeryToken()
+
+                <input type="hidden"
+                       name="id"
+                       value="@Model.CustomerId" />
+
+                <button type="submit"
+                        class="action-btn @(Model.IsActive ? "danger" : "activate")">
+
+                    @(Model.IsActive
+                        ? "Deactivate Customer"
+                        : "Activate Customer")
+                </button>
+
+            </form>
+
+        </section>
+
+    </div>
+
+    <div>
+
+        <section class="card">
+
+            <div class="card-head">
+                <span>ACTIVITY</span>
+                <h3>Customer Summary</h3>
+            </div>
+
+            <div class="stats">
+
+                <div>
+                    <span>Total Orders</span>
+                    <strong>@Model.TotalOrders</strong>
+                </div>
+
+                <div>
+                    <span>Completed</span>
+                    <strong>@Model.CompletedOrders</strong>
+                </div>
+
+                <div>
+                    <span>Cancelled</span>
+                    <strong>@Model.CancelledOrders</strong>
+                </div>
+
+                <div>
+                    <span>Total Spent</span>
+                    <strong>Rs. @Model.TotalSpent.ToString("N2")</strong>
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="card"
+                 style="margin-top:18px;">
+
+            <div class="card-head">
+                <span>RECENT ORDERS</span>
+                <h3>Order History</h3>
+            </div>
+
+            @if (!Model.RecentOrders.Any())
+            {
+                <div style="padding:35px;text-align:center;color:#667085;">
+                    No orders found for this customer.
+                </div>
+            }
+            else
+            {
+                <div class="table-wrap">
+
+                    <table class="orders-table">
+
+                        <thead>
+                            <tr>
+                                <th>Order</th>
+                                <th>Farmer</th>
+                                <th>Market</th>
+                                <th>Status</th>
+                                <th>Total</th>
+                                <th>Pickup</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @foreach (var order in Model.RecentOrders)
+                            {
+                                <tr>
+                                    <td>
+                                        <strong>@order.OrderNo</strong>
+                                    </td>
+
+                                    <td>@order.FarmerName</td>
+
+                                    <td>@order.MarketName</td>
+
+                                    <td>
+                                        <span class="status-pill">
+                                            @order.OrderStatus
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        Rs. @order.TotalAmount.ToString("N2")
+                                    </td>
+
+                                    <td>
+                                        @order.PickupDate.ToString("dd MMM yyyy")
+                                    </td>
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+            }
+
+        </section>
+
+    </div>
+
+</div>

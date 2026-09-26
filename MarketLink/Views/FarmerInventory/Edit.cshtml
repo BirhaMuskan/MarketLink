@@ -37,15 +37,14 @@
         <div class="form-grid">
 
             <div class="form-field">
-                <label asp-for="StockQuantity"></label>
+                <label asp-for="InventoryDate"></label>
 
-                <input asp-for="StockQuantity"
-                       type="number"
-                       min="0"
-                       step="0.001"
+                <input asp-for="InventoryDate"
+                       type="date"
+                       min="@DateTime.Today.ToString("yyyy-MM-dd")"
                        class="form-control" />
 
-                <span asp-validation-for="StockQuantity"
+                <span asp-validation-for="InventoryDate"
                       class="text-danger"></span>
             </div>
 
@@ -62,6 +61,43 @@
                       class="text-danger"></span>
             </div>
 
+            <div class="form-field">
+                <label asp-for="StockQuantity"></label>
+
+                <input asp-for="StockQuantity"
+                       type="number"
+                       min="0"
+                       step="0.001"
+                       class="form-control" />
+
+                <span asp-validation-for="StockQuantity"
+                      class="text-danger"></span>
+
+                <small>
+                    Reserved: @Model.ReservedQuantity.ToString("N3") ·
+                    Sold: @Model.SoldQuantity.ToString("N3")
+                </small>
+            </div>
+
+        </div>
+
+        <div class="slot-check @(Model.HasPickupSlot ? "ok" : "warning")">
+            @if (Model.HasPickupSlot)
+            {
+                <i class="bi bi-check-circle"></i>
+                <div>
+                    <strong>Matching pickup slot found</strong>
+                    <span>@Model.PickupSlotSummary</span>
+                </div>
+            }
+            else
+            {
+                <i class="bi bi-exclamation-triangle"></i>
+                <div>
+                    <strong>No available pickup slot for this date</strong>
+                    <span>@Model.PickupSlotSummary</span>
+                </div>
+            }
         </div>
 
         <div class="form-field">
@@ -70,7 +106,7 @@
             <textarea asp-for="Remarks"
                       rows="3"
                       class="form-control"
-                      placeholder="Optional reason for this stock change"></textarea>
+                      placeholder="Optional reason for this stock/date change"></textarea>
         </div>
 
         <div class="available-box">
@@ -82,7 +118,8 @@
 
         <div class="info-note">
             <i class="bi bi-info-circle"></i>
-            Every stock quantity change is written to Inventory History.
+            Checkout only works when Inventory Date matches Pickup Date for the same market.
+            If reserved or sold quantity exists, the inventory date is locked for safety.
         </div>
 
         <div class="form-actions">
@@ -113,8 +150,14 @@
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
 .form-field{margin-bottom:18px}
 .form-field label{display:block;margin-bottom:7px;font-size:12px;font-weight:800;color:#344054}
+.form-field small{display:block;margin-top:5px;color:#667085}
 .available-box{padding:13px 14px;background:#f8fafc;border:1px solid #e7ebef;border-radius:11px}
 .available-box label{display:flex;gap:8px;align-items:center;margin:0;font-weight:700}
+.slot-check{display:flex;gap:10px;align-items:flex-start;padding:13px;border-radius:11px;margin-bottom:18px}
+.slot-check strong,.slot-check span{display:block}
+.slot-check span{font-size:11px;margin-top:2px}
+.slot-check.ok{background:#ecfdf3;color:#067647}
+.slot-check.warning{background:#fff4e5;color:#b54708}
 .info-note{margin-top:14px;padding:11px 13px;background:#eff8ff;color:#175cd3;border-radius:10px;font-size:12px}
 .form-actions{display:flex;justify-content:flex-end;gap:10px;border-top:1px solid #edf0f3;margin-top:22px;padding-top:18px}
 .primary-btn{background:#13836e;color:#fff;padding:10px 15px;border-radius:10px;font-weight:700}

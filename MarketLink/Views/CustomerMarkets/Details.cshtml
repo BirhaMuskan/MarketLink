@@ -234,7 +234,10 @@
 
                             </div>
 
-                            <a href="#"
+                            <a asp-controller="CustomerFarmers"
+                               asp-action="Details"
+                               asp-route-id="@farmer.FarmerId"
+                               asp-route-marketId="@Model.MarketId"
                                class="farmer-view">
                                 View Farmer
                             </a>

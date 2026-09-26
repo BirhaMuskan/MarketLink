@@ -26,13 +26,14 @@
 
 </a>
 
-    <a asp-controller="Customers"
-       asp-action="Index"
-       class="admin-menu-link">
-        <i class="bi bi-person-check"></i>
-        <span>Customers</span>
-        <span class="admin-count">@Model.Customers</span>
-    </a>
+    <a asp-controller="AdminCustomers"
+   asp-action="Index"
+   class="admin-menu-link">
+
+    <i class="bi bi-people"></i>
+    <span>Customers</span>
+
+</a>
 
     <a asp-controller="AdminMarkets"
    asp-action="Index"
@@ -49,6 +50,14 @@
         <i class="bi bi-basket"></i>
         <span>Products</span>
     </a>
+    <a asp-controller="AdminAnnouncements"
+   asp-action="Index"
+   class="admin-menu-link">
+
+    <i class="bi bi-megaphone"></i>
+    <span>Announcements</span>
+
+</a>
 
     <a asp-controller="Orders"
        asp-action="Index"
@@ -79,6 +88,14 @@
     <span>Categories</span>
 
 </a>
+<a asp-controller="AdminModeration"
+   asp-action="Index"
+   class="admin-menu-link">
+
+    <i class="bi bi-shield-check"></i>
+    <span>Moderation</span>
+
+</a>
 
     <a asp-controller="Notifications"
        asp-action="Index"
@@ -93,12 +110,14 @@
 
     <div class="admin-menu-heading admin-second-heading">INTELLIGENCE</div>
 
-    <a asp-controller="Admin"
-       asp-action="Analytics"
-       class="admin-menu-link">
-        <i class="bi bi-bar-chart-line"></i>
-        <span>Reports & Analytics</span>
-    </a>
+  <a asp-controller="AdminReports"
+   asp-action="Index"
+   class="admin-menu-link">
+
+    <i class="bi bi-bar-chart-line"></i>
+    <span>Reports & Analytics</span>
+
+</a>
 
     <a asp-controller="Admin"
        asp-action="AiIntelligence"

@@ -1,0 +1,241 @@
+@model MarketLink.ViewModels.AdminAnnouncementsPageViewModel
+
+@{
+    ViewData["Title"] = "Announcements";
+    Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
+}
+
+@section Styles {
+<style>
+.ann-head{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin-bottom:18px}
+.ann-label{color:#14836f;font-size:12px;font-weight:800;letter-spacing:.08em}
+.ann-head h2{margin:7px 0 5px;font-size:28px;font-weight:800}
+.ann-head p{margin:0;color:#667085}
+.primary-btn{display:inline-flex;align-items:center;gap:7px;background:#13836e;color:#fff;text-decoration:none;padding:10px 14px;border-radius:9px;font-size:11px;font-weight:800}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+.stat{background:#fff;border:1px solid #e7ebef;border-radius:15px;padding:15px}
+.stat span{display:block;color:#667085;font-size:11px}
+.stat strong{display:block;margin-top:4px;font-size:23px}
+.card{background:#fff;border:1px solid #e7ebef;border-radius:18px;overflow:hidden}
+.toolbar{padding:14px 16px;border-bottom:1px solid #edf0f4}
+.toolbar form{display:flex;gap:8px;flex-wrap:wrap}
+.toolbar input,.toolbar select{border:1px solid #d0d5dd;border-radius:9px;padding:9px 10px;font-size:11px}
+.toolbar input{min-width:280px}
+.search-btn{border:0;background:#344054;color:#fff;padding:9px 12px;border-radius:9px;font-size:10px;font-weight:800}
+.table-wrap{overflow:auto}
+.ann-table{width:100%;border-collapse:collapse}
+.ann-table th{background:#f8fafc;color:#667085;padding:11px 13px;font-size:9px;text-transform:uppercase;white-space:nowrap}
+.ann-table td{padding:13px;border-top:1px solid #edf0f4;font-size:11px;vertical-align:top}
+.title-cell strong{display:block}
+.title-cell span{display:block;color:#667085;font-size:9px;margin-top:3px;max-width:360px;white-space:normal}
+.badge{display:inline-flex;padding:5px 8px;border-radius:999px;font-size:9px;font-weight:800}
+.badge.live{background:#dcfae6;color:#067647}
+.badge.scheduled{background:#eef4ff;color:#3538cd}
+.badge.expired{background:#f2f4f7;color:#667085}
+.badge.inactive{background:#fee4e2;color:#b42318}
+.badge.audience{background:#f8fafc;color:#475467}
+.actions{display:flex;gap:6px;flex-wrap:wrap}
+.row-btn{border:1px solid #d0d5dd;background:#fff;color:#344054;text-decoration:none;padding:6px 8px;border-radius:7px;font-size:9px;font-weight:800}
+.row-btn.danger{color:#b42318;border-color:#f2c8c5}
+.notice{margin-bottom:14px}
+.empty{text-align:center;padding:50px;color:#667085}
+@@media(max-width:800px){.stats{grid-template-columns:repeat(2,1fr)}}
+@@media(max-width:520px){.ann-head{flex-direction:column;align-items:stretch}.stats{grid-template-columns:1fr}.toolbar input,.toolbar select,.search-btn{width:100%;min-width:0}}
+</style>
+}
+
+<section class="ann-head">
+    <div>
+        <span class="ann-label">
+            <i class="bi bi-megaphone"></i>
+            PLATFORM COMMUNICATION
+        </span>
+
+        <h2>Announcements</h2>
+
+        <p>
+            Publish messages to all users, customers only, or farmers only.
+        </p>
+    </div>
+
+    <a asp-controller="AdminAnnouncements"
+       asp-action="Create"
+       class="primary-btn">
+        <i class="bi bi-plus-lg"></i>
+        New Announcement
+    </a>
+</section>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success notice">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+<section class="stats">
+    <div class="stat">
+        <span>Total</span>
+        <strong>@Model.Total</strong>
+    </div>
+
+    <div class="stat">
+        <span>Live</span>
+        <strong>@Model.Active</strong>
+    </div>
+
+    <div class="stat">
+        <span>Scheduled</span>
+        <strong>@Model.Scheduled</strong>
+    </div>
+
+    <div class="stat">
+        <span>Expired</span>
+        <strong>@Model.Expired</strong>
+    </div>
+</section>
+
+<section class="card">
+
+    <div class="toolbar">
+        <form asp-controller="AdminAnnouncements"
+              asp-action="Index"
+              method="get">
+
+            <input type="text"
+                   name="search"
+                   value="@Model.Search"
+                   placeholder="Search title or message..." />
+
+            <select name="audience">
+                <option value="ALL" selected="@(Model.Audience == "ALL")">All audiences</option>
+                <option value="CUSTOMER" selected="@(Model.Audience == "CUSTOMER")">Customers</option>
+                <option value="FARMER" selected="@(Model.Audience == "FARMER")">Farmers</option>
+            </select>
+
+            <button type="submit"
+                    class="search-btn">
+                <i class="bi bi-search"></i>
+                Filter
+            </button>
+
+        </form>
+    </div>
+
+    @if (!Model.Announcements.Any())
+    {
+        <div class="empty">
+            <i class="bi bi-megaphone" style="font-size:32px;color:#13836e;"></i>
+            <h3>No announcements found</h3>
+        </div>
+    }
+    else
+    {
+        <div class="table-wrap">
+            <table class="ann-table">
+
+                <thead>
+                    <tr>
+                        <th>Announcement</th>
+                        <th>Audience</th>
+                        <th>Publish From</th>
+                        <th>Publish Until</th>
+                        <th>Created By</th>
+                        <th>Status</th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @foreach (var item in Model.Announcements)
+                    {
+                        <tr>
+
+                            <td class="title-cell">
+                                <strong>@item.Title</strong>
+                                <span>@item.Message</span>
+                            </td>
+
+                            <td>
+                                <span class="badge audience">
+                                    @item.Audience
+                                </span>
+                            </td>
+
+                            <td>
+                                @item.PublishFrom.ToString("dd MMM yyyy, hh:mm tt")
+                            </td>
+
+                            <td>
+                                @(item.PublishUntil.HasValue
+                                    ? item.PublishUntil.Value.ToString("dd MMM yyyy, hh:mm tt")
+                                    : "No end date")
+                            </td>
+
+                            <td>@item.CreatedByName</td>
+
+                            <td>
+                                <span class="badge @item.Status.ToLowerInvariant()">
+                                    @item.Status
+                                </span>
+                            </td>
+
+                            <td>
+                                <div class="actions">
+
+                                    <a asp-controller="AdminAnnouncements"
+                                       asp-action="Edit"
+                                       asp-route-id="@item.AnnouncementId"
+                                       class="row-btn">
+                                        Edit
+                                    </a>
+
+                                    <form asp-controller="AdminAnnouncements"
+                                          asp-action="Toggle"
+                                          method="post">
+
+                                        @Html.AntiForgeryToken()
+
+                                        <input type="hidden"
+                                               name="id"
+                                               value="@item.AnnouncementId" />
+
+                                        <button type="submit"
+                                                class="row-btn">
+                                            @(item.IsActive
+                                                ? "Deactivate"
+                                                : "Activate")
+                                        </button>
+                                    </form>
+
+                                    <form asp-controller="AdminAnnouncements"
+                                          asp-action="Delete"
+                                          method="post"
+                                          onsubmit="return confirm('Delete this announcement?');">
+
+                                        @Html.AntiForgeryToken()
+
+                                        <input type="hidden"
+                                               name="id"
+                                               value="@item.AnnouncementId" />
+
+                                        <button type="submit"
+                                                class="row-btn danger">
+                                            Delete
+                                        </button>
+                                    </form>
+
+                                </div>
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+        </div>
+    }
+
+</section>

@@ -12,8 +12,7 @@ namespace MarketLink.Controllers
     {
         private readonly ApplicationDbContext _context;
 
-        public FarmerWeeklyStockController(
-            ApplicationDbContext context)
+        public FarmerWeeklyStockController(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -25,9 +24,7 @@ namespace MarketLink.Controllers
             var farmer = await GetCurrentFarmerAsync(cancellationToken);
 
             if (farmer == null)
-            {
                 return Forbid();
-            }
 
             var farmerProducts = await _context.farmerproducts
                 .AsNoTracking()
@@ -41,7 +38,8 @@ namespace MarketLink.Controllers
                 .Where(fmd =>
                     fmd.FarmerMarket != null &&
                     fmd.FarmerMarket.FarmerId == farmer.FarmerId &&
-                    fmd.FarmerMarket.IsActive)
+                    fmd.FarmerMarket.IsActive &&
+                    fmd.IsActive)
                 .ToListAsync(cancellationToken);
 
             var productIds = farmerProducts
@@ -94,13 +92,28 @@ namespace MarketLink.Controllers
                 .Where(m => marketIds.Contains(m.MarketId))
                 .ToDictionaryAsync(m => m.MarketId, cancellationToken);
 
+            var farmerProductIds = farmerProducts
+                .Select(fp => fp.FarmerProductId)
+                .ToList();
+
             var templates = await _context.recurringstocktemplates
                 .AsNoTracking()
-                .Where(t =>
-                    productIds.Any() &&
-                    farmerProducts
-                        .Select(fp => fp.FarmerProductId)
-                        .Contains(t.FarmerProductId))
+                .Where(t => farmerProductIds.Contains(t.FarmerProductId))
+                .ToListAsync(cancellationToken);
+
+            var inventories = await _context.inventories
+                .AsNoTracking()
+                .Where(i =>
+                    farmerProductIds.Contains(i.FarmerProductId) &&
+                    farmerMarketIds.Contains(i.FarmerMarketId) &&
+                    i.InventoryDate >= DateTime.Today)
+                .ToListAsync(cancellationToken);
+
+            var pickupSlots = await _context.pickupslots
+                .AsNoTracking()
+                .Where(ps =>
+                    farmerMarketIds.Contains(ps.FarmerMarketId) &&
+                    ps.PickupDate >= DateTime.Today)
                 .ToListAsync(cancellationToken);
 
             var rows = new List<FarmerWeeklyStockRowViewModel>();
@@ -112,74 +125,69 @@ namespace MarketLink.Controllers
 
                 foreach (var fmd in farmerMarketDays)
                 {
-                    farmerMarkets.TryGetValue(
+                    if (!farmerMarkets.TryGetValue(
                         fmd.FarmerMarketId,
-                        out var fm);
-
-                    if (fm == null)
-                    {
+                        out var fm))
                         continue;
-                    }
 
-                    marketDays.TryGetValue(
+                    if (!marketDays.TryGetValue(
                         fmd.MarketDayId,
-                        out var md);
-
-                    markets.TryGetValue(
-                        fm.MarketId,
-                        out var market);
-
-                    if (md == null || market == null)
-                    {
+                        out var md))
                         continue;
-                    }
+
+                    if (!markets.TryGetValue(
+                        fm.MarketId,
+                        out var market))
+                        continue;
 
                     var template = templates
                         .FirstOrDefault(t =>
-                            t.FarmerProductId ==
-                                fp.FarmerProductId &&
-                            t.FarmerMarketDayId ==
-                                fmd.FarmerMarketDayId);
+                            t.FarmerProductId == fp.FarmerProductId &&
+                            t.FarmerMarketDayId == fmd.FarmerMarketDayId);
 
-                    rows.Add(
-                        new FarmerWeeklyStockRowViewModel
-                        {
-                            RecurringStockTemplateId =
-                                template?.RecurringStockTemplateId,
+                    var nextDate =
+                        GetNextDateForDayName(
+                            DateTime.Today,
+                            md.DayName);
 
-                            FarmerProductId =
-                                fp.FarmerProductId,
+                    var inventoryExists = inventories.Any(i =>
+                        i.FarmerProductId == fp.FarmerProductId &&
+                        i.FarmerMarketId == fmd.FarmerMarketId &&
+                        i.InventoryDate.Date == nextDate.Date);
 
-                            FarmerMarketDayId =
-                                fmd.FarmerMarketDayId,
+                    var pickupSlotExists = pickupSlots.Any(ps =>
+                        ps.FarmerMarketId == fmd.FarmerMarketId &&
+                        ps.PickupDate.Date == nextDate.Date &&
+                        ps.IsAvailable &&
+                        ps.BookedOrders < ps.MaximumOrders);
 
-                            ProductName =
-                                product?.ProductName ?? "Product",
+                    rows.Add(new FarmerWeeklyStockRowViewModel
+                    {
+                        RecurringStockTemplateId =
+                            template?.RecurringStockTemplateId,
 
-                            UnitName =
-                                unit?.UnitCode ?? "",
+                        FarmerProductId = fp.FarmerProductId,
+                        FarmerMarketDayId = fmd.FarmerMarketDayId,
+                        FarmerMarketId = fmd.FarmerMarketId,
 
-                            MarketName =
-                                market.MarketName,
+                        ProductName = product?.ProductName ?? "Product",
+                        UnitName = unit?.UnitCode ?? unit?.UnitName ?? "",
+                        MarketName = market.MarketName,
+                        DayName = md.DayName,
 
-                            DayName =
-                                md.DayName,
+                        PickupStartTime = fmd.PickupStartTime,
+                        PickupEndTime = fmd.PickupEndTime,
 
-                            PickupStartTime =
-                                fmd.PickupStartTime,
+                        DefaultQuantity =
+                            template?.DefaultQuantity ?? 0,
 
-                            PickupEndTime =
-                                fmd.PickupEndTime,
+                        IsConfigured = template != null,
+                        IsActive = template?.IsActive ?? true,
 
-                            DefaultQuantity =
-                                template?.DefaultQuantity ?? 0,
-
-                            IsConfigured =
-                                template != null,
-
-                            IsActive =
-                                template?.IsActive ?? true
-                        });
+                        NextInventoryDate = nextDate,
+                        NextInventoryExists = inventoryExists,
+                        NextPickupSlotExists = pickupSlotExists
+                    });
                 }
             }
 
@@ -192,20 +200,13 @@ namespace MarketLink.Controllers
             return View(new FarmerWeeklyStockPageViewModel
             {
                 Rows = rows,
-
                 TotalTemplates =
                     rows.Count(x => x.IsConfigured),
-
                 ActiveTemplates =
-                    rows.Count(x =>
-                        x.IsConfigured &&
-                        x.IsActive),
-
+                    rows.Count(x => x.IsConfigured && x.IsActive),
                 TotalDefaultQuantity =
                     rows
-                        .Where(x =>
-                            x.IsConfigured &&
-                            x.IsActive)
+                        .Where(x => x.IsConfigured && x.IsActive)
                         .Sum(x => x.DefaultQuantity)
             });
         }
@@ -219,42 +220,32 @@ namespace MarketLink.Controllers
             var farmer = await GetCurrentFarmerAsync(cancellationToken);
 
             if (farmer == null)
-            {
                 return Forbid();
-            }
 
             var farmerProduct = await _context.farmerproducts
                 .AsNoTracking()
                 .FirstOrDefaultAsync(
                     fp =>
-                        fp.FarmerProductId ==
-                        model.FarmerProductId &&
-                        fp.FarmerId ==
-                        farmer.FarmerId &&
+                        fp.FarmerProductId == model.FarmerProductId &&
+                        fp.FarmerId == farmer.FarmerId &&
                         fp.IsActive,
                     cancellationToken);
 
             if (farmerProduct == null)
-            {
                 return NotFound();
-            }
 
             var farmerMarketDay = await _context.farmermarketdays
                 .AsNoTracking()
                 .FirstOrDefaultAsync(
                     fmd =>
-                        fmd.FarmerMarketDayId ==
-                        model.FarmerMarketDayId &&
+                        fmd.FarmerMarketDayId == model.FarmerMarketDayId &&
                         fmd.FarmerMarket != null &&
-                        fmd.FarmerMarket.FarmerId ==
-                        farmer.FarmerId &&
+                        fmd.FarmerMarket.FarmerId == farmer.FarmerId &&
                         fmd.FarmerMarket.IsActive,
                     cancellationToken);
 
             if (farmerMarketDay == null)
-            {
                 return NotFound();
-            }
 
             if (!ModelState.IsValid)
             {
@@ -267,39 +258,150 @@ namespace MarketLink.Controllers
             var template = await _context.recurringstocktemplates
                 .FirstOrDefaultAsync(
                     t =>
-                        t.FarmerProductId ==
-                        model.FarmerProductId &&
-                        t.FarmerMarketDayId ==
-                        model.FarmerMarketDayId,
+                        t.FarmerProductId == model.FarmerProductId &&
+                        t.FarmerMarketDayId == model.FarmerMarketDayId,
                     cancellationToken);
 
             if (template == null)
             {
                 template = new RecurringStockTemplate
                 {
-                    FarmerProductId =
-                        model.FarmerProductId,
-
-                    FarmerMarketDayId =
-                        model.FarmerMarketDayId
+                    FarmerProductId = model.FarmerProductId,
+                    FarmerMarketDayId = model.FarmerMarketDayId
                 };
 
                 _context.recurringstocktemplates.Add(template);
             }
 
-            template.DefaultQuantity =
-                model.DefaultQuantity;
-
-            template.IsActive =
-                model.IsActive;
-
-            template.UpdatedAt =
-                DateTime.Now;
+            template.DefaultQuantity = model.DefaultQuantity;
+            template.IsActive = model.IsActive;
+            template.UpdatedAt = DateTime.Now;
 
             await _context.SaveChangesAsync(cancellationToken);
 
             TempData["SuccessMessage"] =
                 "Weekly stock template saved.";
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> GenerateNextInventory(
+            int id,
+            CancellationToken cancellationToken)
+        {
+            var farmer = await GetCurrentFarmerAsync(cancellationToken);
+
+            if (farmer == null)
+                return Forbid();
+
+            var template = await _context.recurringstocktemplates
+                .AsNoTracking()
+                .FirstOrDefaultAsync(
+                    t => t.RecurringStockTemplateId == id,
+                    cancellationToken);
+
+            if (template == null || !template.IsActive)
+            {
+                TempData["ErrorMessage"] =
+                    "Weekly stock template was not found or is paused.";
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            var farmerProduct = await _context.farmerproducts
+                .AsNoTracking()
+                .FirstOrDefaultAsync(
+                    fp =>
+                        fp.FarmerProductId == template.FarmerProductId &&
+                        fp.FarmerId == farmer.FarmerId &&
+                        fp.IsActive,
+                    cancellationToken);
+
+            if (farmerProduct == null)
+                return NotFound();
+
+            var farmerMarketDay = await _context.farmermarketdays
+                .AsNoTracking()
+                .FirstOrDefaultAsync(
+                    fmd =>
+                        fmd.FarmerMarketDayId == template.FarmerMarketDayId &&
+                        fmd.FarmerMarket != null &&
+                        fmd.FarmerMarket.FarmerId == farmer.FarmerId &&
+                        fmd.FarmerMarket.IsActive &&
+                        fmd.IsActive,
+                    cancellationToken);
+
+            if (farmerMarketDay == null)
+                return NotFound();
+
+            var marketDay = await _context.marketdays
+                .AsNoTracking()
+                .FirstOrDefaultAsync(
+                    md =>
+                        md.MarketDayId == farmerMarketDay.MarketDayId &&
+                        md.IsActive,
+                    cancellationToken);
+
+            if (marketDay == null)
+                return NotFound();
+
+            var nextDate =
+                GetNextDateForDayName(
+                    DateTime.Today,
+                    marketDay.DayName);
+
+            var duplicate = await _context.inventories
+                .AsNoTracking()
+                .AnyAsync(
+                    i =>
+                        i.FarmerProductId == farmerProduct.FarmerProductId &&
+                        i.FarmerMarketId == farmerMarketDay.FarmerMarketId &&
+                        i.InventoryDate.Date == nextDate.Date,
+                    cancellationToken);
+
+            if (duplicate)
+            {
+                TempData["ErrorMessage"] =
+                    $"Inventory already exists for {nextDate:dd MMM yyyy}.";
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            var inventory = new Inventory
+            {
+                FarmerProductId = farmerProduct.FarmerProductId,
+                FarmerMarketId = farmerMarketDay.FarmerMarketId,
+                InventoryDate = nextDate.Date,
+                UnitPrice = farmerProduct.Price,
+                StockQuantity = template.DefaultQuantity,
+                ReservedQuantity = 0,
+                SoldQuantity = 0,
+                IsSoldOut = template.DefaultQuantity <= 0,
+                IsAvailable =
+                    farmerProduct.IsAvailable &&
+                    template.DefaultQuantity > 0,
+                UpdatedAt = DateTime.Now
+            };
+
+            _context.inventories.Add(inventory);
+
+            await _context.SaveChangesAsync(cancellationToken);
+
+            var hasPickupSlot = await _context.pickupslots
+                .AsNoTracking()
+                .AnyAsync(
+                    ps =>
+                        ps.FarmerMarketId == farmerMarketDay.FarmerMarketId &&
+                        ps.PickupDate.Date == nextDate.Date &&
+                        ps.IsAvailable &&
+                        ps.BookedOrders < ps.MaximumOrders,
+                    cancellationToken);
+
+            TempData["SuccessMessage"] = hasPickupSlot
+                ? $"Inventory generated for {nextDate:dd MMM yyyy}. Matching pickup slot found."
+                : $"Inventory generated for {nextDate:dd MMM yyyy}. Create a pickup slot for the same date before customers can checkout.";
 
             return RedirectToAction(nameof(Index));
         }
@@ -313,23 +415,18 @@ namespace MarketLink.Controllers
             var farmer = await GetCurrentFarmerAsync(cancellationToken);
 
             if (farmer == null)
-            {
                 return Forbid();
-            }
 
             var template = await _context.recurringstocktemplates
                 .FirstOrDefaultAsync(
                     t =>
                         t.RecurringStockTemplateId == id &&
                         t.FarmerProduct != null &&
-                        t.FarmerProduct.FarmerId ==
-                        farmer.FarmerId,
+                        t.FarmerProduct.FarmerId == farmer.FarmerId,
                     cancellationToken);
 
             if (template == null)
-            {
                 return NotFound();
-            }
 
             template.IsActive = !template.IsActive;
             template.UpdatedAt = DateTime.Now;
@@ -344,26 +441,24 @@ namespace MarketLink.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private async Task<Farmer?> GetCurrentFarmerAsync(
-            CancellationToken cancellationToken)
+        private static DateTime GetNextDateForDayName(
+            DateTime fromDate,
+            string dayName)
         {
-            var userIdValue =
-                User.FindFirstValue(ClaimTypes.NameIdentifier)
-                ?? User.FindFirstValue("sub");
-
-            if (!int.TryParse(userIdValue, out var userId))
+            if (!Enum.TryParse<DayOfWeek>(
+                dayName,
+                true,
+                out var targetDay))
             {
-                return null;
+                return fromDate.Date;
             }
 
-            return await _context.farmers
-                .AsNoTracking()
-                .FirstOrDefaultAsync(
-                    f =>
-                        f.UserId == userId &&
-                        f.IsApproved &&
-                        f.IsActive,
-                    cancellationToken);
+            var daysAhead =
+                ((int)targetDay -
+                 (int)fromDate.DayOfWeek +
+                 7) % 7;
+
+            return fromDate.Date.AddDays(daysAhead);
         }
 
         private static int DayOrder(string dayName)
@@ -379,6 +474,26 @@ namespace MarketLink.Controllers
                 "Sunday" => 7,
                 _ => 99
             };
+        }
+
+        private async Task<Farmer?> GetCurrentFarmerAsync(
+            CancellationToken cancellationToken)
+        {
+            var userIdValue =
+                User.FindFirstValue(ClaimTypes.NameIdentifier)
+                ?? User.FindFirstValue("sub");
+
+            if (!int.TryParse(userIdValue, out var userId))
+                return null;
+
+            return await _context.farmers
+                .AsNoTracking()
+                .FirstOrDefaultAsync(
+                    f =>
+                        f.UserId == userId &&
+                        f.IsApproved &&
+                        f.IsActive,
+                    cancellationToken);
         }
     }
 }

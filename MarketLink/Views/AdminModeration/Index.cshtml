@@ -1,0 +1,343 @@
+@model MarketLink.ViewModels.AdminModerationPageViewModel
+
+@{
+    ViewData["Title"] = "Content Moderation";
+    Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
+}
+
+@section Styles {
+<style>
+.mod-header{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin-bottom:18px}
+.mod-label{color:#14836f;font-size:12px;font-weight:800;letter-spacing:.08em}
+.mod-header h2{margin:7px 0 5px;font-size:28px;font-weight:800}
+.mod-header p{margin:0;color:#667085}
+.mod-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+.mod-stat{background:#fff;border:1px solid #e7ebef;border-radius:15px;padding:15px}
+.mod-stat span{display:block;color:#667085;font-size:11px}
+.mod-stat strong{display:block;margin-top:4px;font-size:23px}
+.mod-card{background:#fff;border:1px solid #e7ebef;border-radius:18px;overflow:hidden}
+.mod-tabs{display:flex;gap:7px;padding:14px 16px;border-bottom:1px solid #edf0f4}
+.mod-tab{padding:7px 10px;border-radius:8px;text-decoration:none;color:#667085;font-size:10px;font-weight:800}
+.mod-tab.active{background:#e8f5ef;color:#067647}
+.mod-toolbar{padding:14px 16px;border-bottom:1px solid #edf0f4}
+.mod-toolbar form{display:flex;gap:8px;flex-wrap:wrap}
+.mod-toolbar input{min-width:280px;border:1px solid #d0d5dd;border-radius:9px;padding:9px 10px;font-size:11px}
+.search-btn{border:0;background:#13836e;color:#fff;padding:9px 12px;border-radius:9px;font-size:10px;font-weight:800}
+.table-wrap{overflow:auto}
+.mod-table{width:100%;border-collapse:collapse}
+.mod-table th{background:#f8fafc;color:#667085;padding:11px 13px;font-size:9px;text-transform:uppercase;white-space:nowrap}
+.mod-table td{padding:13px;border-top:1px solid #edf0f4;font-size:11px;vertical-align:top}
+.main-title strong{display:block}
+.main-title span{display:block;color:#98a2b3;font-size:9px;margin-top:3px;max-width:300px;white-space:normal}
+.status-badge{display:inline-flex;padding:5px 8px;border-radius:999px;font-size:9px;font-weight:800}
+.status-badge.live{background:#dcfae6;color:#067647}
+.status-badge.hidden{background:#fee4e2;color:#b42318}
+.status-badge.pending{background:#fff4e5;color:#b54708}
+.action-btn{border:1px solid #d0d5dd;background:#fff;color:#344054;padding:6px 8px;border-radius:7px;font-size:9px;font-weight:800}
+.action-btn.hide{color:#b42318;border-color:#f2c8c5}
+.action-btn.restore{color:#067647;border-color:#b7e4cd}
+.stars{color:#f79009;white-space:nowrap}
+.comment{max-width:420px;white-space:normal;color:#475467}
+.notice{margin-bottom:14px}
+.empty{padding:50px;text-align:center;color:#667085}
+@@media(max-width:800px){.mod-stats{grid-template-columns:repeat(2,1fr)}}
+@@media(max-width:520px){.mod-stats{grid-template-columns:1fr}.mod-toolbar input,.search-btn{width:100%;min-width:0}}
+</style>
+}
+
+<section class="mod-header">
+    <div>
+        <span class="mod-label">
+            <i class="bi bi-shield-check"></i>
+            CONTENT CONTROL
+        </span>
+
+        <h2>Content Moderation</h2>
+
+        <p>
+            Review product listings and customer reviews, then hide or restore content when required.
+        </p>
+    </div>
+</section>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success notice">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+<section class="mod-stats">
+    <div class="mod-stat">
+        <span>Product Listings</span>
+        <strong>@Model.TotalProducts</strong>
+    </div>
+
+    <div class="mod-stat">
+        <span>Hidden Products</span>
+        <strong>@Model.HiddenProducts</strong>
+    </div>
+
+    <div class="mod-stat">
+        <span>Customer Reviews</span>
+        <strong>@Model.TotalReviews</strong>
+    </div>
+
+    <div class="mod-stat">
+        <span>Hidden Reviews</span>
+        <strong>@Model.HiddenReviews</strong>
+    </div>
+</section>
+
+<section class="mod-card">
+
+    <div class="mod-tabs">
+        <a asp-controller="AdminModeration"
+           asp-action="Index"
+           asp-route-tab="Products"
+           asp-route-search="@Model.Search"
+           class="mod-tab @(Model.Tab == "Products" ? "active" : "")">
+            Product Listings
+        </a>
+
+        <a asp-controller="AdminModeration"
+           asp-action="Index"
+           asp-route-tab="Reviews"
+           asp-route-search="@Model.Search"
+           class="mod-tab @(Model.Tab == "Reviews" ? "active" : "")">
+            Customer Reviews
+        </a>
+    </div>
+
+    <div class="mod-toolbar">
+        <form asp-controller="AdminModeration"
+              asp-action="Index"
+              method="get">
+
+            <input type="hidden"
+                   name="tab"
+                   value="@Model.Tab" />
+
+            <input type="text"
+                   name="search"
+                   value="@Model.Search"
+                   placeholder="Search moderation content..." />
+
+            <button type="submit"
+                    class="search-btn">
+                <i class="bi bi-search"></i>
+                Search
+            </button>
+        </form>
+    </div>
+
+    @if (Model.Tab == "Products")
+    {
+        @if (!Model.Products.Any())
+        {
+            <div class="empty">
+                No product listings found.
+            </div>
+        }
+        else
+        {
+            <div class="table-wrap">
+                <table class="mod-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Farmer</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Availability</th>
+                            <th>Status</th>
+                            <th>Created</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var item in Model.Products)
+                        {
+                            <tr>
+                                <td class="main-title">
+                                    <strong>@item.ProductName</strong>
+
+                                    <span>
+                                        @item.FarmerDescription
+                                    </span>
+                                </td>
+
+                                <td>@item.FarmerName</td>
+
+                                <td>@item.CategoryName</td>
+
+                                <td>
+                                    Rs. @item.Price.ToString("N2")
+                                    / @item.UnitName
+                                </td>
+
+                                <td>
+                                    @(item.IsAvailable
+                                        ? "Available"
+                                        : "Unavailable")
+                                </td>
+
+                                <td>
+                                    @if (!item.IsApproved)
+                                    {
+                                        <span class="status-badge pending">
+                                            Not Approved
+                                        </span>
+                                    }
+                                    else if (item.IsActive)
+                                    {
+                                        <span class="status-badge live">
+                                            Visible
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="status-badge hidden">
+                                            Hidden
+                                        </span>
+                                    }
+                                </td>
+
+                                <td>
+                                    @item.CreatedAt.ToString("dd MMM yyyy")
+                                </td>
+
+                                <td>
+                                    <form asp-controller="AdminModeration"
+                                          asp-action="ToggleProduct"
+                                          method="post"
+                                          onsubmit="return confirm('@(item.IsActive ? "Hide this product listing?" : "Restore this product listing?")');">
+
+                                        @Html.AntiForgeryToken()
+
+                                        <input type="hidden"
+                                               name="id"
+                                               value="@item.FarmerProductId" />
+
+                                        <input type="hidden"
+                                               name="returnTab"
+                                               value="Products" />
+
+                                        <button type="submit"
+                                                class="action-btn @(item.IsActive ? "hide" : "restore")">
+
+                                            @(item.IsActive
+                                                ? "Hide"
+                                                : "Restore")
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    }
+    else
+    {
+        @if (!Model.Reviews.Any())
+        {
+            <div class="empty">
+                No customer reviews found.
+            </div>
+        }
+        else
+        {
+            <div class="table-wrap">
+                <table class="mod-table">
+                    <thead>
+                        <tr>
+                            <th>Customer</th>
+                            <th>Target</th>
+                            <th>Order</th>
+                            <th>Rating</th>
+                            <th>Comment</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var item in Model.Reviews)
+                        {
+                            <tr>
+                                <td>@item.CustomerName</td>
+
+                                <td>@item.TargetName</td>
+
+                                <td>@item.OrderNo</td>
+
+                                <td>
+                                    <span class="stars">
+                                        @for (var i = 1; i <= 5; i++)
+                                        {
+                                            <i class="bi @(i <= item.Rating ? "bi-star-fill" : "bi-star")"></i>
+                                        }
+                                    </span>
+                                </td>
+
+                                <td class="comment">
+                                    @item.Comment
+                                </td>
+
+                                <td>
+                                    @if (item.IsVisible)
+                                    {
+                                        <span class="status-badge live">
+                                            Visible
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="status-badge hidden">
+                                            Hidden
+                                        </span>
+                                    }
+                                </td>
+
+                                <td>
+                                    @item.ReviewDate.ToString("dd MMM yyyy")
+                                </td>
+
+                                <td>
+                                    <form asp-controller="AdminModeration"
+                                          asp-action="ToggleReview"
+                                          method="post"
+                                          onsubmit="return confirm('@(item.IsVisible ? "Hide this customer review?" : "Restore this customer review?")');">
+
+                                        @Html.AntiForgeryToken()
+
+                                        <input type="hidden"
+                                               name="id"
+                                               value="@item.ReviewId" />
+
+                                        <input type="hidden"
+                                               name="returnTab"
+                                               value="Reviews" />
+
+                                        <button type="submit"
+                                                class="action-btn @(item.IsVisible ? "hide" : "restore")">
+
+                                            @(item.IsVisible
+                                                ? "Hide"
+                                                : "Restore")
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    }
+
+</section>

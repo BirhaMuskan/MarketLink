@@ -282,6 +282,19 @@ namespace MarketLink.Controllers
             return View();
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Logout()
+        {
+            Response.Cookies.Delete("accessToken");
+            Response.Cookies.Delete("refreshToken");
+
+            return RedirectToAction(
+                "Index",
+                "Home"
+            );
+        }
+
 
     }
 }

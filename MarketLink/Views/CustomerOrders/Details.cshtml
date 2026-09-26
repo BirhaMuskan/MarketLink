@@ -1,0 +1,326 @@
+@model MarketLink.ViewModels.CustomerOrderDetailsViewModel
+
+@{
+    ViewData["Title"] = Model.OrderNo;
+    Layout = "~/Views/Shared/_CustomerDashboardLayout.cshtml";
+}
+
+@section Styles {
+<style>
+.order-head{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:18px}
+.order-label{color:#14836f;font-size:12px;font-weight:800;letter-spacing:.08em}
+.order-head h2{margin:7px 0 5px;font-size:27px;font-weight:800}
+.order-head p{margin:0;color:#667085}
+.back-btn{display:inline-flex;align-items:center;gap:6px;border:1px solid #d0d5dd;color:#344054;text-decoration:none;padding:8px 10px;border-radius:8px;font-size:10px;font-weight:800}
+.detail-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:18px}
+.card{background:#fff;border:1px solid #e7ebef;border-radius:18px;overflow:hidden}
+.card-head{padding:15px 17px;border-bottom:1px solid #edf0f4}
+.card-head span{color:#13836e;font-size:10px;font-weight:800}
+.card-head h3{margin:3px 0 0;font-size:16px}
+.order-summary{padding:17px}
+.summary-row{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid #edf0f4}
+.summary-row:last-child{border-bottom:0}
+.summary-row span{color:#667085;font-size:11px}
+.items-list{padding:10px}
+.item-row{display:grid;grid-template-columns:1fr .7fr .7fr;gap:12px;padding:12px;border-bottom:1px solid #edf0f4}
+.item-row:last-child{border-bottom:0}
+.item-row span{display:block;color:#667085;font-size:10px}
+.timeline{padding:16px}
+.timeline-row{position:relative;padding-left:24px;padding-bottom:18px}
+.timeline-row:last-child{padding-bottom:0}
+.timeline-row:before{content:"";position:absolute;left:5px;top:4px;width:10px;height:10px;border-radius:50%;background:#13836e}
+.timeline-row:after{content:"";position:absolute;left:9px;top:16px;width:2px;height:calc(100% - 5px);background:#dfe5e9}
+.timeline-row:last-child:after{display:none}
+.timeline-row strong{display:block}
+.timeline-row span{display:block;color:#667085;font-size:10px;margin-top:3px}
+.notes{padding:14px 17px;color:#475467}
+.cancel-box{margin-top:18px;background:#fff;border:1px solid #f2c8c5;border-radius:16px;padding:16px}
+.cancel-box h3{font-size:15px;margin:0 0 6px;color:#b42318}
+.cancel-box p{margin:0 0 12px;color:#667085;font-size:11px}
+.cancel-btn{border:0;background:#b42318;color:#fff;padding:9px 12px;border-radius:8px;font-size:10px;font-weight:800}
+.cancel-disabled{padding:10px;background:#f8fafc;border-radius:8px;color:#667085;font-size:10px}
+.notice{margin-bottom:14px}
+.status-large{display:inline-block;margin-top:8px;padding:6px 9px;border-radius:999px;background:#e8f5ef;color:#067647;font-size:10px;font-weight:800}
+@@media(max-width:900px){.detail-grid{grid-template-columns:1fr}}
+@@media(max-width:600px){.order-head{flex-direction:column}.item-row{grid-template-columns:1fr 1fr}}
+</style>
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success notice">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger notice">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+<section class="order-head">
+
+    <div>
+        <span class="order-label">
+            ORDER DETAILS
+        </span>
+
+        <h2>@Model.OrderNo</h2>
+
+        <p>
+            Ordered @Model.OrderDate.ToString("dd MMM yyyy, hh:mm tt")
+        </p>
+
+        <span class="status-large">
+            @Model.OrderStatus
+        </span>
+    </div>
+
+    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+
+    @if (Model.OrderStatus == "Completed")
+    {
+        <a asp-controller="CustomerReviews"
+           asp-action="Index"
+           class="back-btn">
+
+            <i class="bi bi-star"></i>
+            Leave a Review
+        </a>
+    }
+
+    <a asp-controller="CustomerOrders"
+       asp-action="Index"
+       class="back-btn">
+
+        <i class="bi bi-arrow-left"></i>
+        My Orders
+    </a>
+
+</div>
+
+</section>
+
+<div class="detail-grid">
+
+    <div>
+
+        <section class="card">
+
+            <div class="card-head">
+                <span>ITEMS</span>
+                <h3>Your Order</h3>
+            </div>
+
+            <div class="items-list">
+
+                @foreach (var item in Model.Items)
+                {
+                    <div class="item-row">
+
+                        <div>
+                            <strong>@item.ProductName</strong>
+
+                            <span>
+                                @item.Quantity.ToString("N3")
+                                @item.UnitName
+                            </span>
+                        </div>
+
+                        <div>
+                            <strong>
+                                Rs. @item.UnitPrice.ToString("N2")
+                            </strong>
+
+                            <span>
+                                per @item.UnitName
+                            </span>
+                        </div>
+
+                        <div>
+                            <strong>
+                                Rs. @item.TotalPrice.ToString("N2")
+                            </strong>
+
+                            <span>
+                                line total
+                            </span>
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+
+        </section>
+
+        <section class="card"
+                 style="margin-top:18px;">
+
+            <div class="card-head">
+                <span>STATUS</span>
+                <h3>Order Timeline</h3>
+            </div>
+
+            <div class="timeline">
+
+                @foreach (var status in Model.StatusHistory)
+                {
+                    <div class="timeline-row">
+
+                        <strong>@status.NewStatus</strong>
+
+                        <span>
+                            @status.ChangedAt.ToString("dd MMM yyyy, hh:mm tt")
+                        </span>
+
+                        @if (!string.IsNullOrWhiteSpace(status.Remarks))
+                        {
+                            <span>
+                                @status.Remarks
+                            </span>
+                        }
+
+                    </div>
+                }
+
+            </div>
+
+        </section>
+
+    </div>
+
+    <div>
+
+        <section class="card">
+
+            <div class="card-head">
+                <span>PICKUP</span>
+                <h3>Pickup Information</h3>
+            </div>
+
+            <div class="order-summary">
+
+                <div class="summary-row">
+                    <span>Farmer</span>
+                    <strong>@Model.FarmerName</strong>
+                </div>
+
+                <div class="summary-row">
+                    <span>Market</span>
+                    <strong>@Model.MarketName</strong>
+                </div>
+
+                <div class="summary-row">
+                    <span>Address</span>
+                    <strong>@Model.MarketAddress</strong>
+                </div>
+
+                @if (!string.IsNullOrWhiteSpace(Model.StallNumber))
+                {
+                    <div class="summary-row">
+                        <span>Stall</span>
+                        <strong>@Model.StallNumber</strong>
+                    </div>
+                }
+
+                <div class="summary-row">
+                    <span>Pickup Date</span>
+                    <strong>
+                        @Model.PickupDate.ToString("dd MMM yyyy")
+                    </strong>
+                </div>
+
+                <div class="summary-row">
+                    <span>Pickup Time</span>
+                    <strong>@Model.PickupTimeText</strong>
+                </div>
+
+                <div class="summary-row">
+                    <span>Total</span>
+                    <strong>
+                        Rs. @Model.TotalAmount.ToString("N2")
+                    </strong>
+                </div>
+
+                <div class="summary-row">
+                    <span>Payment</span>
+                    <strong>Pay at pickup</strong>
+                </div>
+
+            </div>
+
+        </section>
+
+        @if (!string.IsNullOrWhiteSpace(Model.CustomerNotes) ||
+             !string.IsNullOrWhiteSpace(Model.FarmerNotes))
+        {
+            <section class="card"
+                     style="margin-top:18px;">
+
+                <div class="card-head">
+                    <span>NOTES</span>
+                    <h3>Order Notes</h3>
+                </div>
+
+                <div class="notes">
+
+                    @if (!string.IsNullOrWhiteSpace(Model.CustomerNotes))
+                    {
+                        <strong>Your note</strong>
+                        <p>@Model.CustomerNotes</p>
+                    }
+
+                    @if (!string.IsNullOrWhiteSpace(Model.FarmerNotes))
+                    {
+                        <strong>Farmer note</strong>
+                        <p>@Model.FarmerNotes</p>
+                    }
+
+                </div>
+
+            </section>
+        }
+
+        <section class="cancel-box">
+
+            <h3>Cancel Order</h3>
+
+            <p>
+                @Model.CancellationMessage
+            </p>
+
+            @if (Model.CanCancel)
+            {
+                <form asp-controller="CustomerOrders"
+                      asp-action="Cancel"
+                      method="post"
+                      onsubmit="return confirm('Cancel this order? Reserved stock and pickup capacity will be released.');">
+
+                    @Html.AntiForgeryToken()
+
+                    <input type="hidden"
+                           name="id"
+                           value="@Model.OrderId" />
+
+                    <button type="submit"
+                            class="cancel-btn">
+                        Cancel Order
+                    </button>
+
+                </form>
+            }
+            else
+            {
+                <div class="cancel-disabled">
+                    Cancellation is not available for this order.
+                </div>
+            }
+
+        </section>
+
+    </div>
+
+</div>

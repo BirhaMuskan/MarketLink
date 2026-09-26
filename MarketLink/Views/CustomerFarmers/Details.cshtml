@@ -1,0 +1,343 @@
+@model MarketLink.ViewModels.CustomerFarmerDetailsViewModel
+
+@{
+    ViewData["Title"] = Model.BusinessName;
+    Layout = "~/Views/Shared/_CustomerDashboardLayout.cshtml";
+}
+
+@section Styles {
+@if (Model.Latitude.HasValue && Model.Longitude.HasValue)
+{
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+}
+
+<style>
+.farmer-hero{display:grid;grid-template-columns:auto 1fr auto;gap:20px;align-items:center;background:#fff;border:1px solid #e7ebef;border-radius:20px;padding:22px;margin-bottom:18px}
+.farmer-avatar-large{width:96px;height:96px;border-radius:50%;overflow:hidden;background:#e8f5ef;display:grid;place-items:center;color:#13836e;font-size:34px}
+.farmer-avatar-large img{width:100%;height:100%;object-fit:cover}
+.farmer-eyebrow{color:#14836f;font-size:11px;font-weight:800;letter-spacing:.08em}
+.farmer-hero h2{margin:5px 0 4px;font-size:27px;font-weight:800}
+.farmer-address{color:#667085;font-size:12px}
+.farmer-description{color:#475467;margin:10px 0 0;max-width:750px}
+.hero-actions{display:flex;gap:8px;align-items:center}
+.hero-btn{border:1px solid #d0d5dd;background:#fff;color:#344054;border-radius:9px;padding:9px 12px;font-size:11px;font-weight:700;text-decoration:none}
+.hero-btn.favorite{color:#b42318;border-color:#f2c8c5}
+.farmer-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:18px;margin-bottom:18px}
+.page-card{background:#fff;border:1px solid #e7ebef;border-radius:18px;overflow:hidden}
+.card-head{padding:15px 17px;border-bottom:1px solid #edf0f4}
+.card-head span{color:#13836e;font-size:10px;font-weight:800;letter-spacing:.08em}
+.card-head h3{margin:3px 0 0;font-size:16px}
+.market-list{padding:10px}
+.market-row{padding:13px;border-bottom:1px solid #edf0f4}
+.market-row:last-child{border-bottom:0}
+.market-row strong{display:block}
+.market-row span{display:block;color:#667085;font-size:10px;margin-top:2px}
+.market-row p{margin:7px 0 0;color:#475467;font-size:11px}
+#farmerMap{height:330px}
+.products-section{background:#fff;border:1px solid #e7ebef;border-radius:18px;padding:17px}
+.products-title{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+.products-title span{color:#13836e;font-size:10px;font-weight:800}
+.products-title h3{margin:3px 0 0;font-size:18px}
+.products-title a{text-decoration:none;color:#067647;font-size:11px;font-weight:700}
+.product-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.product-card{border:1px solid #e7ebef;border-radius:14px;overflow:hidden;background:#fff}
+.product-image{height:160px;background:#f3f6f5;display:grid;place-items:center;color:#13836e;font-size:34px}
+.product-image img{width:100%;height:100%;object-fit:cover}
+.product-body{padding:13px}
+.product-category{font-size:9px;color:#13836e;font-weight:800;text-transform:uppercase}
+.product-body h4{font-size:14px;margin:3px 0}
+.product-body p{font-size:11px;color:#667085;min-height:34px;margin:0 0 8px}
+.product-price{font-weight:800;color:#172033}
+.product-stock{font-size:10px;margin-top:4px}
+.product-stock.available{color:#067647}
+.product-stock.unavailable{color:#b42318}
+.product-actions{display:flex;gap:7px;margin-top:11px}
+.product-actions a,.product-actions button{flex:1;text-align:center;text-decoration:none;border:1px solid #d0d5dd;background:#fff;color:#344054;border-radius:8px;padding:7px;font-size:10px;font-weight:700}
+.product-actions a.primary{background:#13836e;color:#fff;border-color:#13836e}
+@@media(max-width:1000px){.product-grid{grid-template-columns:repeat(2,1fr)}}
+@@media(max-width:850px){.farmer-grid{grid-template-columns:1fr}.farmer-hero{grid-template-columns:auto 1fr}.hero-actions{grid-column:1/-1}}
+@@media(max-width:600px){.farmer-hero{grid-template-columns:1fr}.farmer-avatar-large{width:80px;height:80px}.product-grid{grid-template-columns:1fr}.products-title{align-items:flex-start;flex-direction:column}}
+</style>
+}
+
+<section class="farmer-hero">
+    <div class="farmer-avatar-large">
+        @if (!string.IsNullOrWhiteSpace(Model.ProfileImageUrl))
+        {
+            <img src="@Model.ProfileImageUrl"
+                 alt="@Model.BusinessName" />
+        }
+        else
+        {
+            <i class="bi bi-person"></i>
+        }
+    </div>
+
+    <div>
+        <span class="farmer-eyebrow">APPROVED FARMER</span>
+        <h2>@Model.BusinessName</h2>
+
+        <div class="farmer-address">
+            <i class="bi bi-geo-alt"></i>
+            @Model.Address
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(Model.Description))
+        {
+            <p class="farmer-description">@Model.Description</p>
+        }
+    </div>
+
+    <div class="hero-actions">
+        <form asp-controller="CustomerFarmers"
+              asp-action="ToggleFavorite"
+              method="post">
+            @Html.AntiForgeryToken()
+
+            <input type="hidden"
+                   name="farmerId"
+                   value="@Model.FarmerId" />
+
+            <input type="hidden"
+                   name="returnUrl"
+                   value="@Context.Request.Path@Context.Request.QueryString" />
+
+            <button type="submit"
+                    class="hero-btn favorite">
+                <i class="bi @(Model.IsFavorite ? "bi-heart-fill" : "bi-heart")"></i>
+                @(Model.IsFavorite ? "Saved Farmer" : "Save Farmer")
+            </button>
+        </form>
+
+        <a asp-controller="CustomerProducts"
+           asp-action="Index"
+           asp-route-farmerId="@Model.FarmerId"
+           class="hero-btn">
+            <i class="bi bi-basket"></i>
+            All Products
+        </a>
+    </div>
+</section>
+
+<div class="farmer-grid">
+    <section class="page-card">
+        <div class="card-head">
+            <span>WHERE TO FIND THEM</span>
+            <h3>Markets & Stall Information</h3>
+        </div>
+
+        <div class="market-list">
+            @if (!Model.Markets.Any())
+            {
+                <div style="padding:25px;color:#667085;">
+                    No active market assignments.
+                </div>
+            }
+            else
+            {
+                @foreach (var market in Model.Markets)
+                {
+                    <div class="market-row">
+                        <strong>@market.MarketName</strong>
+
+                        <span>
+                            <i class="bi bi-geo-alt"></i>
+                            @market.Address
+                        </span>
+
+                        <span>
+                            Stall:
+                            @(string.IsNullOrWhiteSpace(market.StallNumber)
+                                ? "Not specified"
+                                : market.StallNumber)
+                        </span>
+
+                        <span>
+                            Days: @market.OperatingDaysText
+                        </span>
+
+                        @if (!string.IsNullOrWhiteSpace(market.PickupInstructions))
+                        {
+                            <p>
+                                <i class="bi bi-info-circle"></i>
+                                @market.PickupInstructions
+                            </p>
+                        }
+
+                        <div style="margin-top:9px;">
+                            <a asp-controller="CustomerMarkets"
+                               asp-action="Details"
+                               asp-route-id="@market.MarketId"
+                               class="hero-btn">
+                                View Market
+                            </a>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </section>
+
+    <section class="page-card">
+        <div class="card-head">
+            <span>LOCATION</span>
+            <h3>Farm / Business Location</h3>
+        </div>
+
+        @if (Model.Latitude.HasValue &&
+             Model.Longitude.HasValue)
+        {
+            <div id="farmerMap"></div>
+        }
+        else
+        {
+            <div style="padding:55px;text-align:center;color:#667085;">
+                Map location has not been added by this farmer.
+            </div>
+        }
+    </section>
+</div>
+
+<section class="products-section">
+    <div class="products-title">
+        <div>
+            <span>FRESH FROM THIS FARMER</span>
+            <h3>Available Products</h3>
+        </div>
+
+        <a asp-controller="CustomerProducts"
+           asp-action="Index"
+           asp-route-farmerId="@Model.FarmerId">
+            View all products
+            <i class="bi bi-arrow-right"></i>
+        </a>
+    </div>
+
+    @if (!Model.Products.Any())
+    {
+        <div style="padding:45px;text-align:center;color:#667085;">
+            This farmer has no active product listings yet.
+        </div>
+    }
+    else
+    {
+        <div class="product-grid">
+            @foreach (var item in Model.Products.Take(6))
+            {
+                <article class="product-card">
+                    <div class="product-image">
+                        @if (!string.IsNullOrWhiteSpace(item.ImageUrl))
+                        {
+                            <img src="@item.ImageUrl"
+                                 alt="@item.ProductName" />
+                        }
+                        else
+                        {
+                            <i class="bi bi-basket"></i>
+                        }
+                    </div>
+
+                    <div class="product-body">
+                        <span class="product-category">
+                            @item.CategoryName
+                        </span>
+
+                        <h4>@item.ProductName</h4>
+
+                        <p>@item.Description</p>
+
+                        <div class="product-price">
+                            Rs. @item.Price.ToString("N2")
+                            / @item.UnitName
+                        </div>
+
+                        <div class="product-stock @(item.IsAvailable ? "available" : "unavailable")">
+                            @if (item.IsAvailable)
+                            {
+                                <span>
+                                    @item.AvailableQuantity.ToString("N3")
+                                    @item.UnitName available
+                                </span>
+                            }
+                            else
+                            {
+                                <span>Currently unavailable</span>
+                            }
+                        </div>
+
+                        <div class="product-actions">
+                            <a asp-controller="CustomerProducts"
+                               asp-action="Details"
+                               asp-route-id="@item.FarmerProductId"
+                               class="primary">
+                                View Product
+                            </a>
+
+                            <form asp-controller="CustomerProducts"
+                                  asp-action="ToggleFavorite"
+                                  method="post"
+                                  style="flex:0 0 auto;">
+                                @Html.AntiForgeryToken()
+
+                                <input type="hidden"
+                                       name="farmerProductId"
+                                       value="@item.FarmerProductId" />
+
+                                <input type="hidden"
+                                       name="returnUrl"
+                                       value="@Context.Request.Path@Context.Request.QueryString" />
+
+                                <button type="submit"
+                                        title="Favorite">
+                                    <i class="bi @(item.IsFavorite ? "bi-heart-fill text-danger" : "bi-heart")"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </article>
+            }
+        </div>
+    }
+</section>
+
+@if (Model.Latitude.HasValue && Model.Longitude.HasValue)
+{
+    @section Scripts {
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const lat =
+            @Model.Latitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+        const lng =
+            @Model.Longitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+        const map =
+            L.map("farmerMap")
+                .setView([lat, lng], 15);
+
+        L.tileLayer(
+            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            {
+                maxZoom: 19,
+                attribution: "&copy; OpenStreetMap contributors"
+            }
+        ).addTo(map);
+
+        L.marker([lat, lng])
+            .addTo(map)
+            .bindPopup(
+                @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.BusinessName))
+            )
+            .openPopup();
+
+        setTimeout(function () {
+            map.invalidateSize();
+        }, 150);
+    });
+    </script>
+    }
+}

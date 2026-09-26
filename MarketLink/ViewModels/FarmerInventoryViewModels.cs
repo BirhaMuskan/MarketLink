@@ -37,6 +37,9 @@ namespace MarketLink.ViewModels
         public bool IsSoldOut { get; set; }
         public bool IsAvailable { get; set; }
 
+        public bool HasPickupSlot { get; set; }
+        public string PickupSlotSummary { get; set; } = "";
+
         public DateTime UpdatedAt { get; set; }
     }
 
@@ -47,6 +50,11 @@ namespace MarketLink.ViewModels
         public string ProductName { get; set; } = "";
         public string MarketName { get; set; } = "";
         public string UnitName { get; set; } = "";
+
+        [Required]
+        [DataType(DataType.Date)]
+        [Display(Name = "Inventory Date")]
+        public DateTime InventoryDate { get; set; }
 
         [Required]
         [Range(0, 999999999)]
@@ -64,6 +72,12 @@ namespace MarketLink.ViewModels
         [StringLength(500)]
         [Display(Name = "Change Remarks")]
         public string? Remarks { get; set; }
+
+        public decimal ReservedQuantity { get; set; }
+        public decimal SoldQuantity { get; set; }
+
+        public bool HasPickupSlot { get; set; }
+        public string PickupSlotSummary { get; set; } = "";
     }
 
     public class FarmerWeeklyStockPageViewModel
@@ -81,6 +95,7 @@ namespace MarketLink.ViewModels
 
         public int FarmerProductId { get; set; }
         public int FarmerMarketDayId { get; set; }
+        public int FarmerMarketId { get; set; }
 
         public string ProductName { get; set; } = "";
         public string UnitName { get; set; } = "";
@@ -95,6 +110,10 @@ namespace MarketLink.ViewModels
 
         public bool IsConfigured { get; set; }
         public bool IsActive { get; set; }
+
+        public DateTime NextInventoryDate { get; set; }
+        public bool NextInventoryExists { get; set; }
+        public bool NextPickupSlotExists { get; set; }
     }
 
     public class SaveWeeklyStockViewModel

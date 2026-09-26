@@ -1,0 +1,397 @@
+@model MarketLink.ViewModels.CustomerFavoritesPageViewModel
+
+@{
+    ViewData["Title"] = "Favorites";
+    Layout = "~/Views/Shared/_CustomerDashboardLayout.cshtml";
+}
+
+@section Styles {
+<style>
+.fav-header{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin-bottom:18px}
+.fav-label{color:#14836f;font-size:12px;font-weight:800;letter-spacing:.08em}
+.fav-header h2{margin:7px 0 5px;font-size:28px;font-weight:800}
+.fav-header p{margin:0;color:#667085}
+.fav-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}
+.fav-stats>div{background:#fff;border:1px solid #e7ebef;border-radius:15px;padding:15px}
+.fav-stats span{display:block;color:#667085;font-size:11px}
+.fav-stats strong{display:block;margin-top:3px;font-size:22px}
+.section-card{background:#fff;border:1px solid #e7ebef;border-radius:18px;overflow:hidden;margin-bottom:18px}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:15px 17px;border-bottom:1px solid #edf0f4}
+.section-head span{color:#13836e;font-size:10px;font-weight:800;letter-spacing:.08em}
+.section-head h3{margin:3px 0 0;font-size:17px}
+.section-link{text-decoration:none;color:#067647;font-size:10px;font-weight:800}
+.fav-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding:14px}
+.fav-card{border:1px solid #e7ebef;border-radius:14px;overflow:hidden;background:#fff}
+.fav-image{height:145px;background:#f3f6f5;display:grid;place-items:center;color:#13836e;font-size:34px}
+.fav-image.circle{height:auto;padding:17px}
+.fav-image.circle img,.farmer-placeholder{width:76px;height:76px;border-radius:50%;object-fit:cover}
+.farmer-placeholder{display:grid;place-items:center;background:#e8f5ef}
+.fav-image img:not(.farmer-photo){width:100%;height:100%;object-fit:cover}
+.fav-body{padding:13px}
+.fav-body h4{font-size:14px;margin:0 0 4px}
+.fav-meta{display:block;color:#667085;font-size:10px;margin-top:3px}
+.fav-price{font-weight:800;margin-top:8px}
+.fav-stock{font-size:10px;margin-top:3px}
+.fav-stock.available{color:#067647}
+.fav-stock.unavailable{color:#b42318}
+.fav-actions{display:flex;gap:6px;margin-top:11px;flex-wrap:wrap}
+.fav-btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;border:1px solid #d0d5dd;background:#fff;color:#344054;text-decoration:none;padding:7px 9px;border-radius:8px;font-size:10px;font-weight:700}
+.fav-btn.primary{background:#13836e;color:#fff;border-color:#13836e}
+.fav-btn.danger{color:#b42318;border-color:#f2c8c5}
+.fav-btn.alert-on{color:#067647;border-color:#b7e4cd;background:#ecfdf3}
+.empty{padding:42px;text-align:center;color:#667085}
+.notice{margin-bottom:14px}
+@@media(max-width:1000px){.fav-grid{grid-template-columns:repeat(2,1fr)}}
+@@media(max-width:650px){.fav-header{align-items:flex-start;flex-direction:column}.fav-stats{grid-template-columns:1fr}.fav-grid{grid-template-columns:1fr}}
+</style>
+}
+
+<section class="fav-header">
+    <div>
+        <span class="fav-label">
+            <i class="bi bi-heart"></i>
+            SAVED FOR LATER
+        </span>
+
+        <h2>Favorites</h2>
+
+        <p>
+            Your saved farmers, products and markets in one place.
+        </p>
+    </div>
+</section>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success notice">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+<section class="fav-stats">
+    <div>
+        <span>Farmers</span>
+        <strong>@Model.FavoriteFarmersCount</strong>
+    </div>
+
+    <div>
+        <span>Products</span>
+        <strong>@Model.FavoriteProductsCount</strong>
+    </div>
+
+    <div>
+        <span>Markets</span>
+        <strong>@Model.FavoriteMarketsCount</strong>
+    </div>
+</section>
+
+<section class="section-card">
+
+    <div class="section-head">
+        <div>
+            <span>FARMERS</span>
+            <h3>Saved Farmers</h3>
+        </div>
+
+        <a asp-controller="CustomerMarkets"
+           asp-action="Index"
+           class="section-link">
+            Explore Markets
+        </a>
+    </div>
+
+    @if (!Model.Farmers.Any())
+    {
+        <div class="empty">
+            No saved farmers yet.
+        </div>
+    }
+    else
+    {
+        <div class="fav-grid">
+
+            @foreach (var item in Model.Farmers)
+            {
+                <article class="fav-card">
+
+                    <div class="fav-image circle">
+
+                        @if (!string.IsNullOrWhiteSpace(item.ProfileImageUrl))
+                        {
+                            <img src="@item.ProfileImageUrl"
+                                 class="farmer-photo"
+                                 alt="@item.BusinessName" />
+                        }
+                        else
+                        {
+                            <div class="farmer-placeholder">
+                                <i class="bi bi-person"></i>
+                            </div>
+                        }
+
+                    </div>
+
+                    <div class="fav-body">
+                        <h4>@item.BusinessName</h4>
+
+                        <span class="fav-meta">
+                            <i class="bi bi-geo-alt"></i>
+                            @item.Address
+                        </span>
+
+                        @if (!string.IsNullOrWhiteSpace(item.Description))
+                        {
+                            <span class="fav-meta">
+                                @item.Description
+                            </span>
+                        }
+
+                        <div class="fav-actions">
+
+                            <a asp-controller="CustomerFarmers"
+                               asp-action="Details"
+                               asp-route-id="@item.FarmerId"
+                               class="fav-btn primary">
+                                View Farmer
+                            </a>
+
+                            <form asp-controller="CustomerFavorites"
+                                  asp-action="RemoveFarmer"
+                                  method="post">
+
+                                @Html.AntiForgeryToken()
+
+                                <input type="hidden"
+                                       name="id"
+                                       value="@item.FavoriteFarmerId" />
+
+                                <button type="submit"
+                                        class="fav-btn danger">
+                                    Remove
+                                </button>
+                            </form>
+
+                        </div>
+                    </div>
+
+                </article>
+            }
+
+        </div>
+    }
+
+</section>
+
+<section class="section-card">
+
+    <div class="section-head">
+        <div>
+            <span>PRODUCTS</span>
+            <h3>Saved Products</h3>
+        </div>
+
+        <a asp-controller="CustomerProducts"
+           asp-action="Index"
+           class="section-link">
+            Browse Products
+        </a>
+    </div>
+
+    @if (!Model.Products.Any())
+    {
+        <div class="empty">
+            No saved products yet.
+        </div>
+    }
+    else
+    {
+        <div class="fav-grid">
+
+            @foreach (var item in Model.Products)
+            {
+                <article class="fav-card">
+
+                    <div class="fav-image">
+
+                        @if (!string.IsNullOrWhiteSpace(item.ImageUrl))
+                        {
+                            <img src="@item.ImageUrl"
+                                 alt="@item.ProductName" />
+                        }
+                        else
+                        {
+                            <i class="bi bi-basket"></i>
+                        }
+
+                    </div>
+
+                    <div class="fav-body">
+
+                        <h4>@item.ProductName</h4>
+
+                        <span class="fav-meta">
+                            @item.FarmerName
+                        </span>
+
+                        <div class="fav-price">
+                            Rs. @item.Price.ToString("N2")
+                            / @item.UnitName
+                        </div>
+
+                        <div class="fav-stock @(item.IsAvailable ? "available" : "unavailable")">
+
+                            @if (item.IsAvailable)
+                            {
+                                <span>
+                                    @item.AvailableQuantity.ToString("N3")
+                                    @item.UnitName available
+                                </span>
+                            }
+                            else
+                            {
+                                <span>Currently unavailable</span>
+                            }
+
+                        </div>
+
+                        <div class="fav-actions">
+
+                            <a asp-controller="CustomerProducts"
+                               asp-action="Details"
+                               asp-route-id="@item.FarmerProductId"
+                               class="fav-btn primary">
+                                View Product
+                            </a>
+
+                            <form asp-controller="CustomerFavorites"
+                                  asp-action="ToggleRestockAlert"
+                                  method="post">
+
+                                @Html.AntiForgeryToken()
+
+                                <input type="hidden"
+                                       name="id"
+                                       value="@item.FavoriteProductId" />
+
+                                <button type="submit"
+                                        class="fav-btn @(item.RestockAlert ? "alert-on" : "")">
+
+                                    <i class="bi bi-bell"></i>
+
+                                    @(item.RestockAlert
+                                        ? "Restock Alert On"
+                                        : "Restock Alert Off")
+                                </button>
+                            </form>
+
+                            <form asp-controller="CustomerFavorites"
+                                  asp-action="RemoveProduct"
+                                  method="post">
+
+                                @Html.AntiForgeryToken()
+
+                                <input type="hidden"
+                                       name="id"
+                                       value="@item.FavoriteProductId" />
+
+                                <button type="submit"
+                                        class="fav-btn danger">
+                                    Remove
+                                </button>
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                </article>
+            }
+
+        </div>
+    }
+
+</section>
+
+<section class="section-card">
+
+    <div class="section-head">
+        <div>
+            <span>MARKETS</span>
+            <h3>Saved Markets</h3>
+        </div>
+
+        <a asp-controller="CustomerMarkets"
+           asp-action="Index"
+           class="section-link">
+            Browse Markets
+        </a>
+    </div>
+
+    @if (!Model.Markets.Any())
+    {
+        <div class="empty">
+            No saved markets yet.
+        </div>
+    }
+    else
+    {
+        <div class="fav-grid">
+
+            @foreach (var item in Model.Markets)
+            {
+                <article class="fav-card">
+
+                    <div class="fav-image">
+                        <i class="bi bi-shop"></i>
+                    </div>
+
+                    <div class="fav-body">
+
+                        <h4>@item.MarketName</h4>
+
+                        <span class="fav-meta">
+                            <i class="bi bi-geo-alt"></i>
+                            @item.Address
+                        </span>
+
+                        <span class="fav-meta">
+                            <i class="bi bi-calendar-week"></i>
+                            @item.OperatingDaysText
+                        </span>
+
+                        <div class="fav-actions">
+
+                            <a asp-controller="CustomerMarkets"
+                               asp-action="Details"
+                               asp-route-id="@item.MarketId"
+                               class="fav-btn primary">
+                                View Market
+                            </a>
+
+                            <form asp-controller="CustomerFavorites"
+                                  asp-action="RemoveMarket"
+                                  method="post">
+
+                                @Html.AntiForgeryToken()
+
+                                <input type="hidden"
+                                       name="id"
+                                       value="@item.FavoriteMarketId" />
+
+                                <button type="submit"
+                                        class="fav-btn danger">
+                                    Remove
+                                </button>
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                </article>
+            }
+
+        </div>
+    }
+
+</section>

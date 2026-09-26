@@ -1,0 +1,19 @@
+@model MarketLink.ViewModels.CustomerNotificationBellViewModel
+
+<a asp-controller="CustomerNotifications"
+   asp-action="Index"
+   class="topbar-icon notification-button customer-notification-bell"
+   title="Notifications">
+
+    <i class="bi bi-bell"></i>
+
+    @if (Model.UnreadCount > 0)
+    {
+        <span class="customer-notification-badge">
+            @(Model.UnreadCount > 99
+                ? "99+"
+                : Model.UnreadCount.ToString())
+        </span>
+    }
+
+</a>

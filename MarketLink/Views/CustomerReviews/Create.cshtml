@@ -1,0 +1,116 @@
+@model MarketLink.ViewModels.CustomerCreateReviewViewModel
+
+@{
+    ViewData["Title"] = "Write Review";
+    Layout = "~/Views/Shared/_CustomerDashboardLayout.cshtml";
+}
+
+@section Styles {
+<style>
+.review-form-card{max-width:720px;background:#fff;border:1px solid #e7ebef;border-radius:18px;padding:24px}
+.page-label{color:#14836f;font-size:12px;font-weight:800;letter-spacing:.08em}
+.review-form-card h2{margin:7px 0 4px;font-size:26px;font-weight:800}
+.review-form-card>p{color:#667085;margin-bottom:20px}
+.field{margin-bottom:18px}
+.field label{display:block;margin-bottom:7px;font-size:12px;font-weight:800;color:#344054}
+.field textarea{width:100%;border:1px solid #d0d5dd;border-radius:10px;padding:11px}
+.rating-picker{display:flex;flex-direction:row-reverse;justify-content:flex-end;gap:5px}
+.rating-picker input{display:none}
+.rating-picker label{font-size:30px;color:#d0d5dd;cursor:pointer;margin:0}
+.rating-picker label:before{content:"★"}
+.rating-picker input:checked ~ label,
+.rating-picker label:hover,
+.rating-picker label:hover ~ label{color:#f79009}
+.actions{display:flex;justify-content:flex-end;gap:9px;border-top:1px solid #edf0f4;padding-top:18px}
+.secondary-btn,.primary-btn{padding:9px 13px;border-radius:9px;text-decoration:none;font-size:11px;font-weight:800}
+.secondary-btn{border:1px solid #d0d5dd;color:#344054;background:#fff}
+.primary-btn{border:0;background:#13836e;color:#fff}
+</style>
+}
+
+<section class="review-form-card">
+
+    <span class="page-label">
+        REVIEW COMPLETED ORDER
+    </span>
+
+    <h2>@Model.TargetName</h2>
+
+    <p>
+        Order @Model.OrderNo
+    </p>
+
+    <form asp-controller="CustomerReviews"
+          asp-action="Create"
+          method="post">
+
+        @Html.AntiForgeryToken()
+
+        <input asp-for="OrderId"
+               type="hidden" />
+
+        <input asp-for="FarmerId"
+               type="hidden" />
+
+        <input asp-for="FarmerProductId"
+               type="hidden" />
+
+        <div asp-validation-summary="ModelOnly"
+             class="text-danger mb-3"></div>
+
+        <div class="field">
+
+            <label asp-for="Rating"></label>
+
+            <div class="rating-picker">
+
+                @for (var rating = 5; rating >= 1; rating--)
+                {
+                    <input type="radio"
+                           name="Rating"
+                           id="rating-@rating"
+                           value="@rating"
+                           @(Model.Rating == rating ? "checked" : "") />
+
+                    <label for="rating-@rating"
+                           title="@rating star(s)"></label>
+                }
+
+            </div>
+
+            <span asp-validation-for="Rating"
+                  class="text-danger"></span>
+
+        </div>
+
+        <div class="field">
+
+            <label asp-for="Comment"></label>
+
+            <textarea asp-for="Comment"
+                      rows="6"
+                      placeholder="Share your experience..."></textarea>
+
+            <span asp-validation-for="Comment"
+                  class="text-danger"></span>
+
+        </div>
+
+        <div class="actions">
+
+            <a asp-controller="CustomerReviews"
+               asp-action="Index"
+               class="secondary-btn">
+                Cancel
+            </a>
+
+            <button type="submit"
+                    class="primary-btn">
+                Submit Review
+            </button>
+
+        </div>
+
+    </form>
+
+</section>

@@ -1,0 +1,32 @@
+@model MarketLink.ViewModels.AnnouncementBannerViewModel
+
+@if (Model.Items.Any())
+{
+    <div class="marketlink-announcement-stack">
+
+        @foreach (var item in Model.Items)
+        {
+            <div class="marketlink-announcement">
+
+                <div class="marketlink-announcement-icon">
+                    <i class="bi bi-megaphone"></i>
+                </div>
+
+                <div>
+                    <strong>@item.Title</strong>
+                    <p>@item.Message</p>
+                </div>
+
+            </div>
+        }
+
+    </div>
+
+    <style>
+        .marketlink-announcement-stack{display:grid;gap:8px;margin-bottom:16px}
+        .marketlink-announcement{display:flex;align-items:flex-start;gap:10px;background:#eff8ff;border:1px solid #d1e9ff;border-radius:12px;padding:11px 13px;color:#175cd3}
+        .marketlink-announcement-icon{padding-top:1px}
+        .marketlink-announcement strong{display:block;font-size:11px}
+        .marketlink-announcement p{margin:3px 0 0;font-size:10px;line-height:1.45}
+    </style>
+}

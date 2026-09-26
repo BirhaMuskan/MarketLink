@@ -1,0 +1,170 @@
+@model MarketLink.ViewModels.CustomerCheckoutViewModel
+
+@{
+    ViewData["Title"] = "Checkout";
+    Layout = "~/Views/Shared/_CustomerDashboardLayout.cshtml";
+}
+
+@section Styles {
+<style>
+.checkout-header{margin-bottom:18px}
+.checkout-label{color:#14836f;font-size:12px;font-weight:800;letter-spacing:.08em}
+.checkout-header h2{margin:7px 0 5px;font-size:28px;font-weight:800}
+.checkout-header p{margin:0;color:#667085}
+.checkout-grid{display:grid;grid-template-columns:1fr 360px;gap:18px}
+.checkout-card{background:#fff;border:1px solid #e7ebef;border-radius:18px;overflow:hidden}
+.card-head{padding:15px 17px;border-bottom:1px solid #edf0f4}
+.card-head span{color:#13836e;font-size:10px;font-weight:800}
+.card-head h3{margin:3px 0 0;font-size:16px}
+.card-body-custom{padding:18px}
+.form-field{margin-bottom:16px}
+.form-field label{display:block;margin-bottom:7px;font-size:12px;font-weight:800;color:#344054}
+.form-field select,.form-field textarea{width:100%;border:1px solid #d0d5dd;border-radius:10px;padding:10px}
+.checkout-items{padding:10px}
+.checkout-item{display:flex;justify-content:space-between;gap:12px;padding:11px;border-bottom:1px solid #edf0f4}
+.checkout-item:last-child{border-bottom:0}
+.checkout-item span{display:block;color:#667085;font-size:10px}
+.total-row{display:flex;justify-content:space-between;gap:10px;padding:16px 17px;border-top:1px solid #edf0f4;font-weight:800}
+.place-btn{width:100%;border:0;background:#13836e;color:#fff;padding:12px;border-radius:10px;font-weight:800}
+.pay-note{margin-top:12px;padding:11px;background:#f8fafc;border-radius:10px;color:#667085;font-size:11px}
+.no-slots{padding:18px;background:#fff4e5;color:#b54708;border-radius:10px}
+@@media(max-width:900px){.checkout-grid{grid-template-columns:1fr}}
+</style>
+}
+
+<section class="checkout-header">
+    <span class="checkout-label">
+        <i class="bi bi-bag-check"></i>
+        PRE-ORDER CHECKOUT
+    </span>
+
+    <h2>Choose Pickup</h2>
+
+    <p>
+        @Model.FarmerName · @Model.MarketName
+    </p>
+</section>
+
+<div class="checkout-grid">
+
+    <section class="checkout-card">
+
+        <div class="card-head">
+            <span>PICKUP DETAILS</span>
+            <h3>Select an available pickup slot</h3>
+        </div>
+
+        <div class="card-body-custom">
+
+            <form asp-controller="CustomerCart"
+                  asp-action="Checkout"
+                  method="post">
+
+                @Html.AntiForgeryToken()
+
+                <input asp-for="CartId"
+                       type="hidden" />
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-3"></div>
+
+                @if (!Model.PickupSlots.Any())
+                {
+                    <div class="no-slots">
+                        No pickup slot currently has enough dated inventory for all items in your cart.
+                        Try changing your cart or check again after the farmer adds more stock/slots.
+                    </div>
+                }
+                else
+                {
+                    <div class="form-field">
+                        <label asp-for="PickupSlotId"></label>
+
+                        <select asp-for="PickupSlotId">
+                            <option value="">
+                                Choose pickup date and time
+                            </option>
+
+                            @foreach (var slot in Model.PickupSlots)
+                            {
+                                <option value="@slot.PickupSlotId">
+                                    @slot.DisplayText
+                                </option>
+                            }
+                        </select>
+
+                        <span asp-validation-for="PickupSlotId"
+                              class="text-danger"></span>
+                    </div>
+
+                    <div class="form-field">
+                        <label asp-for="CustomerNotes"></label>
+
+                        <textarea asp-for="CustomerNotes"
+                                  rows="5"
+                                  placeholder="Optional pickup/order notes..."></textarea>
+
+                        <span asp-validation-for="CustomerNotes"
+                              class="text-danger"></span>
+                    </div>
+
+                    <button type="submit"
+                            class="place-btn">
+                        <i class="bi bi-check2-circle"></i>
+                        Place Pre-order
+                    </button>
+
+                    <div class="pay-note">
+                        <i class="bi bi-cash-coin"></i>
+                        No online payment is taken. Payment is made at pickup.
+                    </div>
+                }
+
+            </form>
+
+        </div>
+
+    </section>
+
+    <aside class="checkout-card">
+
+        <div class="card-head">
+            <span>YOUR ORDER</span>
+            <h3>@Model.MarketName</h3>
+        </div>
+
+        <div class="checkout-items">
+
+            @foreach (var item in Model.Items)
+            {
+                <div class="checkout-item">
+
+                    <div>
+                        <strong>@item.ProductName</strong>
+
+                        <span>
+                            @item.Quantity.ToString("N3")
+                            @item.UnitName
+                        </span>
+                    </div>
+
+                    <strong>
+                        Rs. @item.LineTotal.ToString("N2")
+                    </strong>
+
+                </div>
+            }
+
+        </div>
+
+        <div class="total-row">
+            <span>Estimated Total</span>
+
+            <span>
+                Rs. @Model.EstimatedTotal.ToString("N2")
+            </span>
+        </div>
+
+    </aside>
+
+</div>
